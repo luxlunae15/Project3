@@ -20,16 +20,16 @@ CREATE TABLE IF NOT EXISTS `jogiyo`.`user` (
   `ID` VARCHAR(15) NOT NULL,
   `PASSWD` VARCHAR(15) NOT NULL,
   `NAME` VARCHAR(15) NOT NULL,
-  `PHONE` VARCHAR(15) NOT NULL,
-  `location_ID` INT NOT NULL,
-  PRIMARY KEY (`ID`, `location_ID`),
+  `PHONE` VARCHAR(15),
+  `location_ID` INT,
+  PRIMARY KEY (`ID`),
   UNIQUE INDEX `ID_UNIQUE` (`ID` ASC) VISIBLE,
   INDEX `fk_user_location1_idx` (`location_ID` ASC) VISIBLE,
   CONSTRAINT `fk_user_location1`
     FOREIGN KEY (`location_ID`)
     REFERENCES `jogiyo`.`location` (`ID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -57,14 +57,14 @@ CREATE TABLE IF NOT EXISTS `jogiyo`.`store` (
   `UPTIME` TIME NULL,
   `location_ID` INT NOT NULL,
   `PRICE_LIMIT` INT NULL DEFAULT 0,
-  PRIMARY KEY (`ID`, `location_ID`),
+  PRIMARY KEY (`ID`),
   UNIQUE INDEX `ID_UNIQUE` (`ID` ASC) VISIBLE,
   INDEX `fk_store_location1_idx` (`location_ID` ASC) VISIBLE,
   CONSTRAINT `fk_store_location1`
     FOREIGN KEY (`location_ID`)
     REFERENCES `jogiyo`.`location` (`ID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -91,26 +91,25 @@ CREATE TABLE IF NOT EXISTS `jogiyo`.`review` (
   `user_ID` VARCHAR(15) NOT NULL,
   `menu_ID` INT NOT NULL,
   `store_ID` INT NOT NULL,
-  `store_location_ID` INT NOT NULL,
-  PRIMARY KEY (`ID`, `user_ID`, `menu_ID`, `store_ID`, `store_location_ID`),
+  PRIMARY KEY (`ID`, `user_ID`, `menu_ID`, `store_ID`),
   INDEX `fk_review_user1_idx` (`user_ID` ASC) VISIBLE,
   INDEX `fk_review_menu1_idx` (`menu_ID` ASC) VISIBLE,
-  INDEX `fk_review_store1_idx` (`store_ID` ASC, `store_location_ID` ASC) VISIBLE,
+  INDEX `fk_review_store1_idx` (`store_ID` ASC) VISIBLE,
   CONSTRAINT `fk_review_user1`
     FOREIGN KEY (`user_ID`)
     REFERENCES `jogiyo`.`user` (`ID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_review_menu1`
     FOREIGN KEY (`menu_ID`)
     REFERENCES `jogiyo`.`menu` (`ID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_review_store1`
-    FOREIGN KEY (`store_ID` , `store_location_ID`)
-    REFERENCES `jogiyo`.`store` (`ID` , `location_ID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    FOREIGN KEY (`store_ID`)
+    REFERENCES `jogiyo`.`store` (`ID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -126,13 +125,13 @@ CREATE TABLE IF NOT EXISTS `jogiyo`.`user_menu` (
   CONSTRAINT `fk_user_has_menu_user`
     FOREIGN KEY (`user_ID`)
     REFERENCES `jogiyo`.`user` (`ID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_user_has_menu_menu1`
     FOREIGN KEY (`menu_ID`)
     REFERENCES `jogiyo`.`menu` (`ID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -148,13 +147,13 @@ CREATE TABLE IF NOT EXISTS `jogiyo`.`store_seller` (
   CONSTRAINT `fk_store_has_seller_store1`
     FOREIGN KEY (`store_ID`)
     REFERENCES `jogiyo`.`store` (`ID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_store_has_seller_seller1`
     FOREIGN KEY (`seller_ID`)
     REFERENCES `jogiyo`.`seller` (`ID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -180,13 +179,13 @@ CREATE TABLE IF NOT EXISTS `jogiyo`.`category_menu` (
   CONSTRAINT `fk_category_has_menu_category1`
     FOREIGN KEY (`category_ID`)
     REFERENCES `jogiyo`.`category` (`ID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_category_has_menu_menu1`
     FOREIGN KEY (`menu_ID`)
     REFERENCES `jogiyo`.`menu` (`ID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -203,13 +202,13 @@ CREATE TABLE IF NOT EXISTS `jogiyo`.`coupon` (
   CONSTRAINT `fk_store_has_user_store1`
     FOREIGN KEY (`store_ID`)
     REFERENCES `jogiyo`.`store` (`ID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_store_has_user_user1`
     FOREIGN KEY (`user_ID`)
     REFERENCES `jogiyo`.`user` (`ID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
