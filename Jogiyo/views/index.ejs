@@ -9,7 +9,15 @@
             $("#btnlogin").click(
                 function(){
                     location.href="/login";
-                })
+                });
+            $("#btnjoin").click(
+            	function(){
+            		location.href="/join";
+            	});
+            $("#btnacc").click(
+            	function(){
+            		location.href="/account";
+            	});
     	});
     </script>
   </head>
@@ -17,5 +25,7 @@
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
     <input type="button" id="btnlogin" name="login" value="로그인">
+    <input type="button" id="btnjoin" name="join" value="회원가입">
+    <input type="button" id="btnacc" name="account" value="회원정보관리">
   </body>
 </html>

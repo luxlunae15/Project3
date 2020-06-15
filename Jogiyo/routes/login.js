@@ -19,7 +19,7 @@ router.post('/', function(req, res, next){
 	var passwd = req.body.passwd;
 
 	pool.getConnection(function(err, connection){
-		var sql = "SELECT * FROM "+req.body.auth+" WHERE ID=?";
+		var sql = "SELECT * FROM user WHERE ID=?";
 		connection.query(sql, [id], function(err, results, fields){
 			if(err) {
 				console.error("err: "+err);

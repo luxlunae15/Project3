@@ -18,17 +18,25 @@ router.post('/', function(req, res, next){
 	var id = req.body.id;
 	var passwd = req.body.passwd;
 	var name = req.body.name;
-	var datas = [id, passwd, name];
+	var auth = req.body.auth;
+	var phone = req.body.tel;
+	var datas = [id, passwd, name, auth, phone];
 
 	pool.getConnection(function(err, connection){
-		var sql = "INSERT INTO "+req.body.auth+"(ID, PASSWD, NAME) values(?,?,?)";
+		var sql = "INSERT INTO user(ID, PASSWD, NAME, AUTH, PHONE) values(?,?,?,?,?)";
 
 		connection.query(sql, datas, function(err,rows){
-			if(err) console.error("err: "+err);
-			console.log("회원가입 완료");
-			console.log("rows : " + JSON.stringify(rows));
+			if(err){
+				console.error("err: "+err);
+				res.send('<script type="text/javascript">alert("회원가입에 실패하였습니다.");location.href="/join";</script>');
+			}
+			else
+			{
+				console.log("회원가입 완료");
+				console.log("rows : " + JSON.stringify(rows));
 
-			res.send('<script type="text/javascript">alert("회원가입이 완료되었습니다.");location.href="/login";</script>');
+				res.send('<script type="text/javascript">alert("회원가입이 완료되었습니다.");location.href="/login";</script>');
+			}
 			connection.release();
 		});
 	});
