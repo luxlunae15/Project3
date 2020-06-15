@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css'/>
+    </head>
+    <body>
+        <h1><%= title %></h1>
+        <br>
+        <br>
+        <table border="1">
+            <tr>
+                <td>주문 메뉴</td>
+                <td>구매 고객</td>
+                <td>판매자</td>
+                <td>가격</td>
+                <td>판매 날짜</td>
+                
+            </tr>
+<%
+                for(var i=0; i<rows.length; i++){
+                    var oneItem = rows[i];
+%>
+                    <tr>
+                        <td><%=oneItem.menu_ID%></td>
+                        <td><%=oneItem.user_ID%></td>
+                        <td><%=oneItem.seller_ID%></td>
+                        <td><%=oneItem.price%></td>
+                        <td><%=oneItem.date%></td>
+                    </tr>
+<%        
+                }
+%>
+
+        </table>
+    </body>
+</html>

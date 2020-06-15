@@ -31,7 +31,10 @@ router.post('/', function(req, res, next){
 				{
 					if(passwd == results[0].PASSWD)
 					{
-						res.send('<script type="text/javascript">alert("로그인 되었습니다.");location.href="/";</script>');
+						if(req.body.auth == 'seller')
+							res.send('<script type="text/javascript">alert("로그인 되었습니다.");location.href="/seller";</script>');
+						else
+							res.send('<script type="text/javascript">alert("로그인 되었습니다.");location.href="/";</script>');
 					}
 					else
 					{

@@ -10,6 +10,18 @@
                 function(){
                     location.href="/login";
                 })
+      });
+      $(function(){
+            $("#btnbuyer").click(
+                function(){
+                    location.href="/buyer";
+                })
+      });
+      $(function(){
+            $("#btnseller").click(
+                function(){
+                    location.href="/seller";
+                })
     	});
     </script>
   </head>
@@ -17,5 +29,7 @@
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
     <input type="button" id="btnlogin" name="login" value="로그인">
+    <input type="button" id="btnseller" name="seller" value="판매"">
+    <input type="button" id="btnbuyer" name="buyer" value="구매">
   </body>
 </html>

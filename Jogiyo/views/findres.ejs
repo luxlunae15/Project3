@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="/javascripts/jquery-3.5.1.min.js"></script>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css'/>
+    </head>
+    <body>
+        <h1><%= title %></h1>
+        
+        <form action="/findres" method="get">
+            <table border="1">
+                <tr>
+                    <td>ID</td>
+                    <td>NAME</td>
+                    <td>PHONE</td>
+                </tr>
+                <tr>
+                    <td><%=row[0].ID%></td>
+                    <td><%=row[0].NAME%></td>
+                    <td><%=row[0].PHONE%></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <a href="/seller">판매자 화면으로 돌아가기</a>
+                    </td>
+                </tr>
+            </table>
+        </form>
+</html>
+
+
+

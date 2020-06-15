@@ -8,6 +8,8 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var join = require('./routes/joinForm');
 var login = require('./routes/login');
+var seller = require('./routes/seller');
+var buyer = require('./routes/buyer');
 
 var app = express();
 
@@ -25,6 +27,8 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/join', join);
 app.use('/login', login);
+app.use('/seller', seller);
+app.use('/buyer', buyer);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -41,5 +45,9 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+app.get('/buyer/print-menu/cart:id', function(req, res) {
+  var topic = req.query.topic;
+})
 
 module.exports = app;
