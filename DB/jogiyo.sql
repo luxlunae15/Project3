@@ -228,8 +228,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `jogiyo`.`menu_store`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `jogiyo`.`menu_store` ;
-
 CREATE TABLE IF NOT EXISTS `jogiyo`.`menu_store` (
   `menu_ID` INT NOT NULL,
   `store_ID` INT NOT NULL,
@@ -252,8 +250,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `jogiyo`.`comment`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `jogiyo`.`comment` ;
-
 CREATE TABLE IF NOT EXISTS `jogiyo`.`comment` (
   `review_ID` INT NOT NULL,
   `user_ID` VARCHAR(15) NOT NULL,
