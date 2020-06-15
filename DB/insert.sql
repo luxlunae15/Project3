@@ -94,3 +94,8 @@ insert into store (NAME, PHONE, DELIVERY_TIME, UPTIME, CLOSETIME, location_ID, P
 insert into store (NAME, PHONE, DELIVERY_TIME, UPTIME, CLOSETIME, location_ID, PRICE_LIMIT) values('음식점23', '010-0100-2300', 22, '16:00:00', '04:00:00', 23, 0);
 insert into store (NAME, PHONE, DELIVERY_TIME, UPTIME, CLOSETIME, location_ID, PRICE_LIMIT) values('음식점24', '010-0100-2400', 11, '16:00:00', '04:00:00', 24, 14000);
 insert into store (NAME, PHONE, DELIVERY_TIME, UPTIME, CLOSETIME, location_ID, PRICE_LIMIT) values('음식점25', '010-0100-2500', 9, '16:00:00', '04:00:00', 25, 0);
+INSERT INTO menu (NAME, PRICE, content) values('치킨', 17000, '디디치킨');
+INSERT INTO menu (NAME, PRICE, content) values('피자', 24000, '파파존스');
+INSERT INTO menu (NAME, PRICE, content) values('탕수육', 22000, '김피탕');
+INSERT INTO menu (NAME, PRICE, content) values('짜장면', 3500, '미식성');
+INSERT INTO menu (NAME, PRICE, content) values('짬뽕', 4000, '향원');

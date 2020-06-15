@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `jogiyo`.`menu` (
   `ID` INT NOT NULL AUTO_INCREMENT,
   `NAME` VARCHAR(15) NOT NULL,
   `PRICE` INT NOT NULL,
-  `content` LONGTEXT NULL,
+  `content` LONGTEXT NULL DEFAULT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE INDEX `ID_UNIQUE` (`ID` ASC) VISIBLE)
 ENGINE = InnoDB;
@@ -185,7 +185,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `jogiyo`.`coupon` (
   `store_ID` INT NOT NULL,
   `user_ID` VARCHAR(15) NOT NULL,
-  `number` INT NULL,
+  `number` INT NULL DEFAULT 0,
   PRIMARY KEY (`store_ID`, `user_ID`),
   INDEX `fk_store_has_user_user2_idx` (`user_ID` ASC) VISIBLE,
   INDEX `fk_store_has_user_store2_idx` (`store_ID` ASC) VISIBLE,
@@ -195,6 +195,77 @@ CREATE TABLE IF NOT EXISTS `jogiyo`.`coupon` (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_store_has_user_user2`
+    FOREIGN KEY (`user_ID`)
+    REFERENCES `jogiyo`.`user` (`ID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `jogiyo`.`user_history`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `jogiyo`.`sold_history` (
+  `history` DATETIME DEFAULT NOW(),
+  `user_ID` VARCHAR(15) NOT NULL,
+  `menu_ID` INT NOT NULL,
+  INDEX `fk_sold_history_menu1_idx` (`menu_ID` ASC) VISIBLE,
+  INDEX `fk_sold_history_user1_idx` (`user_ID` ASC) INVISIBLE,
+  PRIMARY KEY (`user_ID`, `menu_ID`),
+  CONSTRAINT `fk_sold_history_menu1`
+    FOREIGN KEY (`menu_ID`)
+    REFERENCES `jogiyo`.`menu` (`ID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_sold_history_user1`
+    FOREIGN KEY (`user_ID`)
+    REFERENCES `jogiyo`.`user` (`ID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `jogiyo`.`menu_store`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `jogiyo`.`menu_store` ;
+
+CREATE TABLE IF NOT EXISTS `jogiyo`.`menu_store` (
+  `menu_ID` INT NOT NULL,
+  `store_ID` INT NOT NULL,
+  PRIMARY KEY (`menu_ID`, `store_ID`),
+  INDEX `fk_menu_has_store_store1_idx` (`store_ID` ASC) VISIBLE,
+  INDEX `fk_menu_has_store_menu1_idx` (`menu_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_menu_has_store_menu1`
+    FOREIGN KEY (`menu_ID`)
+    REFERENCES `jogiyo`.`menu` (`ID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_menu_has_store_store1`
+    FOREIGN KEY (`store_ID`)
+    REFERENCES `jogiyo`.`store` (`ID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `jogiyo`.`comment`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `jogiyo`.`comment` ;
+
+CREATE TABLE IF NOT EXISTS `jogiyo`.`comment` (
+  `review_ID` INT NOT NULL,
+  `user_ID` VARCHAR(15) NOT NULL,
+  `content` LONGTEXT NULL,
+  PRIMARY KEY (`review_ID`, `user_ID`),
+  INDEX `fk_comment_user1_idx` (`user_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_comment_review1`
+    FOREIGN KEY (`review_ID`)
+    REFERENCES `jogiyo`.`review` (`ID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_comment_user1`
     FOREIGN KEY (`user_ID`)
     REFERENCES `jogiyo`.`user` (`ID`)
     ON DELETE CASCADE
