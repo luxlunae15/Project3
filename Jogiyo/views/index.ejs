@@ -3,9 +3,19 @@
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="/javascripts/jquery-3.5.1.min.js"></script>
+    <script>
+    	$(function(){
+            $("#btnlogin").click(
+                function(){
+                    location.href="/login";
+                })
+    	});
+    </script>
   </head>
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
+    <input type="button" id="btnlogin" name="login" value="로그인">
   </body>
 </html>

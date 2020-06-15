@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <meta charset='utf-8'>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="/javascripts/jquery-3.5.1.min.js"></script>
+    <script>
+    	$(function(){
+    		$("#btnlogin").click(
+    			function(){
+    				if($("#id").val() == "")
+    				{
+    					alert("아이디를 꼭 입력 하세요");
+    					$("#id").focus();
+    					return;
+    				}
+    				if($("#passwd").val() == "")
+    				{
+    					alert("비밀번호를 꼭 입력 하세요");
+    					$("#passwd").focus();
+    					return;
+    				}
+                    $("#login").submit();
+    			});
+            $("#btnjoin").click(
+                function(){
+                    location.href="/join";
+                });
+            $("#btnRtn").click(
+                function(){
+                    location.href="/";
+                });
+    	});
+    </script>
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <form id="login" action="/login" method="post">
+    	<table width="400" border="1">
+    		<tr>
+    			<th>아이디</th>
+    			<td><input type="text" name="id" id="id" size="12" maxLength="12"></td>
+    		</tr>
+    		<tr>
+    			<th>비밀번호</th>
+    			<td><input type="password" name="passwd" id="passwd" size="12" maxLength="12"></td>
+    		</tr>
+    		<tr>
+    			<th>사용자 구분</th>
+    			<td><select name="auth" id="auth">
+    				<option value="user">구매자</option>
+    				<option value="seller">판매자</option>
+    				<option value="manager">관리자</option>
+    			</select></td>
+    		</tr>
+    		<tr>
+    			<td colspan="2">
+    				<input type="button" id="btnlogin" name="login" value="로그인">
+    				<input type="button" id="btnjoin" name="join" value="회원가입">
+                    <input type="button" id="btnRtn" name="return" value="돌아가기">
+    			</td>
+    		</tr>
+    	</table>
+    </form>
+  </body>
+</html>
