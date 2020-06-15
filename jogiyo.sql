@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS `jogiyo`.`user` (
   `ID` VARCHAR(15) NOT NULL,
   `PASSWD` VARCHAR(15) NOT NULL,
   `NAME` VARCHAR(15) NOT NULL,
+  `AUTH` VARCHAR(15) NOT NULL,
   `PHONE` VARCHAR(15),
   `location_ID` INT,
   PRIMARY KEY (`ID`),
@@ -30,19 +31,6 @@ CREATE TABLE IF NOT EXISTS `jogiyo`.`user` (
     REFERENCES `jogiyo`.`location` (`ID`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `jogiyo`.`seller`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jogiyo`.`seller` (
-  `ID` VARCHAR(15) NOT NULL,
-  `PASSWD` VARCHAR(15) NOT NULL,
-  `NAME` VARCHAR(15) NOT NULL,
-  `PHONE` VARCHAR(15),
-  PRIMARY KEY (`ID`),
-  UNIQUE INDEX `ID_UNIQUE` (`ID` ASC) VISIBLE)
 ENGINE = InnoDB;
 
 
@@ -137,22 +125,22 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `jogiyo`.`store_seller`
+-- Table `jogiyo`.`store_user`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jogiyo`.`store_seller` (
+CREATE TABLE IF NOT EXISTS `jogiyo`.`store_user` (
   `store_ID` INT NOT NULL,
-  `seller_ID` VARCHAR(15) NOT NULL,
-  PRIMARY KEY (`store_ID`, `seller_ID`),
-  INDEX `fk_store_has_seller_seller1_idx` (`seller_ID` ASC) VISIBLE,
-  INDEX `fk_store_has_seller_store1_idx` (`store_ID` ASC) VISIBLE,
-  CONSTRAINT `fk_store_has_seller_store1`
+  `user_ID` VARCHAR(15) NOT NULL,
+  PRIMARY KEY (`store_ID`, `user_ID`),
+  INDEX `fk_store_has_user_user1_idx` (`user_ID` ASC) VISIBLE,
+  INDEX `fk_store_has_user_store1_idx` (`store_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_store_has_user_store1`
     FOREIGN KEY (`store_ID`)
     REFERENCES `jogiyo`.`store` (`ID`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-  CONSTRAINT `fk_store_has_seller_seller1`
-    FOREIGN KEY (`seller_ID`)
-    REFERENCES `jogiyo`.`seller` (`ID`)
+  CONSTRAINT `fk_store_has_user_user1`
+    FOREIGN KEY (`user_ID`)
+    REFERENCES `jogiyo`.`user` (`ID`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
@@ -198,29 +186,16 @@ CREATE TABLE IF NOT EXISTS `jogiyo`.`coupon` (
   `user_ID` VARCHAR(15) NOT NULL,
   `number` INT NULL,
   PRIMARY KEY (`store_ID`, `user_ID`),
-  INDEX `fk_store_has_user_user1_idx` (`user_ID` ASC) VISIBLE,
-  INDEX `fk_store_has_user_store1_idx` (`store_ID` ASC) VISIBLE,
-  CONSTRAINT `fk_store_has_user_store1`
+  INDEX `fk_store_has_user_user2_idx` (`user_ID` ASC) VISIBLE,
+  INDEX `fk_store_has_user_store2_idx` (`store_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_store_has_user_store2`
     FOREIGN KEY (`store_ID`)
     REFERENCES `jogiyo`.`store` (`ID`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-  CONSTRAINT `fk_store_has_user_user1`
+  CONSTRAINT `fk_store_has_user_user2`
     FOREIGN KEY (`user_ID`)
     REFERENCES `jogiyo`.`user` (`ID`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `jogiyo`.`manager`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jogiyo`.`manager` (
-  `ID` VARCHAR(15) NOT NULL,
-  `PASSWD` VARCHAR(15) NOT NULL,
-  `NAME` VARCHAR(15) NOT NULL,
-  `PHONE` VARCHAR(15),
-  PRIMARY KEY (`ID`),
-  UNIQUE INDEX `ID_UNIQUE` (`ID` ASC) VISIBLE)
 ENGINE = InnoDB;
