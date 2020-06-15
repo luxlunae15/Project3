@@ -43,7 +43,11 @@
 			<tr>
 				<td colspan="2">
 					<button type="submit">정보 수정</button>
+    				<% if(auth == "관리자") { %>
 					<input type="submit" value="회원 삭제" formaction="/account/delete">
+					<% } else { %>
+					<input type="submit" value="회원 탈퇴" formaction="/account/delete">
+					<% } %>
     				<input type="button" id="btnRtn" name="return" value="돌아가기">
 				</td>
 			</tr>

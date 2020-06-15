@@ -16,7 +16,7 @@
                 });
             $("#btnjoin").click(
             	function(){
-            		location.href="/join";
+            		location.href="/joinForm";
             	});
             $("#btnacc").click(
             	function(){
@@ -30,20 +30,29 @@
             	function(){
             		location.href="/buyer";
             	});
+            $("#btnmy").click(
+            	function(){
+            		location.href="/account/info/"+$("#id").val();
+            	});
     	});
     </script>
   </head>
   <body>
     <h1><%= title %></h1>
-    <p>Welcome to <%= title %> <%=login%></p>
+    <p>Welcome to <%=login%></p>
+	<input type="hidden" id="id" name="id" value="<%=login%>"/>
     <% if(login == "unlogin") { %>
     <input type="button" id="btnlogin" name="login" value="로그인">
+    <input type="button" id="btnjoin" name="join" value="회원가입">
     <% } else { %>
     <input type="button" id="btnlogout" name="logout" value="로그아웃">
-    <% } %>
-    <input type="button" id="btnjoin" name="join" value="회원가입">
-    <input type="button" id="btnacc" name="account" value="회원정보관리(관리자)">
-    <input type="button" id="btnsel" name="seller" value="판매자">
+    <input type="button" id="btnmy" name="my" value="내정보">
+    <% if(auth == "구매자") { %>
     <input type="button" id="btnbuy" name="buyer" value="구매자">
+    <% } else if(auth == "판매자") { %>
+    <input type="button" id="btnsel" name="seller" value="판매자">
+    <% } else { %>
+    <input type="button" id="btnacc" name="account" value="회원정보관리">
+    <% }} %>
   </body>
 </html>
