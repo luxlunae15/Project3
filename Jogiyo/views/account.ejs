@@ -20,16 +20,18 @@
     <form action="/account/info" method="get">
         <table border="1">
             <tr>
-                <td width="50">구분</td>
-                <td width="100">ID</td>
-                <td width="100">이름</td>
-                <td width="200">PHONE</td>
+                <th>NUM</th>
+                <th width="50">구분</th>
+                <th width="100">ID</th>
+                <th width="100">이름</th>
+                <th width="200">PHONE NUMBER</th>
             </tr>
             <%
-                for(var i=0; i<rows.length; i++){
+                for(var i=(page-1) * page_num; (i<rows.length) && (i<page*page_num); i++){
                     var item = rows[i];
             %>
             <tr>
+                <td><%=i+1%></td>
                 <td><%=item.AUTH%></td>
                 <td><a href="/account/info/<%=item.ID%>"><%=item.ID%></a></td>
                 <td><%=item.NAME%></td>
@@ -39,11 +41,18 @@
                 }
             %>
             <tr>
-                <td colspan="2">
-                    <input type="button" id="btnRtn" name="return" value="돌아가기">
+                <td colspan="5">
+                    <center>
+                        <% for(var j=0; j<(rows.length -1) / page_num; j++){ %>
+                        [<a href="/account/userlist/<%=j+1%>"><%=j+1%></a>]
+                        <% } %>
+                    </center>
                 </td>
             </tr>
         </table>
+        <div align="right" margin = 60>
+            <input type="button" id="btnRtn" name="return" value="돌아가기">
+        </div>
     </form>
 </body>
 </html>

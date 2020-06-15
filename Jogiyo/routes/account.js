@@ -19,10 +19,11 @@ router.get('/userlist', function(req,res,next){
 })
 
 router.get('/userlist/:page', function(req, res, next) {
+	var page = req.params.page;
 	pool.getConnection(function(err, connection){
 		connection.query("SELECT * FROM user", function(err, rows){
 			if(err) console.error("err : "+err);
-			res.render('account', {title:'회원 관리', rows:rows});
+			res.render('account', {title:'회원 관리', rows:rows, page:page, page_num:10});
 			connection.release();
 		});
 	});
@@ -103,8 +104,8 @@ router.get('/delete', function(req, res, next){
 				res.send('<script>alert("회원이 삭제되었습니다.");location.href="/account";</script>');
 			}
 			connection.release();
-		})
-	})
-})
+		});
+	});
+});
 
 module.exports = router;
