@@ -30,6 +30,7 @@
             <br>
             <table border="1">
                 <tr>
+                    <td>유저 ID</td>
                     <td>유저 이름</td>
                     <td>총 가격</td>
                     <td>구매</td>
@@ -38,9 +39,10 @@
                 for(var i=0; i<rows[1].length; i++){
                     var oneItem = rows[1][i];%>
                     <tr>
+                        <td><%=oneItem.userID%></td>
                         <td><%=oneItem.user_name%></td>
                         <td><%=oneItem.total_price%></td>
-                        <td><a href="/buyer/buy/<%=oneItem.user_name%>">구매</a></td>
+                        <td><a href="/buyer/buy/<%=oneItem.userID%>">구매</a></td>
                     </tr>
 <%        
                 }
