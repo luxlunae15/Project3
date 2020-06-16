@@ -11,6 +11,10 @@
                 function(){
                     location.href="/";
                 })
+            $("#btnsrc").click(
+                function(){
+                    location.href="/account/findres/"+$("#ID").val();
+                })
         });
     </script>
 </head>
@@ -43,6 +47,14 @@
             <tr>
                 <td colspan="5">
                     <center>
+                        ID : <input type="text" id="ID" name="ID">
+                        <input type="button" id="btnsrc" name="search" value="검색">
+                    </center>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <center>
                         <% for(var j=0; j<(rows.length -1) / page_num; j++){ %>
                         [<a href="/account/userlist/<%=j+1%>"><%=j+1%></a>]
                         <% } %>
@@ -50,9 +62,7 @@
                 </td>
             </tr>
         </table>
-        <div align="right" margin = 60>
-            <input type="button" id="btnRtn" name="return" value="돌아가기">
-        </div>
+        <input type="button" id="btnRtn" name="return" value="돌아가기">
     </form>
 </body>
 </html>
