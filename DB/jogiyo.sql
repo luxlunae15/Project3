@@ -3,17 +3,6 @@ CREATE SCHEMA IF NOT EXISTS `jogiyo` DEFAULT CHARACTER SET utf8 ;
 USE `jogiyo` ;
 
 -- -----------------------------------------------------
--- Table `jogiyo`.`location`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jogiyo`.`location` (
-  `ID` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`ID`),
-  UNIQUE INDEX `ID_UNIQUE` (`ID` ASC) VISIBLE)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `jogiyo`.`user`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `jogiyo`.`user` (
@@ -22,15 +11,10 @@ CREATE TABLE IF NOT EXISTS `jogiyo`.`user` (
   `NAME` VARCHAR(15) NOT NULL,
   `AUTH` VARCHAR(15) NOT NULL,
   `PHONE` VARCHAR(15),
-  `location_ID` INT,
+  `latitude` INT DEFAULT 0,
+  `longitude` INT DEFAULT 0,
   PRIMARY KEY (`ID`),
-  UNIQUE INDEX `ID_UNIQUE` (`ID` ASC) VISIBLE,
-  INDEX `fk_user_location1_idx` (`location_ID` ASC) VISIBLE,
-  CONSTRAINT `fk_user_location1`
-    FOREIGN KEY (`location_ID`)
-    REFERENCES `jogiyo`.`location` (`ID`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
+  UNIQUE INDEX `ID_UNIQUE` (`ID` ASC) VISIBLE)
 ENGINE = InnoDB;
 
 
@@ -45,16 +29,11 @@ CREATE TABLE IF NOT EXISTS `jogiyo`.`store` (
   `DELIVERY_TIME` INT NULL DEFAULT 99,
   `UPTIME` TIME NULL DEFAULT "00:00:00",
   `CLOSETIME` TIME NULL DEFAULT "23:59:59",
-  `location_ID` INT NOT NULL,
   `PRICE_LIMIT` INT NULL DEFAULT 0,
+  `latitude` INT DEFAULT 0,
+  `longitude` INT DEFAULT 0,
   PRIMARY KEY (`ID`),
-  UNIQUE INDEX `ID_UNIQUE` (`ID` ASC) VISIBLE,
-  INDEX `fk_store_location1_idx` (`location_ID` ASC) VISIBLE,
-  CONSTRAINT `fk_store_location1`
-    FOREIGN KEY (`location_ID`)
-    REFERENCES `jogiyo`.`location` (`ID`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
+  UNIQUE INDEX `ID_UNIQUE` (`ID` ASC) VISIBLE)
 ENGINE = InnoDB;
 
 
@@ -109,6 +88,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `jogiyo`.`user_menu` (
   `user_ID` VARCHAR(15) NOT NULL,
   `menu_ID` INT NOT NULL,
+  `cnt` INT DEFAULT 1,
   PRIMARY KEY (`user_ID`, `menu_ID`),
   INDEX `fk_user_has_menu_menu1_idx` (`menu_ID` ASC) VISIBLE,
   INDEX `fk_user_has_menu_user_idx` (`user_ID` ASC) VISIBLE,
@@ -209,9 +189,10 @@ CREATE TABLE IF NOT EXISTS `jogiyo`.`sold_history` (
   `history` DATETIME DEFAULT NOW(),
   `user_ID` VARCHAR(15) NOT NULL,
   `menu_ID` INT NOT NULL,
+  `cnt` INT DEFAULT 1,
   INDEX `fk_sold_history_menu1_idx` (`menu_ID` ASC) VISIBLE,
   INDEX `fk_sold_history_user1_idx` (`user_ID` ASC) INVISIBLE,
-  PRIMARY KEY (`user_ID`, `menu_ID`),
+  PRIMARY KEY (`user_ID`, `menu_ID`, `history`),
   CONSTRAINT `fk_sold_history_menu1`
     FOREIGN KEY (`menu_ID`)
     REFERENCES `jogiyo`.`menu` (`ID`)
