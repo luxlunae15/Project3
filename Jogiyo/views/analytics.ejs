@@ -20,6 +20,8 @@
 <%
                 var tmp;
                 var arr = new Array(rows.length);
+
+                <!-- sorting part -->
                 for(var i=0; i<rows.length; i++){
                     arr[i] = rows[i];
                 }
@@ -35,14 +37,32 @@
                     }
                 }
 
+                var cnt=0;
+                var cache = arr[0].date;
+                <!-- counting part -->
+                for(var t=0; t<rows.length; t++){
+                    if(arr[t].date == cache){
+                        
+
+
+
+                    }
+                    else{
+                        cache = arr[t].date;
+                    }
+
+
+
+
+                }
+
+
 %>
 
 <%
 
                 for(var k=0;k<rows.length;k++){
-                    
-
-
+                
 %>
 
 <tr>

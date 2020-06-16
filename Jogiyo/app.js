@@ -4,12 +4,14 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+var session = require('express-session');
+var passport = require('passport')
+var LocalStrategy = require('passport-local').Strategy;
+var cookieSession = require('cookie-session');
+var flash = require('connect-flash');
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var join = require('./routes/joinForm');
-var login = require('./routes/login');
-var seller = require('./routes/seller');
-var buyer = require('./routes/buyer');
 
 var app = express();
 
@@ -25,10 +27,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/join', join);
-app.use('/login', login);
-app.use('/seller', seller);
-app.use('/buyer', buyer);
+
+app.use(cookieSession({
+	keys: ['testcode'],
+	cookie: {maxAge: 60*60*1000}
+}));
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -45,9 +51,5 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-app.get('/buyer/print-menu/cart:id', function(req, res) {
-  var topic = req.query.topic;
-})
 
 module.exports = app;

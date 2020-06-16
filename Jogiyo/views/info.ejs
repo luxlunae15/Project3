@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="/javascripts/jquery-3.5.1.min.js"></script>
+	<title><%= title %></title>
+	<link rel='stylesheet' href='/stylesheets/style.css'/>
+
+    <script>
+    	$(function(){
+            $("#btnRtn").click(
+                function(){
+                    location.href="/account/userlist";
+                });
+    	});
+    </script>
+</head>
+<body>
+	<h1><%= title %></h1>
+
+	<form action="/account/update" method="get">
+		<table border="1">
+			<input type="hidden" name="id" value="<%=rows.ID%>"/>
+			<tr>
+				<td>ID</td>
+				<td><%=rows.ID%></td>
+			</tr>
+			<tr>
+				<td>비밀번호</td>
+				<td><%=rows.PASSWD%></td>
+			</tr>
+			<tr>
+				<td>이름</td>
+				<td><%=rows.NAME%></td>
+			</tr>
+			<tr>
+				<td>권한</td>
+				<td><%=rows.AUTH%></td>
+			</tr>
+			<tr>
+				<td>전화번호</td>
+				<td><%=rows.PHONE%></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<button type="submit">정보 수정</button>
+    				<% if(auth == "관리자") { %>
+					<input type="submit" value="회원 삭제" formaction="/account/delete">
+					<% } else { %>
+					<input type="submit" value="회원 탈퇴" formaction="/account/delete">
+					<% } %>
+    				<input type="button" id="btnRtn" name="return" value="돌아가기">
+				</td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>

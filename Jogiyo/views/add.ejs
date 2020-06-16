@@ -28,11 +28,17 @@
                 <tr>
                     <td colspan="2">
                         <button type="submit">글쓰기</button>
+                        <input type="button" id="btnRtn" name="return" value="돌아가기">
                     </td>
                 </tr>
             </table>
         </form>
         <script>
+
+            $("#btnRtn").click(
+                function(){
+                    location.href="/seller";
+                });
             function onWriteSubmit(){
                 if ( $("#ID").val().trim() == ""){
                     var message = "아이디를 입력해 주세요.";

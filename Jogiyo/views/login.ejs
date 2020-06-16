@@ -7,8 +7,11 @@
     <script src="/javascripts/jquery-3.5.1.min.js"></script>
     <script>
     	$(function(){
+            $("#id").focus();
+
     		$("#btnlogin").click(
     			function(){
+
     				if($("#id").val() == "")
     				{
     					alert("아이디를 꼭 입력 하세요");
@@ -25,7 +28,7 @@
     			});
             $("#btnjoin").click(
                 function(){
-                    location.href="/join";
+                    location.href="/joinForm";
                 });
             $("#btnRtn").click(
                 function(){
@@ -45,14 +48,6 @@
     		<tr>
     			<th>비밀번호</th>
     			<td><input type="password" name="passwd" id="passwd" size="12" maxLength="12"></td>
-    		</tr>
-    		<tr>
-    			<th>사용자 구분</th>
-    			<td><select name="auth" id="auth">
-    				<option value="user">구매자</option>
-    				<option value="seller">판매자</option>
-    				<option value="manager">관리자</option>
-    			</select></td>
     		</tr>
     		<tr>
     			<td colspan="2">

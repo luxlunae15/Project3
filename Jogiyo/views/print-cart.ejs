@@ -12,15 +12,20 @@
                     <td>유저 이름</td>
                     <td>메뉴 이름</td>
                     <td>가격</td>
+                    <td>수량</td>
                     <td>장바구니에서 빼기</td>
                 </tr>
                 <%
-                for(var i=0; i<rows[0].length; i++){
-                    var oneItem = rows[0][i];%>
+                var price = 0;
+                for(var i=0; i<rows.length; i++){
+                    var oneItem = rows[i];
+                    price = price + rows[i].menu_price * rows[i].menu_cnt;
+                %>
                     <tr>
                         <td><%=oneItem.user_name%></td>
                         <td><%=oneItem.menu_name%></td>
                         <td><%=oneItem.menu_price%></td>
+                        <td><%=oneItem.menu_cnt%></td>
                         <td><a href="/buyer/delete-cart/<%=oneItem.userID%>/<%=oneItem.menuID%>">장바구니에서 빼기</a></td>
                     </tr>
 <%        
@@ -30,23 +35,15 @@
             <br>
             <table border="1">
                 <tr>
-                    <td>유저 ID</td>
-                    <td>유저 이름</td>
                     <td>총 가격</td>
                     <td>구매</td>
                 </tr>
-                <%
-                for(var i=0; i<rows[1].length; i++){
-                    var oneItem = rows[1][i];%>
                     <tr>
-                        <td><%=oneItem.userID%></td>
-                        <td><%=oneItem.user_name%></td>
-                        <td><%=oneItem.total_price%></td>
-                        <td><a href="/buyer/buy/<%=oneItem.userID%>">구매</a></td>
+                        <td><%=price%></td>
+                        <td><a href="/buyer/buy/<%=rows[0].userID%>">구매</a></td>
                     </tr>
-<%        
-                }
-%>
             </table>
             
+            <a href="/buyer/print-menu">메뉴 보러가기</a>
+            <a href="/buyer">돌아가기</a>
 </html>
