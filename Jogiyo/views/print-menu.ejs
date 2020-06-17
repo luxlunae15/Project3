@@ -1,13 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+    <head>
 
-  <!-- SITE TITTLE -->
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Classimax</title>
-  
+        <!-- SITE TITTLE -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Classimax</title>
+
+        <script type="text/javascript">
+            function butten_event_add(value) {
+                if (confirm("장바구니에 추가하시겠습니까??") == true) {
+                    location.href = "/buyer/cart/" + value;
+                } else { //취소
+                    return;
+                }
+            }
+		</script>
+		<script type="text/javascript">
+            function butten_event_delete(value1, value2) {
+                if (confirm("장바구니에 삭제하시겠습니까??") == true) {
+                    location.href = "/buyer/delete-cart/" + value1+"/"+value2;
+                } else { //취소
+                    return;
+                }
+            }
+		</script>
+		
   <!-- FAVICON -->
   <link href="../img/favicon.png" rel="shortcut icon">
   <!-- PLUGINS CSS STYLE -->
@@ -186,32 +205,7 @@
 				<div class="product-details">
                     
 
-                    <table border="1">
-                        <tr>
-                            <td>ID</td>
-                            <td>메뉴</td>
-                            <td>가격</td>
-                            <td>내용</td>
-                            <td>장바구니 추가</td>
-                        </tr>
-                        <%
-                            for(var i=0; i<rows.length; i++){
-                                var oneItem = rows[i];
-            %>
-                                <tr>
-                                    <td><%=oneItem.ID%></td>
-                                    <td><%=oneItem.NAME%></td>
-                                    <td><%=oneItem.PRICE%></td>
-                                    <td><%=oneItem.CONTENT%></td>
-                                    <td><a href="/buyer/cart/<%=oneItem.ID%>">추가하기</a></td>
-                                </tr>
-            <%        
-                            }
-            %>
-            
-                    </table>
-
-                    
+                   
 					<h1 class="product-title">맘스터치 석계역점</h1>
 					
 					<div class="product-meta">
@@ -281,8 +275,17 @@
 						<div class="tab-content" id="pills-tabContent">
 							<div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
 								<h3 class="tab-title">메뉴</h3>
+
+
 								
 
+								
+								
+
+								
+			
+								
+								
 								<div class="container">
 									<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 									  <div class="panel panel-default">
@@ -295,68 +298,28 @@
 										</div>
 										<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
 										  <div class="panel-body">
+											<%
+											for(var i=0; i<rows[0].length; i++){
+												var oneItem = rows[0][i];
+											%>
 											<div class="col-md-12 form-control" style="height:90px; text-align: left; line-height:35px">
-												<table style="width:700px;">
+												<table style="width:550px;">
 													<tr>
-														<td>
-															<div>싸이버거세트</div>
-															<div>5600원</div>
-														</td>
-														<td style="column-width: 40;">이미지</td>
+														<td id = "btncart"  onclick="butten_event_add(<%=oneItem.ID%>);"><%=oneItem.NAME%></td>
+														<td id = "btncart"  onclick="butten_event_add(<%=oneItem.ID%>);"style="text-align: right;">이미지</td>
+													</tr>
+													<tr>
+														<td id = "btncart"  onclick="butten_event_add(<%=oneItem.ID%>);"><%=oneItem.PRICE%></td>
+														
 													</tr>
 												</table>
-												</div>
-												<div class="col-md-12 form-control" style="height:90px; text-align: left; line-height:35px">
-													<table style="width:700px;">
-														<tr>
-															<td>
-																<div>싸이버거세트</div>
-																<div>5600원</div>
-															</td>
-															<td style="column-width: 40;">이미지</td>
-														</tr>
-													</table>
-													</div>
-										
-										  </div>
-										</div>
-									  </div>
-									  <div class="panel panel-default">
-										<div class="panel-heading" role="tab" id="headingTwo">
-										<a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-											<div class="col-md-12 form-control" style="background-color: #e9e9e9;text-align: center; line-height:35px">
-												1인분 주문
-												</div>
-										</a>
-										</div>
-										<div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-											<div class="panel-body">
-												<div class="col-md-12 form-control" style="height:90px; text-align: left; line-height:35px">
-													<table style="width:700px;">
-														<tr>
-															<td>
-																<div>싸이버거세트</div>
-																<div>5600원</div>
-															</td>
-															<td style="column-width: 40;">이미지</td>
-														</tr>
-													</table>
-													</div>
-													<div class="col-md-12 form-control" style="height:90px; text-align: left; line-height:35px">
-														<table style="width:700px;">
-															<tr>
-																<td>
-																	<div>싸이버거세트</div>
-																	<div>5600원</div>
-																</td>
-																<td style="column-width: 40;">이미지</td>
-															</tr>
-														</table>
-														</div>
-										  
 											</div>
+											<%}%>
+
 										  </div>
+										</div>
 									  </div>
+
 									  <div class="panel panel-default">
 										<div class="panel-heading" role="tab" id="headingThree">
 										<a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
@@ -368,26 +331,7 @@
 										<div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
 											<div class="panel-body">
 												<div class="col-md-12 form-control" style="height:90px; text-align: left; line-height:35px">
-													<table style="width:700px;">
-														<tr>
-															<td>
-																<div>싸이버거세트</div>
-																<div>5600원</div>
-															</td>
-															<td style="column-width: 40;">이미지</td>
-														</tr>
-													</table>
-													</div>
-													<div class="col-md-12 form-control" style="height:90px; text-align: left; line-height:35px">
-														<table style="width:700px;">
-															<tr>
-																<td>
-																	<div>싸이버거세트</div>
-																	<div>5600원</div>
-																</td>
-																<td style="column-width: 40;">이미지</td>
-															</tr>
-														</table>
+													
 														</div>
 										  
 											</div>
@@ -554,67 +498,53 @@
 					</div>
 				</div>
 			</div>
+
+			
 			<div class="col-md-4">
 				<div class="sidebar">
 					<div class="widget price text-center">
 						<h4>장바구니</h4>
-						<p>39000원</p>
+						
+
+							<%
+							var price = 0;
+							for(var i=0; i<rows[1].length; i++){
+								var oneItem = rows[1][i];
+								price = price + rows[1][i].menu_price * rows[1][i].menu_cnt;
+							%>
+			<%        
+							}
+			%>
+
+
+						<p><%=price%></p>
 					</div>
 					<!-- User Profile widget -->
 					<div class="widget user text-center">
 						<ul class="list-inline mt-10">
 							<table width=300 style="font-weight: bold; line-height: 250%;">
+								<th>메뉴</th>
+								<th>가격</th>
+								<th>개수</th>
+								<th>개수</th>
+								<%
+							var price = 0;
+							for(var i=0; i<rows[1].length; i++){
+								var temp = rows[1][i];
+								price = price + rows[1][i].menu_price * rows[1][i].menu_cnt;
+							%>
+
 								<tr>
-									<td>치킨</td>
-									<td>17000</td>
-									<td><a href="">삭제하기</a></td>
+									<td><%=temp.menu_name%></td>
+									<td><%=temp.menu_price%></td>
+									<td><%=temp.menu_cnt%></td>
+									<td id = "btncart"  onclick="butten_event_delete('<%=temp.userID%>', <%=temp.menuID%>);">삭제</td>
+									<!--<td><a href="/buyer/delete-cart/<%=temp.userID%>/<%=temp.menuID%>">삭제</a></td>-->
+									
 								</tr>
-								<tr>
-									<td>햄버거</td>
-									<td>5000</td>
-									<td><a href="">삭제하기</a></td>
-								</tr>
-								<tr>
-									<td>치킨2</td>
-									<td>17000</td>
-									<td><a href="">삭제하기</a></td>
-								</tr>
+								<%}%>
 							</table><hr>	
 							<li class="list-inline-item"><a href="" class="btn btn-contact d-inline-block  btn-primary px-lg-5 my-1 px-md-3">구매하기</a></li>
-					</div>
-					<!-- Map Widget -->
-					<div class="widget map">
-						<div class="map">
-							<div id="map_canvas" data-latitude="51.507351" data-longitude="-0.127758"></div>
-						</div>
-					</div>
-					<!-- Rate Widget -->
-					<div class="widget rate">
-						<!-- Heading -->
-						<h5 class="widget-header text-center">What would you rate
-							<br>
-							this product</h5>
-						<!-- Rate -->
-						<div class="starrr"></div>
-					</div>
-					<!-- Safety tips widget -->
-					<div class="widget disclaimer">
-						<h5 class="widget-header">Safety Tips</h5>
-						<ul>
-							<li>Meet seller at a public place</li>
-							<li>Check the item before you buy</li>
-							<li>Pay only after collecting the item</li>
-							<li>Pay only after collecting the item</li>
-						</ul>
-					</div>
-					<!-- Coupon Widget -->
-					<div class="widget coupon text-center">
-						<!-- Coupon description -->
-						<p>Have a great product to post ? Share it with
-							your fellow users.
-						</p>
-						<!-- Submii button -->
-						<a href="" class="btn btn-transparent-white">Submit Listing</a>
 					</div>
 
 				</div>

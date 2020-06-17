@@ -288,16 +288,13 @@ router.get('/buyer', isAuthenticated, function(req,res,next){
 });
 
 router.get('/buyer/print-menu', isAuthenticated, function(req,res,next){
-    var sql = "select * from menu";
-    console.log("print-menu : ");
-    pool.getConnection(function(err, connection){
-        connection.query(sql, function(err,row){
-            if(err) console.error(err);
+    var sql = "select * from menu;select user.ID as userID, user.name as user_name, menu.name as menu_name, menu.id as menuID, menu.price as menu_price, user_menu.cnt as menu_cnt from user_menu inner join menu on menu_ID = menu.ID inner join user on user_ID = user.id where user.ID=?";
+	console.log("print-menu : ");
+	
+	multiconnection.query(sql, [req.user.ID],function(err,row){
+        if(err) console.error(err);
             console.log("메뉴 출력 결과: ",row);
             res.render('print-menu', {title: "메뉴 조회", rows:row});
-            connection.release();
-        });
-        
     });
 });
 
@@ -324,20 +321,22 @@ router.get('/buyer/delete-cart/:userID/:menuID', isAuthenticated, function(req,r
     var datas = [userID, menuID];
     console.log(userID, menuID);
     var sql = "delete from user_menu where user_ID = ? and menu_ID = ?";
-    console.log(sql);
+	console.log(sql);
+	
     pool.getConnection(function(err, connection){		
 		connection.query(sql, datas, function(err,row){
             console.log(sql);
 			if(err) console.error("err: "+err);
 			console.log("장바구니 삭제");
 			console.log("장바구니 삭제 결과: ",row);
-            res.redirect('/buyer');
+            res.redirect('/buyer/print-menu');
 			connection.release();
 		});
 	});
 });
 
 router.get('/buyer/print-cart', isAuthenticated, function(req,res,next){
+	res.redirect('/buyer/print-menu');
     var sql1 = "select user.ID as userID, user.name as user_name, menu.name as menu_name, menu.id as menuID, menu.price as menu_price, user_menu.cnt as menu_cnt from user_menu inner join menu on menu_ID = menu.ID inner join user on user_ID = user.id where user.ID=?"
     //   select user.id as userID, user.name as user_name, sum(menu.price) as total_price from user_menu inner join menu on menu_ID = menu.ID inner join user on user_ID = user.id where user.ID=? group by user.id";
     //var sql2 = "select user.name as user_name, sum(menu.price) as total_price from user_menu inner join menu on menu_ID = menu.ID inner join user on user_ID = user.id;";
