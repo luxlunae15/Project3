@@ -9,6 +9,7 @@
     	$(function(){
     		$("#btnJoin").click(
     			function(){
+
     				if($("#id").val() == "")
     				{
     					alert("아이디를 꼭 입력 하세요");
@@ -39,6 +40,7 @@
     					$("#tel3").focus();
     					return;
     				}
+
     				var tel= $("#tel1").val() +'-'+ $("#tel2").val() +'-'+ $("#tel3").val();
     				$("#tel").val(tel);
     				$("#joinForm").submit();
@@ -87,9 +89,9 @@
     		<tr>
     			<th>사용자 구분</th>
     			<td><select name="auth" id="auth">
-    				<option value="user">구매자</option>
-    				<option value="seller">판매자</option>
-    				<option value="manager">관리자</option>
+    				<option value="구매자">구매자</option>
+    				<option value="판매자">판매자</option>
+    				<option value="관리자">관리자</option>
     			</select></td>
     		</tr>
     		<tr>

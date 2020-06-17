@@ -4,28 +4,34 @@
         <script src="/javascripts/jquery-3.5.1.min.js"></script>
         <title><%= title %></title>
         <link rel='stylesheet' href='/stylesheets/style.css'/>
+        <script>
+            $(function(){
+                $("#btnRtn").click(
+                    function(){
+                        location.href="/account";
+                    })
+            });
+        </script>
     </head>
     <body>
         <h1><%= title %></h1>
         
-        <form action="/findres" method="get">
+        <form action="/account/info" method="get">
             <table border="1">
                 <tr>
-                    <td>ID</td>
-                    <td>NAME</td>
-                    <td>PHONE</td>
+                    <th width="50">구분</th>
+                    <th width="100">ID</th>
+                    <th width="100">이름</th>
+                    <th width="200">PHONE NUMBER</th>
                 </tr>
                 <tr>
-                    <td><%=row[0].ID%></td>
+                    <td><%=row[0].AUTH%></td>
+                    <td><a href="/account/info/<%=row[0].ID%>"><%=row[0].ID%></a></td>
                     <td><%=row[0].NAME%></td>
                     <td><%=row[0].PHONE%></td>
                 </tr>
-                <tr>
-                    <td colspan="2">
-                        <a href="/seller">판매자 화면으로 돌아가기</a>
-                    </td>
-                </tr>
             </table>
+            <input type="button" id="btnRtn" name="return" value="돌아가기">
         </form>
 </html>
 

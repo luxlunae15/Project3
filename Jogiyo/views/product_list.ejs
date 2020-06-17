@@ -9,12 +9,12 @@
         $(function(){
             $("#btnRtn").click(
                 function(){
-                    location.href="/";
-                });
-            $("#btnstr").click(
+                    location.href="/store/<%=store_id%>";
+                })
+            $("#btnadd").click(
                 function(){
-                    location.href="/store_add";
-                });
+                    location.href="/product_add/<%=store_id%>";
+                })
         });
     </script>
 </head>
@@ -23,11 +23,9 @@
         <table border="1">
             <tr>
                 <th>NUM</th>
-                <th width="100">매장이름</th>
-                <th width="150">전화번호</th>
-                <th>평점</th>
-                <th>평균 배달 시간</th>
-                <th>영업 시간</th>
+                <th width="150">상품 이름</th>
+                <th>가격</th>
+                <th>설명</th>
             </tr>
             <%
                 for(var i=0; i<rows.length; i++){
@@ -35,17 +33,15 @@
             %>
             <tr>
                 <td><center><%=i+1%></center></td>
-                <td><center><a href="/store/<%=item.ID%>"><%=item.NAME%></center></td>
-                <td><center><%=item.PHONE%></center></td>
-                <td><center><%=item.RATE%></center></td>
-                <td><center><%=item.DELIVERY_TIME%>분</center></td>
-                <td><center><%=item.UPTIME%> ~ <%=item.CLOSETIME%></center></td>
+                <td><center><a href="/product/<%=store_id%>/<%=item.menu_ID%>"><%=item.menu_name%></a></center></td>
+                <td><center><%=item.menu_price%></center></td>
+                <td><center><%=item.menu_content%></center></td>
             </tr>
             <%
                 }
             %>
         </table>
-        <input type="button" id="btnstr" name="insert" value="매장추가">
+        <input type="button" id="btnadd" name="add" value="상품 추가">
         <input type="button" id="btnRtn" name="return" value="돌아가기">
 </body>
 </html>
