@@ -111,7 +111,7 @@ router.get('/', function(req, res, next) {
         var login = req.user.ID;
         var auth = req.user.AUTH;
     }
-	res.render('index', { title: 'Express', login:login, auth:auth });
+	res.render('index', { title: 'JOGIYO', login:login, auth:auth });
 });
 
 
@@ -534,15 +534,16 @@ router.get('/store_del/:id', isAuthenticated, function(req, res, next){
 	});
 });
 
-router.get('/product/:id', isAuthenticated, function(req, res, next){
-	var id = req.params.id;
+router.get('/product/:store_id/:menu_id', isAuthenticated, function(req, res, next){
+	var store_id = req.params.store_id;
+	var menu_id = req.params.menu_id;
 	pool.getConnection(function(err, connection){
 		var sql = "SELECT * FROM menu WHERE ID=?";
-		connection.query(sql, [id], function(err, rows){
+		connection.query(sql, [menu_id], function(err, rows){
 			if(err) console.log("err :" + err);
 			else
 			{
-				res.render('product', {title: "상품 상세 정보", rows:rows});
+				res.render('product', {title: "상품 상세 정보", rows:rows, store_id:store_id});
 			}
 			connection.release();
 		});
@@ -611,18 +612,19 @@ router.get('/store_menu/:menu_id/:store_id', isAuthenticated, function(req, res,
 })
 
 
-router.get('/product_del/:id', isAuthenticated, function(req, res, next){
-    var id = req.params.id;
+router.get('/product_del/:store_id/:menu_id', isAuthenticated, function(req, res, next){
+    var store_id = req.params.store_id;
+    var menu_id = req.params.menu_id;
     pool.getConnection(function(err,connection){
         var sql = "DELETE FROM menu WHERE ID=?";
-        connection.query(sql, [id], function(err,result){
+        connection.query(sql, [menu_id], function(err,result){
             if(err) console.error("err : ",err);
             else{
             	if(result.affectedRows == 0){
 	                res.send("<script>alert('삭제 실패');history.back();</script>");
 	            }
     	        else{
-	                res.send("<script>alert('상품이 삭제되었습니다.');history.back();</script>");///돌아갈 곳 지정 필요
+                	res.redirect('/product_list/'+store_id);
 	            }
 	        }
             connection.release();
@@ -630,60 +632,35 @@ router.get('/product_del/:id', isAuthenticated, function(req, res, next){
     });
 });
 
-
-/////////////////////////////////////////// 202006162044 여기까지 함 - 이종학 ///////////////////////////////////////////////
-// 상품 수정
-router.get('/store/updateinfo', isAuthenticated, function(req, res, next){
-    var ID = req.query.ID;
-    var NAME = req.query.NAME;
-    console.log("상품 수정 ID check : ", ID);
-    console.log("상품 수정 NAME check : ", NAME);
+router.get('/product_mod/:store_id/:menu_id', isAuthenticated, function(req, res, next){
+    var store_id = req.params.store_id;
+    var menu_id = req.params.menu_id;
 
     pool.getConnection(function(err, connection){
         if (err) console.error("커넥션 객체 얻어오기 에러 : ", err);
 
-        var sql = "SELECT ID, NAME, PRICE, content FROM menu WHERE ID=? AND NAME=?";
-        connection.query(sql, [ID, NAME], function(err, rows){
+        var sql = "SELECT * FROM menu WHERE ID=?";
+        connection.query(sql, [menu_id], function(err, rows){
             if(err) console.error(err);
-            console.log(" 상품 수정 조회 결과 확인 : ", rows);
-            res.render('updateinfo', {title:"상품 수정", row:rows[0]});
+            else
+            {
+            	res.render('product_mod', {title:"상품 수정", rows:rows[0], store_id:store_id});
+            }
             connection.release();
         });
     });
 });;
 
-router.get('/store/update', isAuthenticated, function(req, res, next){
-    var ID = req.query.ID;
-    var NAME = req.query.NAME;
-    console.log("상품 수정 ID check : ", ID);
-    console.log("상품 수정 NAME check : ", NAME);
-
-    pool.getConnection(function(err, connection){
-        if (err) console.error("커넥션 객체 얻어오기 에러 : ", err);
-
-        var sql = "SELECT ID, NAME, PRICE, content FROM menu WHERE ID=? AND NAME=?";
-        connection.query(sql, [ID, NAME], function(err, rows){
-            if(err) console.error(err);
-            console.log(" 상품 수정 조회 결과 확인 : ", rows);
-            res.render('update', {title:"상품 수정", row:rows[0]});
-            connection.release();
-        });
-    });
-});;
-
-router.post('/store/update', isAuthenticated, function(req, res, next){
-    var ID = req.body.ID;
+router.post('/product_mod/:store_id/:menu_id', isAuthenticated, function(req, res, next){
+	var store_id = req.params.store_id;
+	var menu_id = req.params.menu_id;
     var NAME = req.body.NAME;
     var PRICE = req.body.PRICE;
     var content = req.body.content;
-    
-    console.log("상품 수정 req check",req.body);
-    //var passwd = req.body.passwd;
-    //var datas = [creator_id, title, content, imgcnt, idx, passwd];
 
     pool.getConnection(function(err,connection){
         var sql = "UPDATE menu SET NAME=?, content=?, PRICE=? WHERE ID=?";
-        connection.query(sql, [NAME,content,PRICE,ID], function(err,result){
+        connection.query(sql, [NAME,content,PRICE,menu_id], function(err,result){
             console.log("상품 수정 결과 : ",result);
             if(err) console.error("상품 수정 중 에러 발생 err : ",err);
 
@@ -691,24 +668,24 @@ router.post('/store/update', isAuthenticated, function(req, res, next){
                 res.send("<script>alert('잘못된 요청으로 인해 변경되지 않았습니다.');history.back();</script>");
             }
             else{
-                res.redirect('/store');
+                res.redirect('/product/'+store_id+'/'+menu_id);
             }
             connection.release();
         });
     });
 });
 
-
+//////////////////////// 보류 //////////////////////////
 // 주문 현황
-router.get('/store/order', isAuthenticated, function(req,res,next){
+router.get('/store_order/:id', isAuthenticated, function(req,res,next){
+	var id = req.params.id;
     pool.getConnection(function(err,connection){
-        // Use the connection
         var sqlForSelectList = "SELECT user_ID, menu_ID FROM user_menu";
         connection.query(sqlForSelectList, function(err,rows){
             if (err) console.error("err : "+err);
             console.log("rows : " + JSON.stringify(rows));
 
-            res.render('order', {title: '주문 현황', rows: rows});
+            res.render('store_order', {title: '주문 현황', rows: rows});
             connection.release();
 
             // Don`t use the connection here, it has been returned th the pool.
@@ -718,7 +695,7 @@ router.get('/store/order', isAuthenticated, function(req,res,next){
 
 
 // 판매 내역 확인
-router.get('/store/sold', isAuthenticated, function(req,res,next){
+router.get('/store_sold/:id', isAuthenticated, function(req,res,next){
     pool.getConnection(function(err,connection){
         // Use the connection
         var sqlForSelectList = "SELECT * FROM sold_history";
@@ -726,7 +703,7 @@ router.get('/store/sold', isAuthenticated, function(req,res,next){
             if (err) console.error("err : "+err);
             console.log("rows : " + JSON.stringify(rows));
 
-            res.render('sold', {title: '판매 현황', rows: rows});
+            res.render('store_sold', {title: '판매 현황', rows: rows});
             connection.release();
 
             // Don`t use the connection here, it has been returned th the pool.
