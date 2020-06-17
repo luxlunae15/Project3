@@ -74,6 +74,7 @@ passport.use(new LocalStrategy({
 
         var sql = "SELECT * FROM user WHERE ID = ?";
 
+
         connection.query(sql, [id], function(err, result) {
             if (err) {
                 console.log('err :' + err);
@@ -171,6 +172,7 @@ router.get('/account/userlist/:page', isAuthenticated, function(req, res, next) 
 			connection.release();
 		});
 	});
+
 });
 
 router.get('/account/findres/:ID', isAuthenticated, function(req,res,next){
@@ -197,6 +199,8 @@ router.get('/account/findres/:ID', isAuthenticated, function(req,res,next){
         });
     });
 });
+
+
 
 router.get('/account/info/:id', isAuthenticated, function(req, res, next){
 	var id = req.params.id;
@@ -732,6 +736,7 @@ router.get('/store/analytics', isAuthenticated, function(req,res,next){
 
 //////////////////////////////// 판매자 끝 /////////////////////////////////////////////////////
 
+
 // 구매 페이지
 router.get('/purchase', function(req, res, next){
 	res.render('purchase');
@@ -742,8 +747,5 @@ router.get('/purchase', function(req, res, next){
 router.get('/coupon', function(req, res, next){
 	res.render('coupon');
 });
-
-
-
 
 module.exports = router;
