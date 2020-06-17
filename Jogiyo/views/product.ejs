@@ -9,15 +9,15 @@
         $(function(){
             $("#btnmod").click(
                 function(){
-                    history.back();//Not Yet
+                    location.href="/product_mod/<%=store_id%>/<%=rows[0].ID%>";
                 })
             $("#btndel").click(
                 function(){
-                    location.href="/product_del/<%=rows[0].ID%>";
+                    location.href="/product_del/<%=store_id%>/<%=rows[0].ID%>";
                 })
             $("#btnRtn").click(
                 function(){
-                    history.back();
+                    location.href="/product_list/<%=store_id%>";
                 })
         });
     </script>
@@ -26,24 +26,15 @@
     <h1><%= title %></h1>
         <table border="1">
             <tr>
-                <th>NUM</th>
                 <th width="150">상품 이름</th>
                 <th>가격</th>
                 <th>설명</th>
             </tr>
-            <%
-                for(var i=0; i<rows.length; i++){
-                    var item = rows[i];
-            %>
             <tr>
-                <td><center><%=i+1%></center></td>
-                <td><center><%=item.NAME%></center></td>
-                <td><center><%=item.PRICE%></center></td>
-                <td><center><%=item.content%></center></td>
+                <td><center><%=rows[0].NAME%></center></td>
+                <td><center><%=rows[0].PRICE%></center></td>
+                <td><center><%=rows[0].content%></center></td>
             </tr>
-            <%
-                }
-            %>
         </table>
         <input type="button" id="btnmod" name="modify" value="상품 수정">
         <input type="button" id="btndel" name="delete" value="상품 삭제">

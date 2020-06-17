@@ -7,22 +7,56 @@
     </head>
     <body>
         <h1><%= title %></h1>
-        
-        <form action="/store/update" method="get">
+        <form action="/product_mod/<%=store_id%>/<%=rows.ID%>" method="post" onsubmit="return onWriteSubmit()">
             <table border="1">
-                수정할 상품 검색<br>
-                <br>
-                ID : <input type="text" name="ID"/>
-                NAME : <input type="text" name="NAME"/>
-                
+                <tr>
+                    <td>상품 이름</td>
+                    <td><input type="text" name="NAME" id="NAME" value="<%=rows.NAME%>" required/></td>
+                </tr>
+                <tr>
+                    <td>가격</td>
+                    <td><input type="text" name="PRICE" id="PRICE" value="<%=rows.PRICE%>" required></td>
+                </tr>
+                <tr>
+                    <td>내용</td>
+                    <td><textarea type="content" name="content" cols="30" rows="10" required><%=rows.content%></textarea></td>
+                </tr>
                 <tr>
                     <td colspan="2">
-                        <button type="submit">검색</button><br>
-
-                        <a href="/store">매장 화면으로 돌아가기</a>
+                        <button type="submit">수정</button>
+                        <input type="button" id="btnRtn" name="return" value="돌아가기">
                     </td>
                 </tr>
             </table>
-            
         </form>
+        <script>
+            $("#btnRtn").click(
+                function(){
+                    location.href="/product/<%=store_id%>/<%=rows.ID%>";
+                });
+            function onWriteSubmit(){
+                if ( $("#NAME").val().trim() == "" ){
+                    var message = "메뉴 이름을 입력하세요.";
+                    $("#NAME").val("");
+                    $("#NAME").focus();
+                    alert(message);
+                    return false;
+                }
+                if ( $("#PRICE").val().trim() == ""){
+                    var message = "메뉴 가격을 입력하세요.";
+                    $("#PRICE").val("");
+                    $("#PRICE").focus();
+                    alert(message);
+                    return false;
+                }
+                if ( $("#content").val().trim() == ""){
+                    var message = "내용을 입력하세요";
+                    $("#content").val("");
+                    $("#content").focus();
+                    alert(message);
+                    return false;
+                }
+            }
+        </script>
+    </body>
 </html>
