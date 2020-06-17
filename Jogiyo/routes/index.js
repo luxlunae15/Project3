@@ -385,7 +385,7 @@ router.get('/buyer/buy/:userID', isAuthenticated, function(req, res, next){
     multiconnection.query(sql, datas, function(err,row){
         if(err) console.error("err: "+err);
         console.log("구매 출력 결과: ",row);
-        res.redirect('/buyer');
+        res.redirect('/purchase');
     });
 });
 
@@ -404,6 +404,22 @@ router.get('/buyer/history', isAuthenticated, function(req, res, next){
 		});
 	});
 });
+
+// 구매 페이지
+router.get('/purchase',isAuthenticated, function(req, res, next){
+	res.render('purchase');
+});
+
+// 쿠폰 돌림판
+router.get('/coupon', function(req, res, next){
+	res.render('coupon');
+
+	
+});
+
+
+
+
 
 
 //////////////////////////////// 구매자 끝 /////////////////////////////////////////////////////
