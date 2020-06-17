@@ -46,7 +46,7 @@ router.get('/login', function(req, res, next) {
         var login = 'unlogin';
     else {
         var login = 'login';
-        res.redirect('/');
+		res.send("<script>alert('로그인 되었습니다.');history.back();</script>");
     }
     res.render('login', { title: 'login'});
 });
@@ -73,7 +73,6 @@ passport.use(new LocalStrategy({
         if (err) return res.sendStatus(400);
 
         var sql = "SELECT * FROM user WHERE ID = ?";
-
 
         connection.query(sql, [id], function(err, result) {
             if (err) {
@@ -172,7 +171,6 @@ router.get('/account/userlist/:page', isAuthenticated, function(req, res, next) 
 			connection.release();
 		});
 	});
-
 });
 
 router.get('/account/findres/:ID', isAuthenticated, function(req,res,next){
@@ -199,8 +197,6 @@ router.get('/account/findres/:ID', isAuthenticated, function(req,res,next){
         });
     });
 });
-
-
 
 router.get('/account/info/:id', isAuthenticated, function(req, res, next){
 	var id = req.params.id;
@@ -291,15 +287,33 @@ router.get('/buyer', isAuthenticated, function(req,res,next){
     res.render('buyer', {title: "구매자"});
 });
 
-router.get('/buyer/print-menu', isAuthenticated, function(req,res,next){
-    var sql = "select * from menu;select user.ID as userID, user.name as user_name, menu.name as menu_name, menu.id as menuID, menu.price as menu_price, user_menu.cnt as menu_cnt from user_menu inner join menu on menu_ID = menu.ID inner join user on user_ID = user.id where user.ID=?";
-	console.log("print-menu : ");
+router.get('/buyer/print-store', isAuthenticated, function(req, res, next){
+	pool.getConnection(function(err, connection){
+		var sql = "select * from store";
+		connection.query(sql, function(err, rows){
+			if(err) console.error("err : " + err);
+			else
+			{
+				console.log("매장 조회 결과 : ", rows);
+				res.render('print-store', {title:"매장 조회", rows:rows});
+			}
+			connection.release();
+		});
+	});
+});
+
+router.get('/buyer/print-menu/:id', isAuthenticated, function(req,res,next){
+	var store_id = req.params.id;
+    var sql = "SELECT * FROM menu inner join menu_store ON menu.id = menu_ID WHERE store_ID=?; select user.ID as userID, user.name as user_name, menu.name as menu_name, menu.id as menuID, menu.price as menu_price, user_menu.cnt as menu_cnt from user_menu inner join menu on menu_ID = menu.ID inner join user on user_ID = user.id where user.ID=?";
 	
-	multiconnection.query(sql, [req.user.ID],function(err,row){
-        if(err) console.error(err);
-            console.log("메뉴 출력 결과: ",row);
-            res.render('print-menu', {title: "메뉴 조회", rows:row});
+	multiconnection.query(sql, [store_id, req.user.ID],function(err,rows){
+        if(err) console.error("에러:"+err);
+        else{
+    		console.log("메뉴 조회 결과 : ", rows);
+            res.render('print-menu', {title: "메뉴 조회", rows:rows});
+        }
     });
+    	
 });
 
 router.get('/buyer/cart/:menuID', isAuthenticated, function(req,res,next){
@@ -735,17 +749,5 @@ router.get('/store/analytics', isAuthenticated, function(req,res,next){
 
 
 //////////////////////////////// 판매자 끝 /////////////////////////////////////////////////////
-
-
-// 구매 페이지
-router.get('/purchase', function(req, res, next){
-	res.render('purchase');
-});
-
-
-// 쿠폰 페이지
-router.get('/coupon', function(req, res, next){
-	res.render('coupon');
-});
 
 module.exports = router;
