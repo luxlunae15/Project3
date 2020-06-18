@@ -483,7 +483,7 @@ router.post('/review/:store_id',isAuthenticated, function(req, res, next){
 	
 	console.log("rate: ",rate," content: ",content," user_ID: ",user_id," menu_ID: ",menu_id," store_ID: ",store_id);
 	pool.getConnection(function(err, connection){
-		var sql = "INSERT INTO review (rate, content, user_ID, menu_ID, store_ID) values=(?,?,?,?,?)";
+		var sql = "INSERT INTO review (rate, content, user_ID, menu_ID, store_ID) values(?,?,?,?,?)";
 		connection.query(sql, [rate, content, req.user.ID, menu_id, store_id], function(err, rows){
 			if(err) console.error("err: "+err);
 			else
@@ -528,7 +528,7 @@ router.post('/review/:store_id',isAuthenticated, function(req, res, next){
 	var content = req.body.review;
 	console.log("smrc"+store_id+menu_id+rate+content);
 	pool.getConnection(function(err, connection){
-		var sql = "INSERT INTO review(rate, content, user_ID, menu_ID, store_ID) values=(?,?,?,?,?)";
+		var sql = "INSERT INTO review(rate, content, user_ID, menu_ID, store_ID) values(?,?,?,?,?)";
 		connection.query(sql, [rate, content, req.user.ID, menu_id, store_id], function(err, rows){
 			if(err) console.error("err:"+err);
 			else

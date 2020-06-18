@@ -7,7 +7,20 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><%= title %></title>
-    <script src="/javascripts/jquery-3.5.1.min.js"></script>
+	<script src="/javascripts/jquery-3.5.1.min.js"></script>
+	<script>
+		function goPage(data) {
+      var f = document.getElementById("cate");
+
+      f.setAttribute("category", data);
+
+      // input태그의 값들을 전송하는 주소
+      f.action = "buyer/print-store"
+      // 전송 방식 : post
+      f.method = "post"
+      f.submit();
+    };
+	</script>
     <script>
     	$(function(){
             $("#btnlogin").click(
@@ -236,33 +249,42 @@
 					
 			
 		<div class="product_item bg-light">
-			<div class="card" >
-				
+			<div class="card" >				
 				<div  style="width: 150px; height: 150px; text-align: center; display: table-cell; vertical-align: middle; line-height: 150px;">
-					
-					<a href="buyer/print-store" style="font-weight: 600;">한식</a>
+					<form action="/buyer/print-store" method="post">
+						<a href="javascript:;" onclick="parentNode.submit();" style="font-weight: 600;">전체</a>
+						<input type="hidden" name="category" value="전체"/>
+						<input type="hidden" name="price" value=">0"/>
+						<input type="hidden" name="storename" value=""/>
+					</form>
 					
 				</div>
 			</div>
 		</div>
 
 		<div class="product_item bg-light">
-			<div class="card">
-				
+			<div class="card" >				
 				<div  style="width: 150px; height: 150px; text-align: center; display: table-cell; vertical-align: middle; line-height: 150px;">
-					
-					<a href="buyer/print-store" style="font-weight: 600;">한식</a>
+					<form action="/buyer/print-store" method="post">
+						<a href="javascript:;" onclick="parentNode.submit();" style="font-weight: 600;">치킨</a>
+						<input type="hidden" name="category" value="치킨"/>
+						<input type="hidden" name="price" value=">0"/>
+						<input type="hidden" name="storename" value=""/>
+					</form>
 					
 				</div>
 			</div>
 		</div>
 
 		<div class="product_item bg-light">
-			<div class="card">
-				
+			<div class="card" >				
 				<div  style="width: 150px; height: 150px; text-align: center; display: table-cell; vertical-align: middle; line-height: 150px;">
-					
-					<a href="buyer/print-store" style="font-weight: 600;">한식</a>
+					<form action="/buyer/print-store" method="post">
+						<a href="javascript:;" onclick="parentNode.submit();" style="font-weight: 600;">피자/양식</a>
+						<input type="hidden" name="category" value="피자/양식"/>
+						<input type="hidden" name="price" value=">0"/>
+						<input type="hidden" name="storename" value=""/>
+					</form>
 					
 				</div>
 			</div>
@@ -270,11 +292,14 @@
 	
 
 		<div class="product_item bg-light">
-			<div class="card">
-				
+			<div class="card" >				
 				<div  style="width: 150px; height: 150px; text-align: center; display: table-cell; vertical-align: middle; line-height: 150px;">
-					
-					<a href="buyer/print-store" style="font-weight: 600;">한식</a>
+					<form action="/buyer/print-store" method="post">
+						<a href="javascript:;" onclick="parentNode.submit();" style="font-weight: 600;">중식</a>
+						<input type="hidden" name="category" value="중식"/>
+						<input type="hidden" name="price" value=">0"/>
+						<input type="hidden" name="storename" value=""/>
+					</form>
 					
 				</div>
 			</div>
@@ -282,11 +307,14 @@
 
 
 		<div class="product_item bg-light">
-			<div class="card">
-				
+			<div class="card" >				
 				<div  style="width: 150px; height: 150px; text-align: center; display: table-cell; vertical-align: middle; line-height: 150px;">
-					
-					<a href="buyer/print-store" style="font-weight: 600;">한식</a>
+					<form action="/buyer/print-store" method="post">
+						<a href="javascript:;" onclick="parentNode.submit();" style="font-weight: 600;">한식</a>
+						<input type="hidden" name="category" value="한식"/>
+						<input type="hidden" name="price" value=">0"/>
+						<input type="hidden" name="storename" value=""/>
+					</form>
 					
 				</div>
 			</div>
@@ -312,33 +340,42 @@
 				<div class="d-flex align-items-stretch col-xs-8 col-sm-8 col-md-8 col-lg-8 p-8">
 					
 					<div class="product_item bg-light">
-						<div class="card" >
-							
+						<div class="card" >				
 							<div  style="width: 150px; height: 150px; text-align: center; display: table-cell; vertical-align: middle; line-height: 150px;">
-								
-								<a href="buyer/print-store" style="font-weight: 600;">한식</a>
+								<form action="/buyer/print-store" method="post">
+									<a href="javascript:;" onclick="parentNode.submit();" style="font-weight: 600;">일식</a>
+									<input type="hidden" name="category" value="일식"/>
+									<input type="hidden" name="price" value=">0"/>
+									<input type="hidden" name="storename" value=""/>
+								</form>
 								
 							</div>
 						</div>
 					</div>
 			
 					<div class="product_item bg-light">
-						<div class="card">
-							
+						<div class="card" >				
 							<div  style="width: 150px; height: 150px; text-align: center; display: table-cell; vertical-align: middle; line-height: 150px;">
-								
-								<a href="buyer/print-store" style="font-weight: 600;">한식</a>
+								<form action="/buyer/print-store" method="post">
+									<a href="javascript:;" onclick="parentNode.submit();" style="font-weight: 600;">분식</a>
+									<input type="hidden" name="category" value="분식"/>
+									<input type="hidden" name="price" value=">0"/>
+									<input type="hidden" name="storename" value=""/>
+								</form>
 								
 							</div>
 						</div>
 					</div>
 			
 					<div class="product_item bg-light">
-						<div class="card">
-							
+						<div class="card" >				
 							<div  style="width: 150px; height: 150px; text-align: center; display: table-cell; vertical-align: middle; line-height: 150px;">
-								
-								<a href="buyer/print-store" style="font-weight: 600;">한식</a>
+								<form action="/buyer/print-store" method="post">
+									<a href="javascript:;" onclick="parentNode.submit();" style="font-weight: 600;">족발/보쌈</a>
+									<input type="hidden" name="category" value="족발/보쌈"/>
+									<input type="hidden" name="price" value=">0"/>
+									<input type="hidden" name="storename" value=""/>
+								</form>
 								
 							</div>
 						</div>
@@ -346,11 +383,14 @@
 				
 			
 					<div class="product_item bg-light">
-						<div class="card">
-							
+						<div class="card" >				
 							<div  style="width: 150px; height: 150px; text-align: center; display: table-cell; vertical-align: middle; line-height: 150px;">
-								
-								<a href="buyer/print-store" style="font-weight: 600;">한식</a>
+								<form action="/buyer/print-store" method="post">
+									<a href="javascript:;" onclick="parentNode.submit();" style="font-weight: 600;">야식</a>
+									<input type="hidden" name="category" value="야식"/>
+									<input type="hidden" name="price" value=">0"/>
+									<input type="hidden" name="storename" value=""/>
+								</form>
 								
 							</div>
 						</div>
@@ -358,11 +398,14 @@
 			
 			
 					<div class="product_item bg-light">
-						<div class="card">
-							
+						<div class="card" >				
 							<div  style="width: 150px; height: 150px; text-align: center; display: table-cell; vertical-align: middle; line-height: 150px;">
-								
-								<a href="buyer/print-store" style="font-weight: 600;">한식</a>
+								<form action="/buyer/print-store" method="post">
+									<a href="javascript:;" onclick="parentNode.submit();" style="font-weight: 600;">카페/디저트</a>
+									<input type="hidden" name="category" value="카페/디저트"/>
+									<input type="hidden" name="price" value=">0"/>
+									<input type="hidden" name="storename" value=""/>
+								</form>
 								
 							</div>
 						</div>
@@ -388,67 +431,19 @@
 		<div class="col-lg-10">
 			<div class="d-flex align-items-stretch col-xs-8 col-sm-8 col-md-8 col-lg-8 p-8">
 				<div class="product_item bg-light">
-					<div class="card" >
-						
+					<div class="card" >				
 						<div  style="width: 150px; height: 150px; text-align: center; display: table-cell; vertical-align: middle; line-height: 150px;">
-							
-							<a href="buyer/print-store" style="font-weight: 600;">한식</a>
-							
-						</div>
-					</div>
-				</div>
-		
-				<div class="product_item bg-light">
-					<div class="card">
-						
-						<div  style="width: 150px; height: 150px; text-align: center; display: table-cell; vertical-align: middle; line-height: 150px;">
-							
-							<a href="buyer/print-store" style="font-weight: 600;">한식</a>
+							<form action="/buyer/print-store" method="post">
+								<a href="javascript:;" onclick="parentNode.submit();" style="font-weight: 600;">햄버거</a>
+								<input type="hidden" name="category" value="햄버거"/>
+								<input type="hidden" name="price" value=">0"/>
+								<input type="hidden" name="storename" value=""/>
+							</form>
 							
 						</div>
 					</div>
 				</div>
 		
-				<div class="product_item bg-light">
-					<div class="card">
-						
-						<div  style="width: 150px; height: 150px; text-align: center; display: table-cell; vertical-align: middle; line-height: 150px;">
-							
-							<a href="buyer/print-store" style="font-weight: 600;">한식</a>
-							
-						</div>
-					</div>
-				</div>
-			
-		
-				<div class="product_item bg-light">
-					<div class="card">
-						
-						<div  style="width: 150px; height: 150px; text-align: center; display: table-cell; vertical-align: middle; line-height: 150px;">
-							
-							<a href="buyer/print-store" style="font-weight: 600;">한식</a>
-							
-						</div>
-					</div>
-				</div>
-		
-		
-				<div class="product_item bg-light">
-					<div class="card">
-						<!--<div class="thumb-content">
-							<img class="card-img-top" src="images/products/test2.jpg">
-						</div>-->
-						
-
-						<div style="width: 150px; height: 150px; text-align: center; display: table-cell; vertical-align: middle; line-height: 150px;">
-							
-							<a href="buyer/print-store" style="font-weight: 600;">한식</a>
-							<!--<img style="position: relative; width: 150px; height: 150px;" src="images/products/test2.jpg">-->
-
-
-						</div>
-					</div>
-				</div>
 
 
 			</div>
