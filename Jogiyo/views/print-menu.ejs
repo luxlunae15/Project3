@@ -476,21 +476,29 @@
 									</div>
 									
 									<div class="review-submission">
-										<h3 class="tab-title">리뷰 작성</h3>
-										<!-- Rate -->
-										<div class="rate">
-											<div class="starrr"></div>
-										</div>
-										<div class="review-submit">
-											<form action="#" class="row">
+										<form action="/review/<%=store_id%>" method="post">
+											<h3 class="tab-title">리뷰 작성</h3>
+											메뉴	
+											<select name="menu" id="menu">
+						                        <% for(var i=0; i<rows.length; i++){ 
+						                            var item = rows[0][i];
+						                        %>
+						                        <option value="<%=item.ID%>"><%=item.NAME%></option>
+						                        <%}%>
+											</select>
+											<!-- Rate -->
+											<div class="rate">
+												<div class="starrr"></div>
+											</div>
+											<div class="review-submit">
 												<div class="col-12">
 													<textarea name="review" id="review" rows="10" class="form-control" placeholder="내용"></textarea>
 												</div>
 												<div class="col-12">
 													<button type="submit" class="btn btn-main">Sumbit</button>
 												</div>
-											</form>
-										</div>
+											</div>
+										</form>
 									</div>
 								</div>
 							</div>
