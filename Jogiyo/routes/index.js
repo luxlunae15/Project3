@@ -467,10 +467,13 @@ router.post('/store_add', isAuthenticated, function(req, res, next){
 	var price = req.body.price;
 	var open = req.body.open;
 	var close = req.body.close;
-	var data = [name, tel, dtime, open, close, price];
+	var lat = req.body.lat;
+	var lng = req.body.lng;
+	var data = [name, tel, dtime, open, close, price, lat, lng];
+	
 
 	pool.getConnection(function(err, connection){
-		var sql = "INSERT INTO store(NAME, PHONE, DELIVERY_TIME, UPTIME, CLOSETIME, PRICE_LIMIT) values(?, ?, ?, ?, ?, ?)";
+		var sql = "INSERT INTO store(NAME, PHONE, DELIVERY_TIME, UPTIME, CLOSETIME, PRICE_LIMIT, LAT, LNG) values(?, ?, ?, ?, ?, ?, ?, ?)";
 
 		connection.query(sql, data, function(err,rows){
 			if(err) console.error("err: "+err);
