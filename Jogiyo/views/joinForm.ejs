@@ -119,13 +119,14 @@
                 <div class="col-lg-5 col-md-8 align-item-center">
                     <div class="border border">
                         <h3 class="bg-gray p-4">Register Now</h3>
-                        <form id="joinForm" action="/joinForm" method="post">
+                        <form id="joinForm" action="/joinForm" method="post" enctype="multipart/form-data">
                             <fieldset class="p-4">
                                 <input type="text" placeholder="ID*" name="id" id="id" size="12" maxLength="12" class="border p-3 w-100 my-2">
                                 <input type="password" placeholder="Password*" name="passwd" id="passwd" size="12" maxLength="12" class="border p-3 w-100 my-2">
                                 <input type="password" placeholder="Confirm Password*" name="checkpw" id="checkpw" size="12" maxLength="12" class="border p-3 w-100 my-2">
                                 <font id="chkNotice" size="2"></font>
                                 <input type="text" placeholder="Name*" name="name" id="name" size="10" maxLength="10"class="border p-3 w-100 my-2">
+                                
                                 <select name="auth" id="auth">
                                     <option value="구매자">구매자</option>
                                     <option value="판매자">판매자</option>
@@ -144,7 +145,7 @@
                                 <input type="text" name="tel2" id="tel2" size="4" maxLength="4" class="border p-2 w-10 my-2">
                                 -
                                 <input type="text" name="tel3" id="tel3" size="4" maxLength="4" class="border p-2 w-10 my-2"><br><br>
-                                
+                                이미지 업로드<br><input type="file" name="filename" ><br>
                                 <input type="button" style="float:right;" class="py-3 px-4 bg-primary text-white border-0 rounded font-weight-bold" id="btnRtn" name="return" value="돌아가기">
                                 <input type="button" style="float:right;margin-right: 5px" class="py-3 px-4 bg-primary text-white border-0 rounded font-weight-bold" id="btnJoin" name="btnJoin" value="회원가입">
                             </fieldset>

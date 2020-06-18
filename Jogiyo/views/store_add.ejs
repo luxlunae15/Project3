@@ -172,7 +172,7 @@
                 <div class="col-lg-5 col-md-8 align-item-center">
                     <div class="border border">
                         <h3 class="bg-gray p-4">Register Now</h3>
-                        <form id="store_add" action="/store_add" method="post">
+                        <form id="store_add" action="/store_add" method="post", enctype="multipart/form-data">
                             <div id="map" style="width:100%;height:200px;"></div>
                             <p style="text-align: center;"><em>지도를 클릭해주세요!</em></p> 
                             <fieldset class="p-4">
@@ -203,6 +203,7 @@
                 <input type="text"class="border p-2 w-70 my-2" name="tel2" id="tel2" size="4" maxLength="4" required>
                 -
                 <input type="text"class="border p-2 w-70 my-2" name="tel3" id="tel3" size="4" maxLength="4" required><br>
+                                이미지 업로드<br><input type="file" name="filename" ><br>
                                 <input type="button" style="float:right; " class="py-3 px-4 bg-primary text-white border-0 rounded font-weight-bold" id="btnRtn" name="return" value="돌아가기">
                                 <input type="button" style="float:right; margin-right: 5px;" class="py-3 px-4 bg-primary text-white border-0 rounded font-weight-bold" id="btnJoin" name="join" value="가게 추가">
                                 
