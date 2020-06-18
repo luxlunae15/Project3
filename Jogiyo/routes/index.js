@@ -302,15 +302,12 @@ router.get('/buyer/print-store', isAuthenticated, function(req, res, next){
 	});
 });
 
-
-router.post('/buyer/print-store', function (req, res, next) {
+router.post('/buyer/print-store', isAuthenticated, function (req, res, next) {
     var category = req.body.category;
     var price = req.body.price;
     var storename = req.body.storename;
     var datas = new Array();
-    var sql = "select distinct store.ID, store.NAME, PHONE, RATE, DELIVERY_TIME, UPTIME, CLOSETIME, LAT, LNG  from store inner join menu on store.id = menu.store_id inner join cat" +
-            "egory_store on category_store.store_ID = store.id inner join category on categ" +
-            "ory_store.category_ID = category.ID ";
+    var sql = "select count(distinct review.id) as reviewcnt, store.ID, store.NAME, PHONE, store.RATE, DELIVERY_TIME, UPTIME, CLOSETIME, LAT, LNG, PRICE_LIMIT  from store inner join menu on store.id = menu.store_id  left outer join review on review.store_id = store.id inner join category_store on category_store.store_ID = store.id inner join category on category_store.category_ID = category.ID  ";
     if (category != "전체" || price != ">0" || storename != "") {
         sql += " where ";
         if (category != "전체") {
@@ -320,14 +317,16 @@ router.post('/buyer/print-store', function (req, res, next) {
 		if (price != ">0"){
 			if(category != "전체") sql += " and ";
 			sql += "menu.price = any (select menu.price from menu where menu.price "  + price + " )";
-			sql=sql.replace(/['"]+/g, '');
+			
 		}
 		if (storename != ""){
 			if(category != "전체" || price != '>0') sql += " and ";
 			datas.push(storename);
 			sql += "store.name = ?";
 		}
+		sql=sql.replace(/['"]+/g, '');
 	}
+	sql += " group by store.id  ";
 	console.log(sql);
 	console.log(datas);
 	if(datas.length == 0) {
