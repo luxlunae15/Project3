@@ -361,9 +361,12 @@ router.post('/buyer/print-store', isAuthenticated, function (req, res, next) {
 router.get('/buyer/print-menu/:id', isAuthenticated, function(req,res,next){
 	var store_id = req.params.id;
 	var hint = req.user.ID;
-    var sql = "SELECT * FROM menu WHERE store_ID=?; select user.ID as userID, user.name as user_name, menu.name as menu_name, menu.id as menuID, menu.price as menu_price, user_menu.cnt as menu_cnt from user_menu inner join menu on menu_ID = menu.ID inner join user on user_ID = user.id where user.ID=?; SELECT * FROM review inner join user on user_id = user.id WHERE store_ID=?";
+    var sql1 = "SELECT * FROM menu WHERE store_ID=?;";
+    var sql2 = "select user.ID as userID, user.name as user_name, menu.name as menu_name, menu.id as menuID, menu.price as menu_price, user_menu.cnt as menu_cnt from user_menu inner join menu on menu_ID = menu.ID inner join user on user_ID = user.id where user.ID=?;";
+    var sql3 = "SELECT * FROM review inner join user on user_id = user.id WHERE store_ID=?;";
+    var sql4 = "SELECT store.NAME as store_name, category.NAME as category_name, PRICE_LIMIT, UPTIME, CLOSETIME, RATE, PHONE FROM store inner join category_store on store.ID = store_ID inner join category on category_ID = category.ID WHERE store.ID=?;";
 	
-	multiconnection.query(sql, [store_id, req.user.ID, store_id],function(err,rows){
+	multiconnection.query(sql1+sql2+sql3+sql4, [store_id, req.user.ID, store_id, store_id],function(err,rows){
         if(err) console.error("에러:"+err);
         else{
 			
@@ -501,6 +504,8 @@ router.post('/review/:store_id',isAuthenticated, function(req, res, next){
 	var menu_id = req.body.menu;
 	var rate = req.body.rate;
 	var content = req.body.review;
+	if(rate==null)
+		rate=0;
 	console.log("smrc"+store_id+menu_id+rate+content);
 	pool.getConnection(function(err, connection){
 		var sql = "INSERT INTO review(rate, content, user_ID, menu_ID, store_ID) values(?,?,?,?,?)";
