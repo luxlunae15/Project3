@@ -335,8 +335,9 @@
 					</div>
                 </div>
                 <%
-                        for(var i=0; i<rows.length; i++){
-                            var item = rows[i];
+                	for(var i=0; i<2; i++){
+                        for(var j=0; j<rows[i].length; j++){
+                            var item = rows[i][j];
                     %>
 
 				<div class="ad-listing-list mt-20">
@@ -363,15 +364,16 @@
 									</div>
 								</div>
 								<!-- 별 출력 -->
-								<div class="col-lg-6 align-self-center">
+								<div class="col-lg-6 align-self-center" style="font-size: 1.6em; font-weight: bold; color: red">
+									<% if(i==1) {%> 영업 종료 <%}%>
 									<div class="product-ratings float-lg-right pb-3">
 										<ul class="list-inline" >
                                             <%
-                        for(var j=0; j<=rows[i].RATE - 1; j++){%>
+                        for(var k=0; k<=rows[i][j].RATE - 1; k++){%>
                             <li class="list-inline-item"><i style="color: #f89b00" class="fa fa-star" ></i></li>
                             <%}%>
                             <%
-                        for(var j=0; j<6-rows[i].RATE - 1; j++){%>
+                        for(var k=0; k<6-rows[i][j].RATE - 1; k++){%>
                             <li class="list-inline-item"><i style="color: #f89b00" class="fa fa-star-o" ></i></li>
                             <%}%>
 										</ul>
@@ -382,7 +384,7 @@
 					</div>
 				</div>
                 <%
-                        }
+                        }}
                     %>
 
 
