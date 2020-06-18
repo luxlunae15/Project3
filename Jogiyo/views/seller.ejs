@@ -138,7 +138,7 @@
           <div class="widget user-dashboard-profile">
             <!-- User Image -->
             <div class="profile-thumb">
-              <img src="images/user/user-thumb.jpg" alt="" class="rounded-circle">
+              <img src="/seller/<%=rows[1][0].USER_IMG%>" alt="" >
             </div>
             <!-- User Name -->
             <h5 class="text-center">판매자</h5>
@@ -195,13 +195,13 @@
                 
 
               <%
-              for(var i=0; i<rows.length; i++){
-                  var item = rows[i];
+              for(var i=0; i<rows[0].length; i++){
+                  var item = rows[0][i];
           %>
 
               <tr>
                 <td class="product-thumb">
-                  <img width="80px" height="auto" src="images/products/products-1.jpg" alt="image description"></td>
+                  <img width="80px" height="auto" src="/seller/<%=item.STORE_IMG%>" alt="image description"></td>
                 <td class="product-details">
                   <h3 class="title"><a href="/store/<%=item.ID%>"><%=item.NAME%></a></h3>
                   <span class="add-id"><strong>평점:</strong> <%=item.RATE%></span>

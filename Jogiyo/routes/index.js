@@ -339,6 +339,7 @@ router.post('/buyer/print-store', isAuthenticated, function (req, res, next) {
     var storename = req.body.storename;
     var x = req.body.lat;
     var y = req.body.lng;
+
     var datas = [];
     var sql1 = " SELECT count(distinct review.id) as reviewcnt, store.ID, store.NAME, PHONE, store.RATE, DELIVERY_TIME, UPTIME, CLOSETIME, LAT, LNG, PRICE_LIMIT  from store inner join menu on store.id = menu.store_id  left outer join review on review.store_id = store.id inner join category_store on category_store.store_ID = store.id inner join category on category_store.category_ID = category.ID ";
     var sql2 = " WHERE ((UPTIME>CLOSETIME and (now()>UPTIME or now()<CLOSETIME)) or (UPTIME<CLOSETIME and (UPTIME<now() and now()<CLOSETIME))) ";
@@ -415,6 +416,8 @@ router.post('/buyer/print-store', isAuthenticated, function (req, res, next) {
       });
    }
 }); 
+
+
 
 
 
