@@ -11,8 +11,6 @@ CREATE TABLE IF NOT EXISTS `jogiyo`.`user` (
   `NAME` VARCHAR(15) NOT NULL,
   `AUTH` VARCHAR(15) NOT NULL,
   `PHONE` VARCHAR(15),
-  `latitude` INT DEFAULT 0,
-  `longitude` INT DEFAULT 0,
   PRIMARY KEY (`ID`),
   UNIQUE INDEX `ID_UNIQUE` (`ID` ASC) VISIBLE)
 ENGINE = InnoDB;
@@ -30,8 +28,8 @@ CREATE TABLE IF NOT EXISTS `jogiyo`.`store` (
   `UPTIME` TIME NULL DEFAULT "00:00:00",
   `CLOSETIME` TIME NULL DEFAULT "23:59:59",
   `PRICE_LIMIT` INT NULL DEFAULT 0,
-  `latitude` INT DEFAULT 0,
-  `longitude` INT DEFAULT 0,
+  `LAT` FLOAT DEFAULT 0,
+  `LNG` FLOAT DEFAULT 0,
   PRIMARY KEY (`ID`),
   UNIQUE INDEX `ID_UNIQUE` (`ID` ASC) VISIBLE)
 ENGINE = InnoDB;
@@ -42,11 +40,17 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `jogiyo`.`menu` (
   `ID` INT NOT NULL AUTO_INCREMENT,
+  `store_ID` INT NOT NULL,
   `NAME` VARCHAR(15) NOT NULL,
   `PRICE` INT NOT NULL,
   `content` LONGTEXT NULL DEFAULT NULL,
   PRIMARY KEY (`ID`),
-  UNIQUE INDEX `ID_UNIQUE` (`ID` ASC) VISIBLE)
+  UNIQUE INDEX `ID_UNIQUE` (`ID` ASC) VISIBLE,
+  CONSTRAINT `fk_menu_store1`
+    FOREIGN KEY (`store_ID`)
+    REFERENCES `jogiyo`.`store` (`ID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -140,20 +144,20 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `jogiyo`.`category_menu`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jogiyo`.`category_menu` (
+CREATE TABLE IF NOT EXISTS `jogiyo`.`category_store` (
   `category_ID` INT NOT NULL,
-  `menu_ID` INT NOT NULL,
-  PRIMARY KEY (`category_ID`, `menu_ID`),
-  INDEX `fk_category_has_menu_menu1_idx` (`menu_ID` ASC) VISIBLE,
-  INDEX `fk_category_has_menu_category1_idx` (`category_ID` ASC) VISIBLE,
-  CONSTRAINT `fk_category_has_menu_category1`
+  `store_ID` INT NOT NULL,
+  PRIMARY KEY (`category_ID`, `store_ID`),
+  INDEX `fk_category_has_store_store1_idx` (`store_ID` ASC) VISIBLE,
+  INDEX `fk_category_has_store_category1_idx` (`category_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_category_has_store_category1`
     FOREIGN KEY (`category_ID`)
     REFERENCES `jogiyo`.`category` (`ID`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-  CONSTRAINT `fk_category_has_menu_menu1`
-    FOREIGN KEY (`menu_ID`)
-    REFERENCES `jogiyo`.`menu` (`ID`)
+  CONSTRAINT `fk_category_has_store_store1`
+    FOREIGN KEY (`store_ID`)
+    REFERENCES `jogiyo`.`store` (`ID`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
@@ -207,28 +211,6 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `jogiyo`.`menu_store`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jogiyo`.`menu_store` (
-  `menu_ID` INT NOT NULL,
-  `store_ID` INT NOT NULL,
-  PRIMARY KEY (`menu_ID`, `store_ID`),
-  INDEX `fk_menu_has_store_store1_idx` (`store_ID` ASC) VISIBLE,
-  INDEX `fk_menu_has_store_menu1_idx` (`menu_ID` ASC) VISIBLE,
-  CONSTRAINT `fk_menu_has_store_menu1`
-    FOREIGN KEY (`menu_ID`)
-    REFERENCES `jogiyo`.`menu` (`ID`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_menu_has_store_store1`
-    FOREIGN KEY (`store_ID`)
-    REFERENCES `jogiyo`.`store` (`ID`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `jogiyo`.`comment`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `jogiyo`.`comment` (
@@ -248,3 +230,16 @@ CREATE TABLE IF NOT EXISTS `jogiyo`.`comment` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
+
+DELIMITER $$
+	CREATE TRIGGER meanRate
+	AFTER INSERT ON review
+	FOR EACH ROW
+	BEGIN
+		DECLARE num INT;
+        DECLARE bf_rate FLOAT;
+        SET num = (SELECT count(*) FROM review WHERE store_ID = NEW.store_ID);
+        SET bf_rate = (SELECT RATE FROM store WHERE store.ID = NEW.store_ID);
+		UPDATE store SET store.RATE = ((bf_rate*(num-1) + NEW.rate)/num)  WHERE store.ID=NEW.store_ID;
+	END $$
+DELIMITER ;
