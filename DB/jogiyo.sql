@@ -230,3 +230,16 @@ CREATE TABLE IF NOT EXISTS `jogiyo`.`comment` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
+
+DELIMITER $$
+	CREATE TRIGGER meanRate
+	AFTER INSERT ON review
+	FOR EACH ROW
+	BEGIN
+		DECLARE num INT;
+        DECLARE bf_rate FLOAT;
+        SET num = (SELECT count(*) FROM review WHERE store_ID = NEW.store_ID);
+        SET bf_rate = (SELECT RATE FROM store WHERE store.ID = NEW.store_ID);
+		UPDATE store SET store.RATE = ((bf_rate*(num-1) + NEW.rate)/num)  WHERE store.ID=NEW.store_ID;
+	END $$
+DELIMITER ;
