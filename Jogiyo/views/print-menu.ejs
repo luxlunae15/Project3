@@ -223,7 +223,7 @@
 					<div class="ad-listing-list mt-20">
 						<div class="row p-lg-3 p-sm-5 p-4">
 							<div class="col-lg-4 align-self-center">
-								<img src="/buyer/<%=rows[3][0].STORE_IMG%>" class="img-fluid" alt="">
+								<img src="../../images/products/products-1.jpg" class="img-fluid" alt="">
 							</div>
 							<div class="col-lg-8">
 								<div class="row">
@@ -231,9 +231,9 @@
 											<div class="product-ratings float-lg-left pb-3">
 												<ul class="list-inline" >
 													<% for(var i = 0; i < rows[3][0].RATE; i++){ %>
-														<li class="list-inline-item"><i style="color: #f89b00" class="fa fa-star" ></i></li>
-														<% } %>
-														<li class="list-inline-item"><span style="font-size: 1.2em; font-weight: bold; color: #f89b00"><%=rows[3][0].RATE%></span></li>
+													<li class="list-inline-item"><i style="color: #f89b00" class="fa fa-star" ></i></li>
+													<% } %>
+													<li class="list-inline-item"><span style="font-size: 1.2em; font-weight: bold; color: #f89b00"><%=rows[3][0].RATE%></span></li>
 												</ul>
 											</div>
 										<div class="ad-listing-content">
@@ -294,7 +294,7 @@
 												<table style="width:550px;">
 													<tr>
 														<td id = "btncart"  onclick="butten_event_add(<%=store_id%>, <%=oneItem.ID%>);"><%=oneItem.NAME%></td>
-														<td rowspan = "2" id = "btncart"  onclick="butten_event_add(<%=store_id%>, <%=oneItem.ID%>);"style="text-align: right;"><img src="/buyer/<%=oneItem.MENU_IMG%>" width="80px" height="auto"  ></td>
+														<td id = "btncart"  onclick="butten_event_add(<%=store_id%>, <%=oneItem.ID%>);"style="text-align: right;">이미지</td>
 													</tr>
 													<tr>
 														<td id = "btncart"  onclick="butten_event_add(<%=store_id%>, <%=oneItem.ID%>);"><%=oneItem.PRICE%></td>
@@ -371,7 +371,7 @@
 									%>
 									<div class="media">
 										<!-- Avater -->
-										<img src="/buyer/<%=item2.USER_IMG%>" alt="avater">
+										<img src="../../images/user/user-thumb.jpg" alt="avater">
 										<div class="media-body">
 											<!-- Ratings -->
 											<div class="ratings">
