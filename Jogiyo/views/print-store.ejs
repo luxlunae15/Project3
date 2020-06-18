@@ -24,6 +24,8 @@
                 <th>평점</th>
                 <th>평균 배달 시간</th>
                 <th>영업 시간</th>
+                <th>위도</th>
+                <th>경도</th>
             </tr>
             <%
                 for(var i=0; i<rows.length; i++){
@@ -36,6 +38,8 @@
                 <td><center><%=item.RATE%></center></td>
                 <td><center><%=item.DELIVERY_TIME%>분</center></td>
                 <td><center><%=item.UPTIME%> ~ <%=item.CLOSETIME%></center></td>
+                <td><center><%=item.LAT%></center></td>
+                <td><center><%=item.LNG%></center></td>
             </tr>
             <%
                 }
