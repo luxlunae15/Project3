@@ -323,7 +323,7 @@ router.post('/buyer/print-store', isAuthenticated, function (req, res, next) {
     var x = req.body.lat;
     var y = req.body.lng;
     var datas = new Array();
-    var sql = "select count(distinct review.id) as reviewcnt, store.ID, store.NAME, PHONE, store.RATE, DELIVERY_TIME, UPTIME, CLOSETIME, LAT, LNG, PRICE_LIMIT  from store inner join menu on store.id = menu.store_id  left outer join review on review.store_id = store.id inner join category_store on category_store.store_ID = store.id inner join category on category_store.category_ID = category.ID  WHERE ((UPTIME>CLOSETIME and (now()>UPTIME or now()<CLOSETIME)) or (UPTIME<now() and now()<CLOSETIME))";
+    var sql = "select count(distinct review.id) as reviewcnt, store.ID, store.NAME, PHONE, store.RATE, DELIVERY_TIME, UPTIME, CLOSETIME, LAT, LNG, PRICE_LIMIT, STORE_IMG  from store inner join menu on store.id = menu.store_id  left outer join review on review.store_id = store.id inner join category_store on category_store.store_ID = store.id inner join category on category_store.category_ID = category.ID  WHERE ((UPTIME>CLOSETIME and (now()>UPTIME or now()<CLOSETIME)) or (UPTIME<now() and now()<CLOSETIME))";
     if (category != "전체" || price != ">0" || storename != "") {
         sql += " and ";
         if (category != "전체") {
