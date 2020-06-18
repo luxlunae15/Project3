@@ -1,30 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+    <head>
 
-  <!-- SITE TITTLE -->
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Classimax</title>
-  
+        <!-- SITE TITTLE -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Classimax</title>
+
+        <script type="text/javascript">
+            function butten_event_add(value1, value2) {
+                if (confirm("장바구니에 추가하시겠습니까??") == true) {
+                    location.href = "/buyer/cart/" + value1 + "/" + value2;
+                } else { //취소
+                    return;
+                }
+            }
+		</script>
+		<script type="text/javascript">
+            function butten_event_delete(value1, value2) {
+                if (confirm("장바구니에 삭제하시겠습니까??") == true) {
+                    location.href = "/buyer/delete-cart/" + value1+"/"+value2;
+                } else { //취소
+                    return;
+                }
+            }
+		</script>
+		
   <!-- FAVICON -->
-  <link href="../img/favicon.png" rel="shortcut icon">
+  <link href="../../img/favicon.png" rel="shortcut icon">
   <!-- PLUGINS CSS STYLE -->
   <!-- <link href="plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet"> -->
   <!-- Bootstrap -->
-  <link rel="stylesheet" href="../plugins/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="../plugins/bootstrap/css/bootstrap-slider.css">
+  <link rel="stylesheet" href="../../plugins/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../plugins/bootstrap/css/bootstrap-slider.css">
   <!-- Font Awesome -->
-  <link href="../plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../../plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
   <!-- Owl Carousel -->
-  <link href="../plugins/slick-carousel/slick/slick.css" rel="stylesheet">
-  <link href="../plugins/slick-carousel/slick/slick-theme.css" rel="stylesheet">
+  <link href="../../plugins/slick-carousel/slick/slick.css" rel="stylesheet">
+  <link href="../../plugins/slick-carousel/slick/slick-theme.css" rel="stylesheet">
   <!-- Fancy Box -->
-  <link href="../plugins/fancybox/jquery.fancybox.pack.css" rel="stylesheet">
-  <link href="../plugins/jquery-nice-select/css/nice-select.css" rel="stylesheet">
+  <link href="../../plugins/fancybox/jquery.fancybox.pack.css" rel="stylesheet">
+  <link href="../../plugins/jquery-nice-select/css/nice-select.css" rel="stylesheet">
   <!-- CUSTOM CSS -->
-  <link href="../css/style.css" rel="stylesheet">
+  <link href="../../css/style.css" rel="stylesheet">
 
 
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -44,7 +63,7 @@
 			<div class="col-md-12">
 				<nav class="navbar navbar-expand-lg navbar-light navigation">
 					<a class="navbar-brand" href="/">
-						<img src="../images/logo.png" alt="">
+						<img src="../../images/logo.png" alt="">
 					</a>
 					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
 					 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -186,32 +205,7 @@
 				<div class="product-details">
                     
 
-                    <table border="1">
-                        <tr>
-                            <td>ID</td>
-                            <td>메뉴</td>
-                            <td>가격</td>
-                            <td>내용</td>
-                            <td>장바구니 추가</td>
-                        </tr>
-                        <%
-                            for(var i=0; i<rows.length; i++){
-                                var oneItem = rows[i];
-            %>
-                                <tr>
-                                    <td><%=oneItem.ID%></td>
-                                    <td><%=oneItem.NAME%></td>
-                                    <td><%=oneItem.PRICE%></td>
-                                    <td><%=oneItem.CONTENT%></td>
-                                    <td><a href="/buyer/cart/<%=oneItem.ID%>">추가하기</a></td>
-                                </tr>
-            <%        
-                            }
-            %>
-            
-                    </table>
-
-                    
+                   
 					<h1 class="product-title">맘스터치 석계역점</h1>
 					
 					<div class="product-meta">
@@ -224,7 +218,7 @@
 						<div class="row p-lg-3 p-sm-5 p-4">
 							<div class="col-lg-4 align-self-center">
 								<a href="single.html">
-									<img src="../images/products/products-1.jpg" class="img-fluid" alt="">
+									<img src="../../images/products/products-1.jpg" class="img-fluid" alt="">
 								</a>
 							</div>
 							<div class="col-lg-8">
@@ -281,8 +275,17 @@
 						<div class="tab-content" id="pills-tabContent">
 							<div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
 								<h3 class="tab-title">메뉴</h3>
+
+
 								
 
+								
+								
+
+								
+			
+								
+								
 								<div class="container">
 									<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 									  <div class="panel panel-default">
@@ -295,68 +298,28 @@
 										</div>
 										<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
 										  <div class="panel-body">
+											<%
+											for(var i=0; i<rows[0].length; i++){
+												var oneItem = rows[0][i];
+											%>
 											<div class="col-md-12 form-control" style="height:90px; text-align: left; line-height:35px">
-												<table style="width:700px;">
+												<table style="width:550px;">
 													<tr>
-														<td>
-															<div>싸이버거세트</div>
-															<div>5600원</div>
-														</td>
-														<td style="column-width: 40;">이미지</td>
+														<td id = "btncart"  onclick="butten_event_add(<%=store_id%>, <%=oneItem.ID%>);"><%=oneItem.NAME%></td>
+														<td id = "btncart"  onclick="butten_event_add(<%=store_id%>, <%=oneItem.ID%>);"style="text-align: right;">이미지</td>
+													</tr>
+													<tr>
+														<td id = "btncart"  onclick="butten_event_add(<%=store_id%>, <%=oneItem.ID%>);"><%=oneItem.PRICE%></td>
+														
 													</tr>
 												</table>
-												</div>
-												<div class="col-md-12 form-control" style="height:90px; text-align: left; line-height:35px">
-													<table style="width:700px;">
-														<tr>
-															<td>
-																<div>싸이버거세트</div>
-																<div>5600원</div>
-															</td>
-															<td style="column-width: 40;">이미지</td>
-														</tr>
-													</table>
-													</div>
-										
-										  </div>
-										</div>
-									  </div>
-									  <div class="panel panel-default">
-										<div class="panel-heading" role="tab" id="headingTwo">
-										<a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-											<div class="col-md-12 form-control" style="background-color: #e9e9e9;text-align: center; line-height:35px">
-												1인분 주문
-												</div>
-										</a>
-										</div>
-										<div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-											<div class="panel-body">
-												<div class="col-md-12 form-control" style="height:90px; text-align: left; line-height:35px">
-													<table style="width:700px;">
-														<tr>
-															<td>
-																<div>싸이버거세트</div>
-																<div>5600원</div>
-															</td>
-															<td style="column-width: 40;">이미지</td>
-														</tr>
-													</table>
-													</div>
-													<div class="col-md-12 form-control" style="height:90px; text-align: left; line-height:35px">
-														<table style="width:700px;">
-															<tr>
-																<td>
-																	<div>싸이버거세트</div>
-																	<div>5600원</div>
-																</td>
-																<td style="column-width: 40;">이미지</td>
-															</tr>
-														</table>
-														</div>
-										  
 											</div>
+											<%}%>
+
 										  </div>
+										</div>
 									  </div>
+
 									  <div class="panel panel-default">
 										<div class="panel-heading" role="tab" id="headingThree">
 										<a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
@@ -368,26 +331,7 @@
 										<div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
 											<div class="panel-body">
 												<div class="col-md-12 form-control" style="height:90px; text-align: left; line-height:35px">
-													<table style="width:700px;">
-														<tr>
-															<td>
-																<div>싸이버거세트</div>
-																<div>5600원</div>
-															</td>
-															<td style="column-width: 40;">이미지</td>
-														</tr>
-													</table>
-													</div>
-													<div class="col-md-12 form-control" style="height:90px; text-align: left; line-height:35px">
-														<table style="width:700px;">
-															<tr>
-																<td>
-																	<div>싸이버거세트</div>
-																	<div>5600원</div>
-																</td>
-																<td style="column-width: 40;">이미지</td>
-															</tr>
-														</table>
+													
 														</div>
 										  
 											</div>
@@ -456,7 +400,7 @@
 								<div class="product-review">
 									<div class="media">
 										<!-- Avater -->
-										<img src="../images/user/user-thumb.jpg" alt="avater">
+										<img src="../../images/user/user-thumb.jpg" alt="avater">
 										<div class="media-body">
 											<!-- Ratings -->
 											<div class="ratings">
@@ -494,7 +438,7 @@
 									</div>
 									<div class="media">
 										<!-- Avater -->
-										<img src="../images/user/user-thumb.jpg" alt="avater">
+										<img src="../../images/user/user-thumb.jpg" alt="avater">
 										<div class="media-body">
 											<!-- Ratings -->
 											<div class="ratings">
@@ -554,67 +498,53 @@
 					</div>
 				</div>
 			</div>
+
+			
 			<div class="col-md-4">
 				<div class="sidebar">
 					<div class="widget price text-center">
 						<h4>장바구니</h4>
-						<p>39000원</p>
+						
+
+							<%
+							var price = 0;
+							for(var i=0; i<rows[1].length; i++){
+								var oneItem = rows[1][i];
+								price = price + rows[1][i].menu_price * rows[1][i].menu_cnt;
+							%>
+			<%        
+							}
+			%>
+
+
+						<p><%=price%></p>
 					</div>
 					<!-- User Profile widget -->
 					<div class="widget user text-center">
 						<ul class="list-inline mt-10">
 							<table width=300 style="font-weight: bold; line-height: 250%;">
+								<th>메뉴</th>
+								<th>가격</th>
+								<th>개수</th>
+								<th>개수</th>
+								<%
+							var price = 0;
+							for(var i=0; i<rows[1].length; i++){
+								var temp = rows[1][i];
+								price = price + rows[1][i].menu_price * rows[1][i].menu_cnt;
+							%>
+
 								<tr>
-									<td>치킨</td>
-									<td>17000</td>
-									<td><a href="">삭제하기</a></td>
+									<td><%=temp.menu_name%></td>
+									<td><%=temp.menu_price%></td>
+									<td><%=temp.menu_cnt%></td>
+									<td id = "btncart"  onclick="butten_event_delete(<%=store_id%>, <%=temp.menuID%>);">삭제</td>
+									<!--<td><a href="/buyer/delete-cart/<%=temp.userID%>/<%=temp.menuID%>">삭제</a></td>-->
+									
 								</tr>
-								<tr>
-									<td>햄버거</td>
-									<td>5000</td>
-									<td><a href="">삭제하기</a></td>
-								</tr>
-								<tr>
-									<td>치킨2</td>
-									<td>17000</td>
-									<td><a href="">삭제하기</a></td>
-								</tr>
+								<%}%>
 							</table><hr>	
 							<li class="list-inline-item"><a href="" class="btn btn-contact d-inline-block  btn-primary px-lg-5 my-1 px-md-3">구매하기</a></li>
-					</div>
-					<!-- Map Widget -->
-					<div class="widget map">
-						<div class="map">
-							<div id="map_canvas" data-latitude="51.507351" data-longitude="-0.127758"></div>
-						</div>
-					</div>
-					<!-- Rate Widget -->
-					<div class="widget rate">
-						<!-- Heading -->
-						<h5 class="widget-header text-center">What would you rate
-							<br>
-							this product</h5>
-						<!-- Rate -->
-						<div class="starrr"></div>
-					</div>
-					<!-- Safety tips widget -->
-					<div class="widget disclaimer">
-						<h5 class="widget-header">Safety Tips</h5>
-						<ul>
-							<li>Meet seller at a public place</li>
-							<li>Check the item before you buy</li>
-							<li>Pay only after collecting the item</li>
-							<li>Pay only after collecting the item</li>
-						</ul>
-					</div>
-					<!-- Coupon Widget -->
-					<div class="widget coupon text-center">
-						<!-- Coupon description -->
-						<p>Have a great product to post ? Share it with
-							your fellow users.
-						</p>
-						<!-- Submii button -->
-						<a href="" class="btn btn-transparent-white">Submit Listing</a>
 					</div>
 
 				</div>
@@ -636,7 +566,7 @@
         <!-- About -->
         <div class="block about">
           <!-- footer logo -->
-          <img src="../images/logo-footer.png" alt="">
+          <img src="../../images/logo-footer.png" alt="">
           <!-- description -->
           <p class="alt-color">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
             incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
@@ -680,13 +610,13 @@
           <div class="mobile d-flex">
             <a href="">
               <!-- Icon -->
-              <img src="../images/footer/phone-icon.png" alt="mobile-icon">
+              <img src="../../images/footer/phone-icon.png" alt="mobile-icon">
             </a>
             <p>Get the Dealsy Mobile App and Save more</p>
           </div>
           <div class="download-btn d-flex my-3">
-            <a href="#"><img src="../node_modules/" class="img-fluid" alt=""></a>
-            <a href="#" class=" ml-3"><img src="../images/apps/apple-app-store.png" class="img-fluid" alt=""></a>
+            <a href="#"><img src="../../node_modules/" class="img-fluid" alt=""></a>
+            <a href="#" class=" ml-3"><img src="../../images/apps/apple-app-store.png" class="img-fluid" alt=""></a>
           </div>
         </div>
       </div>
@@ -727,21 +657,21 @@
 </footer>
 
 <!-- JAVASCRIPTS -->
-<script src="../plugins/jQuery/jquery.min.js"></script>
-<script src="../plugins/bootstrap/js/popper.min.js"></script>
-<script src="../plugins/bootstrap/js/bootstrap.min.js"></script>
-<script src="../plugins/bootstrap/js/bootstrap-slider.js"></script>
+<script src="../../plugins/jQuery/jquery.min.js"></script>
+<script src="../../plugins/bootstrap/js/popper.min.js"></script>
+<script src="../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../plugins/bootstrap/js/bootstrap-slider.js"></script>
   <!-- tether js -->
-<script src="../plugins/tether/js/tether.min.js"></script>
-<script src="../plugins/raty/jquery.raty-fa.js"></script>
-<script src="../plugins/slick-carousel/slick/slick.min.js"></script>
-<script src="../plugins/jquery-nice-select/js/jquery.nice-select.min.js"></script>
-<script src="../plugins/fancybox/jquery.fancybox.pack.js"></script>
-<script src="../plugins/smoothscroll/SmoothScroll.min.js"></script>
+<script src="../../plugins/tether/js/tether.min.js"></script>
+<script src="../../plugins/raty/jquery.raty-fa.js"></script>
+<script src="../../plugins/slick-carousel/slick/slick.min.js"></script>
+<script src="../../plugins/jquery-nice-select/js/jquery.nice-select.min.js"></script>
+<script src="../../plugins/fancybox/jquery.fancybox.pack.js"></script>
+<script src="../../plugins/smoothscroll/SmoothScroll.min.js"></script>
 <!-- google map -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
-<script src="../plugins/google-map/gmap.js"></script>
-<script src="../js/script.js"></script>
+<script src="../../plugins/google-map/gmap.js"></script>
+<script src="../../js/script.js"></script>
 
 </body>
 

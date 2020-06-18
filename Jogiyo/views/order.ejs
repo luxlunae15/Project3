@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css'/>
+    </head>
+    <body>
+        <h1><%= title %></h1>
+        <br>
+        <br>
+        <table border="1">
+            <tr>
+                <td>주문 고객</td>
+                <td>메뉴 이름</td>
+                
+            </tr>
+<%
+                for(var i=0; i<rows.length; i++){
+                    var oneItem = rows[i];
+%>
+                    <tr>
+                        <td><%=oneItem.user_ID%></td>
+                        <td><%=oneItem.menu_ID%></td>
+                    </tr>
+<%        
+                }
+%>
+
+        </table>
+    </body>
+</html>

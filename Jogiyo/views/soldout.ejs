@@ -3,7 +3,6 @@
     <head>
         <title><%= title %></title>
         <link rel='stylesheet' href='/stylesheets/style.css'/>
-        <script src="/javascripts/jquery-3.5.1.min.js"></script>
     </head>
     <body>
         <h1><%= title %></h1>
@@ -13,8 +12,8 @@
             <tr>
                 <td>주문 메뉴</td>
                 <td>구매 고객</td>
+                <td>판매자</td>
                 <td>가격</td>
-                <td>수량</td>
                 <td>판매 날짜</td>
                 
             </tr>
@@ -23,23 +22,16 @@
                     var oneItem = rows[i];
 %>
                     <tr>
-                        <td><%=oneItem.menu_name%></td>
+                        <td><%=oneItem.menu_ID%></td>
                         <td><%=oneItem.user_ID%></td>
-                        <td><%=oneItem.PRICE%></td>
-                        <td><%=oneItem.cnt%></td>
-                        <td><%=oneItem.history%></td>
+                        <td><%=oneItem.seller_ID%></td>
+                        <td><%=oneItem.price%></td>
+                        <td><%=oneItem.date%></td>
                     </tr>
 <%        
                 }
 %>
 
         </table>
-        <input type="button" id="btnRtn" name="return" value="돌아가기">
-        <script>
-            $("#btnRtn").click(
-                function(){
-                    location.href="/store/<%=store_id%>";
-                });
-        </script>
     </body>
 </html>

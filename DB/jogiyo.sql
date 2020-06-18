@@ -42,11 +42,17 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `jogiyo`.`menu` (
   `ID` INT NOT NULL AUTO_INCREMENT,
+  `store_ID` INT NOT NULL,
   `NAME` VARCHAR(15) NOT NULL,
   `PRICE` INT NOT NULL,
   `content` LONGTEXT NULL DEFAULT NULL,
   PRIMARY KEY (`ID`),
-  UNIQUE INDEX `ID_UNIQUE` (`ID` ASC) VISIBLE)
+  UNIQUE INDEX `ID_UNIQUE` (`ID` ASC) VISIBLE,
+  CONSTRAINT `fk_menu_store1`
+    FOREIGN KEY (`store_ID`)
+    REFERENCES `jogiyo`.`store` (`ID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -140,20 +146,20 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `jogiyo`.`category_menu`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jogiyo`.`category_menu` (
+CREATE TABLE IF NOT EXISTS `jogiyo`.`category_store` (
   `category_ID` INT NOT NULL,
-  `menu_ID` INT NOT NULL,
-  PRIMARY KEY (`category_ID`, `menu_ID`),
-  INDEX `fk_category_has_menu_menu1_idx` (`menu_ID` ASC) VISIBLE,
-  INDEX `fk_category_has_menu_category1_idx` (`category_ID` ASC) VISIBLE,
-  CONSTRAINT `fk_category_has_menu_category1`
+  `store_ID` INT NOT NULL,
+  PRIMARY KEY (`category_ID`, `store_ID`),
+  INDEX `fk_category_has_store_store1_idx` (`store_ID` ASC) VISIBLE,
+  INDEX `fk_category_has_store_category1_idx` (`category_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_category_has_store_category1`
     FOREIGN KEY (`category_ID`)
     REFERENCES `jogiyo`.`category` (`ID`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-  CONSTRAINT `fk_category_has_menu_menu1`
-    FOREIGN KEY (`menu_ID`)
-    REFERENCES `jogiyo`.`menu` (`ID`)
+  CONSTRAINT `fk_category_has_store_store1`
+    FOREIGN KEY (`store_ID`)
+    REFERENCES `jogiyo`.`store` (`ID`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
@@ -201,28 +207,6 @@ CREATE TABLE IF NOT EXISTS `jogiyo`.`sold_history` (
   CONSTRAINT `fk_sold_history_user1`
     FOREIGN KEY (`user_ID`)
     REFERENCES `jogiyo`.`user` (`ID`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `jogiyo`.`menu_store`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jogiyo`.`menu_store` (
-  `menu_ID` INT NOT NULL,
-  `store_ID` INT NOT NULL,
-  PRIMARY KEY (`menu_ID`, `store_ID`),
-  INDEX `fk_menu_has_store_store1_idx` (`store_ID` ASC) VISIBLE,
-  INDEX `fk_menu_has_store_menu1_idx` (`menu_ID` ASC) VISIBLE,
-  CONSTRAINT `fk_menu_has_store_menu1`
-    FOREIGN KEY (`menu_ID`)
-    REFERENCES `jogiyo`.`menu` (`ID`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_menu_has_store_store1`
-    FOREIGN KEY (`store_ID`)
-    REFERENCES `jogiyo`.`store` (`ID`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
