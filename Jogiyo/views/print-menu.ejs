@@ -401,44 +401,10 @@
 						<br>
 								
 								<div class="product-review">
-									<div class="media">
-										<!-- Avater -->
-										<img src="../../images/user/user-thumb.jpg" alt="avater">
-										<div class="media-body">
-											<!-- Ratings -->
-											<ul class="list-inline">
-												<li class="list-inline-item">
-													<i class="fa fa-star"></i>
-												</li>
-												<li class="list-inline-item">
-													<i class="fa fa-star"></i>
-												</li>
-												<li class="list-inline-item">
-													<i class="fa fa-star"></i>
-												</li>
-												<li class="list-inline-item">
-													<i class="fa fa-star"></i>
-												</li>
-												<li class="list-inline-item">
-													<i class="fa fa-star"></i>
-												</li>
-											</ul>
-										   
-											<div class="name">
-												<h5>송예찬</h5>
-											</div>
-											<div class="date">
-												<p>Mar 20, 2018</p>
-											</div>
-											<div class="review-comment">
-												<p>
-													존맛!
-												</p>
-											</div>
-											
-											<div><i class="fa fa-thumbs-o-up fa-lg"> 399</i></div>
-										</div>
-									</div>
+									<% for(var i=0; i<rows[2].length; i++)
+									{
+										var item2 = rows[2][i];
+									%>
 									<div class="media">
 										<!-- Avater -->
 										<img src="../../images/user/user-thumb.jpg" alt="avater">
@@ -446,37 +412,28 @@
 											<!-- Ratings -->
 											<div class="ratings">
 												<ul class="list-inline">
+													<% for(var j=0; j<item2.rate; j++) {%>
 													<li class="list-inline-item">
 														<i class="fa fa-star"></i>
 													</li>
-													<li class="list-inline-item">
-														<i class="fa fa-star"></i>
-													</li>
-													<li class="list-inline-item">
-														<i class="fa fa-star"></i>
-													</li>
-													<li class="list-inline-item">
-														<i class="fa fa-star"></i>
-													</li>
-													<li class="list-inline-item">
-														<i class="fa fa-star"></i>
-													</li>
+													<% } %>
 												</ul>
 											</div>
 											<div class="name">
-												<h5>송예찬</h5>
+												<h5><%=item2.NAME%></h5>
 											</div>
 											<div class="date">
-												<p>Mar 20, 2018</p>
+												<p><%=item2.date%></p>
 											</div>
 											<div class="review-comment">
 												<p>
-													존맛!
+													<%=item2.content%>
 												</p>
 											</div>
 											<div><i class="fa fa-thumbs-o-up fa-lg"> 278</i></div>
 										</div>
 									</div>
+									<% } %>
 									
 									<div class="review-submission">
 
