@@ -6,7 +6,9 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Classimax</title>
+		<title>Classimax</title>
+		<script src="../../javascripts/jquery-3.5.1.min.js"></script>
+		
 
         <script type="text/javascript">
             function butten_event_add(value1, value2) {
@@ -26,6 +28,7 @@
                 }
             }
 		</script>
+
 		
   <!-- FAVICON -->
   <link href="../../img/favicon.png" rel="shortcut icon">
@@ -346,36 +349,28 @@
 								<table class="table table-bordered product-table">
 									<tbody>
 										<tr>
-											<td>Seller Price</td>
-											<td>$450</td>
+											<td>매장 이름</td>
+											<td><%=rows[3][0].store_name%></td>
 										</tr>
 										<tr>
-											<td>Added</td>
-											<td>26th December</td>
+											<td>전화번호</td>
+											<td><%=rows[3][0].PHONE%></td>
 										</tr>
 										<tr>
-											<td>State</td>
-											<td>Dhaka</td>
+											<td>카테고리</td>
+											<td><%=rows[3][0].category_name%></td>
 										</tr>
 										<tr>
-											<td>Brand</td>
-											<td>Apple</td>
+											<td>최소 주문 금액</td>
+											<td><%=rows[3][0].PRICE_LIMIT%>원</td>
 										</tr>
 										<tr>
-											<td>Condition</td>
-											<td>Used</td>
+											<td>영업 시간</td>
+											<td><%=rows[3][0].UPTIME%>~<%=rows[3][0].CLOSETIME%></td>
 										</tr>
 										<tr>
-											<td>Model</td>
-											<td>2017</td>
-										</tr>
-										<tr>
-											<td>State</td>
-											<td>Dhaka</td>
-										</tr>
-										<tr>
-											<td>Battery Life</td>
-											<td>23</td>
+											<td>평점</td>
+											<td><%=rows[3][0].RATE%></td>
 										</tr>
 									</tbody>
 								</table>
@@ -398,6 +393,10 @@
 						<br>
 								
 								<div class="product-review">
+									<% for(var i=0; i<rows[2].length; i++)
+									{
+										var item2 = rows[2][i];
+									%>
 									<div class="media">
 										<!-- Avater -->
 										<img src="../../images/user/user-thumb.jpg" alt="avater">
@@ -405,100 +404,76 @@
 											<!-- Ratings -->
 											<div class="ratings">
 												<ul class="list-inline">
+													<% for(var j=0; j<item2.rate; j++) {%>
 													<li class="list-inline-item">
 														<i class="fa fa-star"></i>
 													</li>
-													<li class="list-inline-item">
-														<i class="fa fa-star"></i>
-													</li>
-													<li class="list-inline-item">
-														<i class="fa fa-star"></i>
-													</li>
-													<li class="list-inline-item">
-														<i class="fa fa-star"></i>
-													</li>
-													<li class="list-inline-item">
-														<i class="fa fa-star"></i>
-													</li>
+													<% } %>
 												</ul>
 											</div>
 											<div class="name">
-												<h5>송예찬</h5>
+												<h5><%=item2.NAME%></h5>
 											</div>
 											<div class="date">
-												<p>Mar 20, 2018</p>
+												<p><%=item2.date%></p>
 											</div>
 											<div class="review-comment">
 												<p>
-													존맛!
-												</p>
-											</div>
-											<div><i class="fa fa-thumbs-o-up fa-lg"> 399</i></div>
-										</div>
-									</div>
-									<div class="media">
-										<!-- Avater -->
-										<img src="../../images/user/user-thumb.jpg" alt="avater">
-										<div class="media-body">
-											<!-- Ratings -->
-											<div class="ratings">
-												<ul class="list-inline">
-													<li class="list-inline-item">
-														<i class="fa fa-star"></i>
-													</li>
-													<li class="list-inline-item">
-														<i class="fa fa-star"></i>
-													</li>
-													<li class="list-inline-item">
-														<i class="fa fa-star"></i>
-													</li>
-													<li class="list-inline-item">
-														<i class="fa fa-star"></i>
-													</li>
-													<li class="list-inline-item">
-														<i class="fa fa-star"></i>
-													</li>
-												</ul>
-											</div>
-											<div class="name">
-												<h5>송예찬</h5>
-											</div>
-											<div class="date">
-												<p>Mar 20, 2018</p>
-											</div>
-											<div class="review-comment">
-												<p>
-													존맛!
+													<%=item2.content%>
 												</p>
 											</div>
 											<div><i class="fa fa-thumbs-o-up fa-lg"> 278</i></div>
 										</div>
 									</div>
+									<% } %>
 									
 									<div class="review-submission">
-										<form action="/review/<%=store_id%>" method="post">
-											<h3 class="tab-title">리뷰 작성</h3>
-											메뉴	
-											<select name="menu" id="menu">
-						                        <% for(var i=0; i<rows.length; i++){ 
-						                            var item = rows[0][i];
-						                        %>
-						                        <option value="<%=item.ID%>"><%=item.NAME%></option>
-						                        <%}%>
-											</select>
-											<!-- Rate -->
-											<div class="rate">
-												<div class="starrr"></div>
-											</div>
-											<div class="review-submit">
-												<div class="col-12">
-													<textarea name="review" id="review" rows="10" class="form-control" placeholder="내용"></textarea>
-												</div>
-												<div class="col-12">
-													<button type="submit" class="btn btn-main">Sumbit</button>
-												</div>
-											</div>
-										</form>
+
+										
+										<!-- Rate -->
+										
+										
+												<form action="/review/<%=store_id%>" method="post">
+													<h3 class="tab-title">리뷰 작성</h3>
+													메뉴	
+													<select name="menu" id="menu">
+														<% for(var i=0; i<rows[0].length; i++){ 
+															var item = rows[0][i];
+														%>
+														<option value="<%=item.ID%>"><%=item.NAME%></option>
+														<%}%>
+													</select>
+													<!-- Rate -->
+													
+													<span class="star-input" style="margin-bottom: 20px; margin-top: 20px;">
+
+														<span class="input">
+															<input type="radio" name="rate" value="1" id="p1">
+															<label for="p1">1</label>
+															<input type="radio" name="rate" value="2" id="p2">
+															<label for="p2">2</label>
+															<input type="radio" name="rate" value="3" id="p3">
+															<label for="p3">3</label>
+															<input type="radio" name="rate" value="4" id="p4">
+															<label for="p4">4</label>
+															<input type="radio" name="rate" value="5" id="p5">
+															<label for="p5">5</label>
+														  </span>
+														  	
+														
+													</span>
+													<script src="../../js/star.js"></script>
+													<div class="review-submit">
+														<div class="col-12">
+															<textarea name="review" id="review" rows="10" class="form-control" placeholder="내용"></textarea>
+														</div>
+														<div class="col-12">
+															<button type="submit" class="btn btn-main">Sumbit</button>
+														</div>
+													</div>
+												</form>
+										
+
 									</div>
 								</div>
 							</div>
@@ -552,7 +527,12 @@
 								</tr>
 								<%}%>
 							</table><hr>	
-							<li class="list-inline-item"><a href="" class="btn btn-contact d-inline-block  btn-primary px-lg-5 my-1 px-md-3">구매하기</a></li>
+							<form id="purchase" action="/purchase" method="post">
+								<input type="hidden" name="data_id" value="<%=hint%>">
+								<input type="hidden" name="data_menu" value="<%=rows[1]%>">
+								<input type="submit" class="list-inline-item btn btn-contact d-inline-block  btn-primary px-lg-5 my-1 px-md-3" value="구매하기">
+
+							</form>
 					</div>
 
 				</div>
