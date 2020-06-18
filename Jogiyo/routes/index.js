@@ -53,7 +53,21 @@ router.get('/login', function(req, res, next) {
 
 /* POST 로그인 */
 router.post('/login', passport.authenticate('local', {failureRedirect: '/login', failureFlash: true }), function(req, res) {
-    res.redirect('/');
+
+	// 각 회원 종류에 대한 분기.
+	if(req.user.AUTH=='판매자'){
+		console.log('seller auth : ',req.user.AUTH );
+		res.redirect('/seller');
+	}
+	else if(req.user.AUTH=='관리자'){
+		console.log('manager auth : ',req.user.AUTH );
+		res.redirect('/account/userlist/1');
+	}
+	else{
+		console.log("buyer here : ",req.user.AUTH);
+		res.redirect('/');
+	}
+
 })
 
 passport.serializeUser(function(user, done) {
