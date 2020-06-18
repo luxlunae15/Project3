@@ -295,7 +295,7 @@ router.get('/buyer/print-store', isAuthenticated, function(req, res, next){
 			else
 			{
 				console.log("매장 조회 결과 : ", rows);
-				res.render('print-store', {title:"매장 조회", rows:rows});
+				res.render('print-store', {title:"매장 조회", rows:rows, category:"전체", price:0, storename:""});
 			}
 			connection.release();
 		});
@@ -306,6 +306,8 @@ router.post('/buyer/print-store', isAuthenticated, function (req, res, next) {
     var category = req.body.category;
     var price = req.body.price;
     var storename = req.body.storename;
+    var x = req.body.lat;
+    var y = req.body.lng;
     var datas = new Array();
     var sql = "select count(distinct review.id) as reviewcnt, store.ID, store.NAME, PHONE, store.RATE, DELIVERY_TIME, UPTIME, CLOSETIME, LAT, LNG, PRICE_LIMIT  from store inner join menu on store.id = menu.store_id  left outer join review on review.store_id = store.id inner join category_store on category_store.store_ID = store.id inner join category on category_store.category_ID = category.ID  ";
     if (category != "전체" || price != ">0" || storename != "") {
@@ -327,6 +329,20 @@ router.post('/buyer/print-store', isAuthenticated, function (req, res, next) {
 		sql=sql.replace(/['"]+/g, '');
 	}
 	sql += " group by store.id  ";
+	if(req.body.sort==1)
+		sql += "ORDER BY RATE DESC";
+	else if(req.body.sort==2)
+		sql += "ORDER BY reviewcnt DESC";
+	else if(req.body.sort==3)
+	{
+		sql += "ORDER BY (((LAT-?)*(LAT-?))+((LNG-?)*(LNG-?)))";
+		datas.push(x,x,y,y);
+	}
+	else if(req.body.sort==4)
+		sql += "ORDER BY PRICE_LIMIT";
+	else if(req.body.sort==5)
+		sql += "ORDER BY DELIVERY_TIME";
+
 	console.log(sql);
 	console.log(datas);
 	if(datas.length == 0) {
@@ -336,7 +352,8 @@ router.post('/buyer/print-store', isAuthenticated, function (req, res, next) {
 				else
 				{
 					console.log("매장 조회 결과 : ", rows);
-					res.render('print-store', {title:"매장 조회", rows:rows});
+					console.log(req.body.lat, req.body.lng);
+					res.render('print-store', {title:"매장 조회", rows:rows, category:category, price:price, storename:storename});
 				}
 				connection.release();
 			});
@@ -349,7 +366,7 @@ router.post('/buyer/print-store', isAuthenticated, function (req, res, next) {
 				else
 				{
 					console.log("매장 조회 결과 : ", rows);
-					res.render('print-store', {title:"매장 조회", rows:rows});
+					res.render('print-store', {title:"매장 조회", rows:rows, category:category, price:price, storename:storename});
 				}
 				connection.release();
 			});
