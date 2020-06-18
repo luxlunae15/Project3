@@ -46,7 +46,7 @@ router.get('/login', function(req, res, next) {
         var login = 'unlogin';
     else {
         var login = 'login';
-        res.redirect('/');
+		res.send("<script>alert('로그인 되었습니다.');history.back();</script>");
     }
     res.render('login', { title: 'login'});
 });
@@ -287,18 +287,37 @@ router.get('/buyer', isAuthenticated, function(req,res,next){
     res.render('buyer', {title: "구매자"});
 });
 
-router.get('/buyer/print-menu', isAuthenticated, function(req,res,next){
-    var sql = "select * from menu;select user.ID as userID, user.name as user_name, menu.name as menu_name, menu.id as menuID, menu.price as menu_price, user_menu.cnt as menu_cnt from user_menu inner join menu on menu_ID = menu.ID inner join user on user_ID = user.id where user.ID=?";
-	console.log("print-menu : ");
-	
-	multiconnection.query(sql, [req.user.ID],function(err,row){
-        if(err) console.error(err);
-            console.log("메뉴 출력 결과: ",row);
-            res.render('print-menu', {title: "메뉴 조회", rows:row});
-    });
+router.get('/buyer/print-store', isAuthenticated, function(req, res, next){
+	pool.getConnection(function(err, connection){
+		var sql = "select * from store";
+		connection.query(sql, function(err, rows){
+			if(err) console.error("err : " + err);
+			else
+			{
+				console.log("매장 조회 결과 : ", rows);
+				res.render('print-store', {title:"매장 조회", rows:rows});
+			}
+			connection.release();
+		});
+	});
 });
 
-router.get('/buyer/cart/:menuID', isAuthenticated, function(req,res,next){
+router.get('/buyer/print-menu/:id', isAuthenticated, function(req,res,next){
+	var store_id = req.params.id;
+    var sql = "SELECT * FROM menu WHERE store_ID=?; select user.ID as userID, user.name as user_name, menu.name as menu_name, menu.id as menuID, menu.price as menu_price, user_menu.cnt as menu_cnt from user_menu inner join menu on menu_ID = menu.ID inner join user on user_ID = user.id where user.ID=?";
+	
+	multiconnection.query(sql, [store_id, req.user.ID],function(err,rows){
+        if(err) console.error("에러:"+err);
+        else{
+    		console.log("메뉴 조회 결과 : ", rows);
+            res.render('print-menu', {title: "메뉴 조회", rows:rows, store_id:store_id});
+        }
+    });
+    	
+});
+
+router.get('/buyer/cart/:store_id/:menuID', isAuthenticated, function(req,res,next){
+	var store_id = req.params.store_id;
     var menuID = req.params.menuID;
     console.log(menuID);
     console.log(req.body.userID);
@@ -307,16 +326,19 @@ router.get('/buyer/cart/:menuID', isAuthenticated, function(req,res,next){
 		var sql = "insert into user_menu (user_ID, menu_ID) values(?, ?) ON DUPLICATE KEY UPDATE cnt = cnt + 1"
 		connection.query(sql, datas, function(err,rows){
 			if(err) console.error("err: "+err);
-			console.log("장바구니추가 완료");
-			console.log("rows : " + JSON.stringify(rows));
-            res.redirect('/buyer/print-cart');
+			else
+			{
+				console.log("rows : " + JSON.stringify(rows));
+            	res.redirect('/buyer/print-menu/'+store_id);
+			}
 			connection.release();
 		});
 	});
 });
 
-router.get('/buyer/delete-cart/:userID/:menuID', isAuthenticated, function(req,res,next){
-    var userID = req.params.userID;
+router.get('/buyer/delete-cart/:store_id/:menuID', isAuthenticated, function(req,res,next){
+    var userID = req.user.ID;
+    var store_id = req.params.store_id;
     var menuID = req.params.menuID;
     var datas = [userID, menuID];
     console.log(userID, menuID);
@@ -327,17 +349,18 @@ router.get('/buyer/delete-cart/:userID/:menuID', isAuthenticated, function(req,r
 		connection.query(sql, datas, function(err,row){
             console.log(sql);
 			if(err) console.error("err: "+err);
-			console.log("장바구니 삭제");
-			console.log("장바구니 삭제 결과: ",row);
-            res.redirect('/buyer/print-menu');
+			else
+			{
+				console.log("장바구니 삭제 결과: ",row);
+            	res.redirect('/buyer/print-menu/'+store_id);
+			}
 			connection.release();
 		});
 	});
 });
 
 router.get('/buyer/print-cart', isAuthenticated, function(req,res,next){
-	res.redirect('/buyer/print-menu');
-    var sql1 = "select user.ID as userID, user.name as user_name, menu.name as menu_name, menu.id as menuID, menu.price as menu_price, user_menu.cnt as menu_cnt from user_menu inner join menu on menu_ID = menu.ID inner join user on user_ID = user.id where user.ID=?"
+    var sql1 = "select menu.store_ID as store_ID, user.ID as userID, user.name as user_name, menu.name as menu_name, menu.id as menuID, menu.price as menu_price, user_menu.cnt as menu_cnt from user_menu inner join menu on menu_ID = menu.ID inner join user on user_ID = user.id where user.ID=?"
     //   select user.id as userID, user.name as user_name, sum(menu.price) as total_price from user_menu inner join menu on menu_ID = menu.ID inner join user on user_ID = user.id where user.ID=? group by user.id";
     //var sql2 = "select user.name as user_name, sum(menu.price) as total_price from user_menu inner join menu on menu_ID = menu.ID inner join user on user_ID = user.id;";
 
@@ -367,7 +390,7 @@ router.get('/buyer/buy/:userID', isAuthenticated, function(req, res, next){
     multiconnection.query(sql, datas, function(err,row){
         if(err) console.error("err: "+err);
         console.log("구매 출력 결과: ",row);
-        res.redirect('/buyer');
+        res.redirect('/purchase');
     });
 });
 
@@ -386,6 +409,22 @@ router.get('/buyer/history', isAuthenticated, function(req, res, next){
 		});
 	});
 });
+
+// 구매 페이지
+router.get('/purchase',isAuthenticated, function(req, res, next){
+	res.render('purchase');
+});
+
+// 쿠폰 돌림판
+router.get('/coupon', function(req, res, next){
+	res.render('coupon');
+
+	
+});
+
+
+
+
 
 
 //////////////////////////////// 구매자 끝 /////////////////////////////////////////////////////
@@ -407,12 +446,23 @@ router.get('/seller', isAuthenticated, function(req,res,next){
 });
 
 router.get('/store_add', isAuthenticated, function(req, res, next){
-	res.render('store_add', {title:'매장 추가'});
+	pool.getConnection(function(err, connection){
+		var sql = "SELECT * FROM category";
+		connection.query(sql, function(err,rows){
+			if(err) console.error("err: "+err);
+			else
+			{
+				res.render('store_add', {title:'매장 추가', rows:rows});
+			}
+			connection.release();
+		});
+	});
 });
 
 router.post('/store_add', isAuthenticated, function(req, res, next){
 	var name = req.body.name;
 	var tel = req.body.tel;
+	var category = req.body.category;
 	var dtime = req.body.dtime;
 	var price = req.body.price;
 	var open = req.body.open;
@@ -428,11 +478,29 @@ router.post('/store_add', isAuthenticated, function(req, res, next){
 			{
 				console.log("rows:",rows);
 				var store_ID = rows.insertId;
-				res.redirect('/store_seller/'+store_ID);
+				res.redirect('/category_store/'+store_ID+'/'+category);
 			}
 			connection.release();
 		});
 	});
+});
+
+router.get('/category_store/:store_id/:category', isAuthenticated, function(req, res, next){
+	var store_id = req.params.store_id;
+	var category = req.params.category;
+
+	pool.getConnection(function(err, connection){
+		var sql = "INSERT INTO category_store values(?, ?)";
+		connection.query(sql, [category, store_id], function(err, rows){
+			if(err) console.error("err: "+err);
+			else
+			{
+				console.log("rows: ", rows);
+				res.redirect('/store_seller/'+store_id);
+			}
+			connection.release();
+		})
+	})
 });
 
 router.get('/store_seller/:id', isAuthenticated, function(req, res, next){
@@ -552,7 +620,7 @@ router.get('/product/:store_id/:menu_id', isAuthenticated, function(req, res, ne
 router.get('/product_list/:id', isAuthenticated, function(req, res, next){
 	var store_id = req.params.id;
 	pool.getConnection(function(err, connection){
-		var sql = "SELECT menu.ID as menu_ID, menu.NAME as menu_name, menu.PRICE as menu_price, menu.content as menu_content FROM menu inner join menu_store on menu.ID = menu_ID inner join store on store.ID = store_ID WHERE store.ID = ?";
+		var sql = "SELECT menu.ID as menu_ID, menu.NAME as menu_name, menu.PRICE as menu_price, menu.content as menu_content FROM menu WHERE store_ID = ?";
 		connection.query(sql, [store_id], function(err, rows){
 			if(err) console.log("err: "+err);
 			else
@@ -578,37 +646,19 @@ router.post('/product_add/:id', isAuthenticated, function(req,res,next){
     var content = req.body.content;
     var PRICE = req.body.PRICE;
     
-    var datas = [NAME,PRICE,content];
+    var datas = [store_id, NAME,PRICE,content];
 	console.log("s",store_id);
 
     pool.getConnection(function(err, connection){
-        var sqlForInsertmenu = "INSERT INTO menu(NAME, PRICE, content) values(?,?,?)";
+        var sqlForInsertmenu = "INSERT INTO menu(store_ID, NAME, PRICE, content) values(?,?,?,?)";
         connection.query(sqlForInsertmenu,datas, function(err,rows){
             if (err) console.error("err : " + err);
             console.log("상품 추가 data : " + JSON.stringify(rows));
-            res.redirect('/store_menu/'+rows.insertId+'/'+store_id);
+			res.redirect('/product_list/'+store_id);
             connection.release();
         }); 
     });
 });
-
-router.get('/store_menu/:menu_id/:store_id', isAuthenticated, function(req, res, next){
-	var menu_id = req.params.menu_id;
-	var store_id = req.params.store_id;
-	console.log("m, s", menu_id, store_id);
-	pool.getConnection(function(err, connection){
-		var sql = "INSERT INTO menu_store values (?, ?)"
-		connection.query(sql, [menu_id, store_id], function(err, rows){
-			if(err) console.error("err: " +err);
-			else
-			{
-				console.log("rows: ", rows);
-				res.redirect('/product_list/'+store_id);
-			}
-			connection.release();
-		})
-	})
-})
 
 
 router.get('/product_del/:store_id/:menu_id', isAuthenticated, function(req, res, next){
@@ -674,17 +724,16 @@ router.post('/product_mod/:store_id/:menu_id', isAuthenticated, function(req, re
     });
 });
 
-//////////////////////// 보류 //////////////////////////
 // 주문 현황
 router.get('/store_order/:id', isAuthenticated, function(req,res,next){
 	var id = req.params.id;
     pool.getConnection(function(err,connection){
-        var sqlForSelectList = "SELECT user_ID, menu_ID FROM user_menu";
-        connection.query(sqlForSelectList, function(err,rows){
+        var sql = "SELECT history, menu.NAME as menu_name, PRICE, cnt, user_ID FROM sold_history inner join menu ON menu.ID = menu_ID inner join store on store_ID = store.ID where store_ID = ? and history>DATE_SUB(NOW(), INTERVAL DELIVERY_TIME MINUTE)";
+        connection.query(sql, [id], function(err,rows){
             if (err) console.error("err : "+err);
             console.log("rows : " + JSON.stringify(rows));
 
-            res.render('store_order', {title: '주문 현황', rows: rows});
+            res.render('store_sold', {title: '주문 현황', rows: rows, store_id:id});
             connection.release();
 
             // Don`t use the connection here, it has been returned th the pool.
@@ -695,14 +744,14 @@ router.get('/store_order/:id', isAuthenticated, function(req,res,next){
 
 // 판매 내역 확인
 router.get('/store_sold/:id', isAuthenticated, function(req,res,next){
+	var store_id = req.params.id;
     pool.getConnection(function(err,connection){
-        // Use the connection
-        var sqlForSelectList = "SELECT * FROM sold_history";
-        connection.query(sqlForSelectList, function(err,rows){
+        var sql = "SELECT history, menu.NAME as menu_name, PRICE, cnt, user_ID FROM sold_history inner join menu ON menu.ID = menu_ID inner join store on store_ID = store.ID where store_ID = ? and history<DATE_SUB(NOW(), INTERVAL DELIVERY_TIME MINUTE)";
+        connection.query(sql, [store_id], function(err,rows){
             if (err) console.error("err : "+err);
             console.log("rows : " + JSON.stringify(rows));
 
-            res.render('store_sold', {title: '판매 현황', rows: rows});
+            res.render('store_sold', {title: '판매 현황', rows: rows, store_id:store_id});
             connection.release();
 
             // Don`t use the connection here, it has been returned th the pool.
@@ -710,7 +759,7 @@ router.get('/store_sold/:id', isAuthenticated, function(req,res,next){
     });
 });
 
-
+//////////// 남음 ////////////
 // 매출 통계
 router.get('/store/analytics', isAuthenticated, function(req,res,next){
     pool.getConnection(function(err,connection){
