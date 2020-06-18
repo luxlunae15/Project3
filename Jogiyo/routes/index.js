@@ -53,7 +53,21 @@ router.get('/login', function(req, res, next) {
 
 /* POST 로그인 */
 router.post('/login', passport.authenticate('local', {failureRedirect: '/login', failureFlash: true }), function(req, res) {
-    res.redirect('/');
+
+	// 각 회원 종류에 대한 분기.
+	if(req.user.AUTH=='판매자'){
+		console.log('seller auth : ',req.user.AUTH );
+		res.redirect('/seller');
+	}
+	else if(req.user.AUTH=='관리자'){
+		console.log('manager auth : ',req.user.AUTH );
+		res.redirect('/account/userlist/1');
+	}
+	else{
+		console.log("buyer here : ",req.user.AUTH);
+		res.redirect('/');
+	}
+
 })
 
 passport.serializeUser(function(user, done) {
@@ -309,9 +323,9 @@ router.post('/buyer/print-store', isAuthenticated, function (req, res, next) {
     var x = req.body.lat;
     var y = req.body.lng;
     var datas = new Array();
-    var sql = "select count(distinct review.id) as reviewcnt, store.ID, store.NAME, PHONE, store.RATE, DELIVERY_TIME, UPTIME, CLOSETIME, LAT, LNG, PRICE_LIMIT  from store inner join menu on store.id = menu.store_id  left outer join review on review.store_id = store.id inner join category_store on category_store.store_ID = store.id inner join category on category_store.category_ID = category.ID  ";
+    var sql = "select count(distinct review.id) as reviewcnt, store.ID, store.NAME, PHONE, store.RATE, DELIVERY_TIME, UPTIME, CLOSETIME, LAT, LNG, PRICE_LIMIT  from store inner join menu on store.id = menu.store_id  left outer join review on review.store_id = store.id inner join category_store on category_store.store_ID = store.id inner join category on category_store.category_ID = category.ID  WHERE ((UPTIME>CLOSETIME and (now()>UPTIME or now()<CLOSETIME)) or (UPTIME<now() and now()<CLOSETIME))";
     if (category != "전체" || price != ">0" || storename != "") {
-        sql += " where ";
+        sql += " and ";
         if (category != "전체") {
 			datas.push(category);
             sql += "category.name = ?";
@@ -381,8 +395,8 @@ router.get('/buyer/print-menu/:id', isAuthenticated, function(req,res,next){
     var sql1 = "SELECT * FROM menu WHERE store_ID=?;";
     var sql2 = "select user.ID as userID, user.name as user_name, menu.name as menu_name, menu.id as menuID, menu.price as menu_price, user_menu.cnt as menu_cnt from user_menu inner join menu on menu_ID = menu.ID inner join user on user_ID = user.id where user.ID=?;";
     var sql3 = "SELECT * FROM review inner join user on user_id = user.id WHERE store_ID=?;";
-    var sql4 = "SELECT store.NAME as store_name, category.NAME as category_name, PRICE_LIMIT, UPTIME, CLOSETIME, RATE, PHONE FROM store inner join category_store on store.ID = store_ID inner join category on category_ID = category.ID WHERE store.ID=?;";
-	
+    var sql4 = "SELECT store.NAME as store_name, category.NAME as category_name, PRICE_LIMIT, DELIVERY_TIME, UPTIME, CLOSETIME, RATE, PHONE FROM store inner join category_store on store.ID = store_ID inner join category on category_ID = category.ID WHERE store.ID=?;";
+		
 	multiconnection.query(sql1+sql2+sql3+sql4, [store_id, req.user.ID, store_id, store_id],function(err,rows){
         if(err) console.error("에러:"+err);
         else{
