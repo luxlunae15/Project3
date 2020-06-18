@@ -422,7 +422,25 @@ router.get('/coupon', function(req, res, next){
 	
 });
 
-
+router.post('/review/:store_id',isAuthenticated, function(req, res, next){
+	var store_id = req.params.store_id;
+	var menu_id = req.body.menu;
+	var rate = req.body.rate;
+	var content = req.body.review;
+	console.log("smrc"+store_id+menu_id+rate+content);
+	pool.getConnection(function(err, connection){
+		var sql = "INSERT INTO review(rate, content, user_ID, menu_ID, store_ID) values=(?,?,?,?,?)";
+		connection.query(sql, [rate, content, req.user.ID, menu_id, store_id], function(err, rows){
+			if(err) console.error("err:"+err);
+			else
+			{
+				console.log(rows);
+				res.redirect('/buyer/print-menu/'+store_id);
+			}
+			connection.release();
+		})
+	})
+})
 
 
 
@@ -467,10 +485,13 @@ router.post('/store_add', isAuthenticated, function(req, res, next){
 	var price = req.body.price;
 	var open = req.body.open;
 	var close = req.body.close;
-	var data = [name, tel, dtime, open, close, price];
+	var lat = req.body.lat;
+	var lng = req.body.lng;
+	var data = [name, tel, dtime, open, close, price, lat, lng];
+	
 
 	pool.getConnection(function(err, connection){
-		var sql = "INSERT INTO store(NAME, PHONE, DELIVERY_TIME, UPTIME, CLOSETIME, PRICE_LIMIT) values(?, ?, ?, ?, ?, ?)";
+		var sql = "INSERT INTO store(NAME, PHONE, DELIVERY_TIME, UPTIME, CLOSETIME, PRICE_LIMIT, LAT, LNG) values(?, ?, ?, ?, ?, ?, ?, ?)";
 
 		connection.query(sql, data, function(err,rows){
 			if(err) console.error("err: "+err);
