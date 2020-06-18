@@ -78,6 +78,18 @@
                 </td>
             </tr>
             <tr>
+                <th>카테고리</th>
+                <td>
+                    <select name="category" id="category">
+                        <% for(var i=0; i<rows.length; i++){ 
+                            var item = rows[i];
+                        %>
+                        <option value="<%=item.ID%>"><%=item.NAME%></option>
+                        <%}%>
+                    </select>
+                </td>
+            </tr>
+            <tr>
                 <th>배달 시간</th>
                 <td><input type="text" name="dtime" id="dtime" size="3" maxLength="3" required>분</td>
             </tr>

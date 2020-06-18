@@ -9,9 +9,9 @@
         <title>Classimax</title>
 
         <script type="text/javascript">
-            function butten_event_add(value) {
+            function butten_event_add(value1, value2) {
                 if (confirm("장바구니에 추가하시겠습니까??") == true) {
-                    location.href = "/buyer/cart/" + value;
+                    location.href = "/buyer/cart/" + value1 + "/" + value2;
                 } else { //취소
                     return;
                 }
@@ -305,11 +305,11 @@
 											<div class="col-md-12 form-control" style="height:90px; text-align: left; line-height:35px">
 												<table style="width:550px;">
 													<tr>
-														<td id = "btncart"  onclick="butten_event_add(<%=oneItem.ID%>);"><%=oneItem.NAME%></td>
-														<td id = "btncart"  onclick="butten_event_add(<%=oneItem.ID%>);"style="text-align: right;">이미지</td>
+														<td id = "btncart"  onclick="butten_event_add(<%=store_id%>, <%=oneItem.ID%>);"><%=oneItem.NAME%></td>
+														<td id = "btncart"  onclick="butten_event_add(<%=store_id%>, <%=oneItem.ID%>);"style="text-align: right;">이미지</td>
 													</tr>
 													<tr>
-														<td id = "btncart"  onclick="butten_event_add(<%=oneItem.ID%>);"><%=oneItem.PRICE%></td>
+														<td id = "btncart"  onclick="butten_event_add(<%=store_id%>, <%=oneItem.ID%>);"><%=oneItem.PRICE%></td>
 														
 													</tr>
 												</table>
@@ -538,7 +538,7 @@
 									<td><%=temp.menu_name%></td>
 									<td><%=temp.menu_price%></td>
 									<td><%=temp.menu_cnt%></td>
-									<td id = "btncart"  onclick="butten_event_delete('<%=temp.userID%>', <%=temp.menuID%>);">삭제</td>
+									<td id = "btncart"  onclick="butten_event_delete(<%=store_id%>, <%=temp.menuID%>);">삭제</td>
 									<!--<td><a href="/buyer/delete-cart/<%=temp.userID%>/<%=temp.menuID%>">삭제</a></td>-->
 									
 								</tr>
