@@ -18,6 +18,17 @@ var multiconnection = mysql.createConnection({
   })
   multiconnection.connect();
 
+  var multer = require('multer');
+  var storage = multer.diskStorage({
+	  destination: function(req, file, cb){
+		  cb(null, 'uploads/')
+	  },
+	  filename: function (req, file, cb){
+		  cb(null, file.originalname)
+	  }
+  })
+var upload = multer({storage:storage})
+
 var session = require('express-session');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
@@ -119,16 +130,17 @@ router.get('/joinForm', function(req, res, next) {
 	res.render('joinForm', { title: 'Join Form!'});
 });
 
-router.post('/joinForm', function(req, res, next){
+router.post('/joinForm', upload.single('filename'), function(req, res, next){
 	var id = req.body.id;
 	var passwd = req.body.passwd;
 	var name = req.body.name;
 	var auth = req.body.auth;
 	var phone = req.body.tel;
-	var datas = [id, passwd, name, auth, phone];
+	var filename = req.file.filename;
+	var datas = [id, passwd, name, auth, phone, filename];
 
 	pool.getConnection(function(err, connection){
-		var sql = "INSERT INTO user(ID, PASSWD, NAME, AUTH, PHONE) values(?,?,?,?,?)";
+		var sql = "INSERT INTO user(ID, PASSWD, NAME, AUTH, PHONE, USER_IMG) values(?,?,?,?,?,?)";
 
 		connection.query(sql, datas, function(err,rows){
 			if(err){
@@ -309,9 +321,9 @@ router.post('/buyer/print-store', isAuthenticated, function (req, res, next) {
     var x = req.body.lat;
     var y = req.body.lng;
     var datas = new Array();
-    var sql = "select count(distinct review.id) as reviewcnt, store.ID, store.NAME, PHONE, store.RATE, DELIVERY_TIME, UPTIME, CLOSETIME, LAT, LNG, PRICE_LIMIT  from store inner join menu on store.id = menu.store_id  left outer join review on review.store_id = store.id inner join category_store on category_store.store_ID = store.id inner join category on category_store.category_ID = category.ID  ";
+    var sql = "select count(distinct review.id) as reviewcnt, store.ID, store.NAME, PHONE, store.RATE, DELIVERY_TIME, UPTIME, CLOSETIME, LAT, LNG, PRICE_LIMIT, STORE_IMG  from store inner join menu on store.id = menu.store_id  left outer join review on review.store_id = store.id inner join category_store on category_store.store_ID = store.id inner join category on category_store.category_ID = category.ID  WHERE ((UPTIME>CLOSETIME and (now()>UPTIME or now()<CLOSETIME)) or (UPTIME<now() and now()<CLOSETIME))";
     if (category != "전체" || price != ">0" || storename != "") {
-        sql += " where ";
+		sql += " and ";
         if (category != "전체") {
 			datas.push(category);
             sql += "category.name = ?";
@@ -381,7 +393,7 @@ router.get('/buyer/print-menu/:id', isAuthenticated, function(req,res,next){
     var sql1 = "SELECT * FROM menu WHERE store_ID=?;";
     var sql2 = "select user.ID as userID, user.name as user_name, menu.name as menu_name, menu.id as menuID, menu.price as menu_price, user_menu.cnt as menu_cnt from user_menu inner join menu on menu_ID = menu.ID inner join user on user_ID = user.id where user.ID=?;";
     var sql3 = "SELECT * FROM review inner join user on user_id = user.id WHERE store_ID=?;";
-    var sql4 = "SELECT store.NAME as store_name, category.NAME as category_name, PRICE_LIMIT, UPTIME, CLOSETIME, RATE, PHONE FROM store inner join category_store on store.ID = store_ID inner join category on category_ID = category.ID WHERE store.ID=?;";
+    var sql4 = "SELECT store.NAME as store_name, category.NAME as category_name, PRICE_LIMIT, UPTIME, CLOSETIME, RATE, PHONE, STORE_IMG, DELIVERY_TIME FROM store inner join category_store on store.ID = store_ID inner join category on category_ID = category.ID WHERE store.ID=?;";
 	
 	multiconnection.query(sql1+sql2+sql3+sql4, [store_id, req.user.ID, store_id, store_id],function(err,rows){
         if(err) console.error("에러:"+err);
@@ -547,9 +559,10 @@ router.post('/review/:store_id',isAuthenticated, function(req, res, next){
 router.get('/seller', isAuthenticated, function(req,res,next){
 	var store_id = req.user.ID;
     pool.getConnection(function(err, connection){
-        var sql = "SELECT * FROM store inner join store_user on store_ID = store.ID WHERE user_ID=?";
-        connection.query(sql,[req.user.ID], function(err,rows){
-            if (err) console.error("err : " + err);
+		var sql = "SELECT * FROM store inner join store_user on store_ID = store.ID WHERE user_ID=?; SELECT * from user where user.id = ?";
+		multiconnection.query(sql, [req.user.ID, req.user.ID],function(err,rows){
+			if (err) console.error("err : " + err);
+			console.log("rows:",rows);
     		res.render('seller', {title: "판매자", rows:rows, store_id:store_id});
             connection.release();
         }); 
@@ -570,7 +583,7 @@ router.get('/store_add', isAuthenticated, function(req, res, next){
 	});
 });
 
-router.post('/store_add', isAuthenticated, function(req, res, next){
+router.post('/store_add', upload.single('filename'), isAuthenticated, function(req, res, next){
 	var name = req.body.name;
 	var tel = req.body.tel;
 	var category = req.body.category;
@@ -580,11 +593,12 @@ router.post('/store_add', isAuthenticated, function(req, res, next){
 	var close = req.body.close;
 	var lat = req.body.lat;
 	var lng = req.body.lng;
-	var data = [name, tel, dtime, open, close, price, lat, lng];
+	var store_img = req.file.filename;
+	var data = [name, tel, dtime, open, close, price, lat, lng, store_img];
 	
 
 	pool.getConnection(function(err, connection){
-		var sql = "INSERT INTO store(NAME, PHONE, DELIVERY_TIME, UPTIME, CLOSETIME, PRICE_LIMIT, LAT, LNG) values(?, ?, ?, ?, ?, ?, ?, ?)";
+		var sql = "INSERT INTO store(NAME, PHONE, DELIVERY_TIME, UPTIME, CLOSETIME, PRICE_LIMIT, LAT, LNG, STORE_IMG) values(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		connection.query(sql, data, function(err,rows){
 			if(err) console.error("err: "+err);
