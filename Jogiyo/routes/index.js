@@ -361,12 +361,10 @@ router.post('/buyer/print-store', function (req, res, next) {
 
 router.get('/buyer/print-menu/:id', isAuthenticated, function(req,res,next){
 	var store_id = req.params.id;
-
 	var hint = req.user.ID;
-
-    var sql = "SELECT * FROM menu WHERE store_ID=?; select user.ID as userID, user.name as user_name, menu.name as menu_name, menu.id as menuID, menu.price as menu_price, user_menu.cnt as menu_cnt from user_menu inner join menu on menu_ID = menu.ID inner join user on user_ID = user.id where user.ID=?";
+    var sql = "SELECT * FROM menu WHERE store_ID=?; select user.ID as userID, user.name as user_name, menu.name as menu_name, menu.id as menuID, menu.price as menu_price, user_menu.cnt as menu_cnt from user_menu inner join menu on menu_ID = menu.ID inner join user on user_ID = user.id where user.ID=?; SELECT * FROM review inner join user on user_id = user.id WHERE store_ID=?";
 	
-	multiconnection.query(sql, [store_id, req.user.ID],function(err,rows){
+	multiconnection.query(sql, [store_id, req.user.ID, store_id],function(err,rows){
         if(err) console.error("에러:"+err);
         else{
 			
@@ -473,28 +471,6 @@ router.get('/buyer/history', isAuthenticated, function(req, res, next){
 		});
 	});
 });
-
-router.post('/review/:store_id',isAuthenticated, function(req, res, next){
-	var store_id = req.params.store_id;
-	var menu_id = req.body.menu;
-	var rate = req.body.rate;
-	var content = req.body.review;
-	var user_id = req.user.ID;
-	
-	console.log("rate: ",rate," content: ",content," user_ID: ",user_id," menu_ID: ",menu_id," store_ID: ",store_id);
-	pool.getConnection(function(err, connection){
-		var sql = "INSERT INTO review (rate, content, user_ID, menu_ID, store_ID) values(?,?,?,?,?)";
-		connection.query(sql, [rate, content, req.user.ID, menu_id, store_id], function(err, rows){
-			if(err) console.error("err: "+err);
-			else
-			{
-				console.log(rows);
-				res.redirect('/buyer/print-menu/'+store_id);
-			}
-			connection.release();
-		})
-	})
-})
 
 // 구매 페이지
 router.get('/purchase',isAuthenticated, function(req, res, next){
