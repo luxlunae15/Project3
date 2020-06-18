@@ -64,6 +64,7 @@ CREATE TABLE IF NOT EXISTS `jogiyo`.`review` (
   `user_ID` VARCHAR(15) NOT NULL,
   `menu_ID` INT NOT NULL,
   `store_ID` INT NOT NULL,
+  `date` DATETIME DEFAULT NOW(),
   PRIMARY KEY (`ID`, `user_ID`, `menu_ID`, `store_ID`),
   INDEX `fk_review_user1_idx` (`user_ID` ASC) VISIBLE,
   INDEX `fk_review_menu1_idx` (`menu_ID` ASC) VISIBLE,
@@ -217,6 +218,7 @@ CREATE TABLE IF NOT EXISTS `jogiyo`.`comment` (
   `review_ID` INT NOT NULL,
   `user_ID` VARCHAR(15) NOT NULL,
   `content` LONGTEXT NULL,
+  `date` DATETIME DEFAULT NOW(),
   PRIMARY KEY (`review_ID`, `user_ID`),
   INDEX `fk_comment_user1_idx` (`user_ID` ASC) VISIBLE,
   CONSTRAINT `fk_comment_review1`
