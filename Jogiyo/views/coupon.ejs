@@ -7,14 +7,19 @@
         
         <title>돌려 돌려 돌림판</title>
         <link rel='stylesheet' href='css/style.css'/>
+        <script language="JavaScript" type="text/JavaScript">
 
+            
+            function goHome(){
+            self.close();
+            opener.location.href="/"
+            }
+            
+            </script>
         
     
     </head>
     <body>
-        
-        
-   
 
         <div style="width: 100%; height: 100vh; display: -webkit-box; display: -ms-flexbox; 
         display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; 
@@ -29,13 +34,9 @@
                 
                 <div id="popup_gift" class="popup">
                     <div class="lottery_present"></div>
-                        <input type="button" href="javascript:;" class="close" onclick="window.close()" value="닫기" >
+                        <input type="button" href="javascript:;" class="close" onclick="goHome()" value="닫기" >
                 </div>
             </div>
-
-            
-
-
 
         </div>
         

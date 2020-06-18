@@ -875,15 +875,18 @@ router.get('/store_sold/:id', isAuthenticated, function(req,res,next){
 
 //////////// 남음 ////////////
 // 매출 통계
-router.get('/store/analytics', isAuthenticated, function(req,res,next){
+router.get('/analytics/:store_id', isAuthenticated, function(req,res,next){
+	var id = req.params.store_id;
+	var his;
+	console.log("id: ",req.params);
     pool.getConnection(function(err,connection){
-        // Use the connection
-        var sqlForSelectList = "SELECT * FROM sold_history";
-        connection.query(sqlForSelectList, function(err,rows){
-            if (err) console.error("err : "+err);
-            console.log("rows : " + JSON.stringify(rows));
+        var sql = "SELECT date_format(history,'%d') as history, menu.NAME as menu_name, PRICE, cnt, user_ID FROM sold_history inner join menu ON menu.ID = menu_ID inner join store on store_ID = store.ID where store_ID = ? and history<DATE_SUB(NOW(), INTERVAL DELIVERY_TIME MINUTE)";
+        connection.query(sql, [id], function(err,rows){
+			if (err) console.error("err : ",err);
+			
+            console.log("rows : ",rows);
 
-            res.render('analytics', {title: '매출 통계', rows: rows});
+            res.render('analytics', {title: '매출 통계', rows: rows, store_id:id});
             connection.release();
 
             // Don`t use the connection here, it has been returned th the pool.
