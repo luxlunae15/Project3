@@ -1,12 +1,25 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <script src="/javascripts/jquery-3.5.1.min.js"></script>
-        <script src="/js/coupon.js"></script>
+        <script src="javascripts/jquery-3.5.1.min.js"></script>
+        <script src="js/coupon.js"></script>
+        
+        
         <title>돌려 돌려 돌림판</title>
         <link rel='stylesheet' href='css/style.css'/>
+        <script language="JavaScript" type="text/JavaScript">
+
+            function goHome(){
+            self.close();
+            opener.location.href="/"
+            }
+            
+            </script>
+        
+    
     </head>
     <body>
+
         <div style="width: 100%; height: 100vh; display: -webkit-box; display: -ms-flexbox; 
         display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; 
         -webkit-box-pack: center; -ms-flex-pack: center; justify-content: center; border: 2px black solid;">
@@ -20,12 +33,13 @@
                 
                 <div id="popup_gift" class="popup">
                     <div class="lottery_present"></div>
-                        <input type="button" href="javascript:;" class="close" onclick="window.close()" value="닫기" >
+                        <input type="button" href="javascript:;" class="close" onclick="goHome()" value="닫기" >
                 </div>
             </div>
+
         </div>
         
-       
+        
 
     </body>
 </html>

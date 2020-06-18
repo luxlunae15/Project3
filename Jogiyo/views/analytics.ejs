@@ -1,84 +1,179 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title><%= title %></title>
-        <link rel='stylesheet' href='/stylesheets/style.css'/>
-    </head>
-    <body>
-        <h1><%= title %></h1>
-        <br>
-        <br>
-        <table border="1">
-            <tr>
-                <td>주문 메뉴</td>
-                <td>구매 고객</td>
-                <td>판매자</td>
-                <td>가격</td>
-                <td>판매 날짜</td>
-                
-            </tr>
+<head>
+    
+    <title><%= title %></title>
+    <link rel='stylesheet' href='../css/style.css'/>
+	<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+	<script src="../javascripts/jquery-3.5.1.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    
+    
+</head>
+<body>
+    
 <%
-                var tmp;
-                var arr = new Array(rows.length);
+        var arr = [];
+        var price = [];
+        var total = [];
+        var i=0;
+        var tmp = rows;
+      
+        for(i=0;i<31;i++){
+            total[i] = 0;
+        }
 
-                <!-- sorting part -->
-                for(var i=0; i<rows.length; i++){
-                    arr[i] = rows[i];
-                }
+        for(i=0;i<rows.length;i++){
+            arr.push(tmp[i].history);
+            arr[i] = Number(arr[i]);
+            price.push(tmp[i].PRICE);
+            price[i] = Number(price[i]);
 
-                for(var i=0; i<rows.length; i++){
-                    for (var t=1; t<rows.length; t++){
-                        if (arr[t-1].date > arr[t].date){
-                            tmp = arr[t];
-                            arr[t] = arr[t-1];
-                            arr[t-1] = tmp;
-                        }
+        }
 
-                    }
-                }
+        for(i=0;i<arr.length;i++){
+            if(arr[i] == 1){
+                total[0] += price[i];
+            }else if(arr[i] == 2){
+                total[1] += price[i];
+            }else if(arr[i] == 3){
+                total[2] += price[i];
+            }else if(arr[i] == 4){
+                total[3] += price[i];
+            }else if(arr[i] == 5){
+                total[4] += price[i];
+            }else if(arr[i] == 6){
+                total[5] += price[i];
+            }else if(arr[i] == 7){
+                total[6] += price[i];
+            }else if(arr[i] == 8){
+                total[7] += price[i];
+            }else if(arr[i] == 9){
+                total[8] += price[i];
+            }else if(arr[i] == 10){
+                total[9] += price[i];
+            }else if(arr[i] == 11){
+                total[10] += price[i];
+            }else if(arr[i] == 12){
+                total[11] += price[i];
+            }else if(arr[i] == 13){
+                total[12] += price[i];
+            }else if(arr[i] == 14){
+                total[13] += price[i];
+            }else if(arr[i] == 15){
+                total[14] += price[i];
+            }else if(arr[i] == 16){
+                total[15] += price[i];
+            }else if(arr[i] == 17){
+                total[16] += price[i];
+            }else if(arr[i] == 18){
+                total[17] += price[i];
+            }else if(arr[i] == 19){
+                total[18] += price[i];
+            }else if(arr[i] == 20){
+                total[19] += price[i];
+            }else if(arr[i] == 21){
+                total[20] += price[i];
+            }else if(arr[i] == 22){
+                total[21] += price[i];
+            }else if(arr[i] == 23){
+                total[22] += price[i];
+            }else if(arr[i] == 24){
+                total[23] += price[i];
+            }else if(arr[i] == 25){
+                total[24] += price[i];
+            }else if(arr[i] == 26){
+                total[25] += price[i];
+            }else if(arr[i] == 27){
+                total[26] += price[i];
+            }else if(arr[i] == 28){
+                total[27] += price[i];
+            }else if(arr[i] == 29){
+                total[28] += price[i];
+            }else if(arr[i] == 30){
+                total[29] += price[i];
+            }else{
+                total[30] += price[i];
+            }
+            
 
-                var cnt=0;
-                var cache = arr[0].date;
-                <!-- counting part -->
-                for(var t=0; t<rows.length; t++){
-                    if(arr[t].date == cache){
-                        
-
-
-
-                    }
-                    else{
-                        cache = arr[t].date;
-                    }
-
-
-
-
-                }
-
+        }
 
 %>
 
-<%
+       
 
-                for(var k=0;k<rows.length;k++){
-                
-%>
+    <div id="chart_div" style="width:500px; height: 500px;"></div>
+    
 
-<tr>
-    <td><%=arr[k].menu_ID%></td>
-    <td><%=arr[k].user_ID%></td>
-    <td><%=arr[k].seller_ID%></td>
-    <td><%=arr[k].price%></td>
-    <td><%=arr[k].date%></td>
-</tr>
+    <input type="button" id="btnRtn" name="return" value="돌아가기">
+        <script>
+            $("#btnRtn").click(
+                function(){
+                    location.href="/store/<%=store_id%>";
+                });
+        </script>
+
+    <script type="text/javascript">
+    
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawVisualization);
+    
+    function drawVisualization() { 
+       var datas = [['date', 'PRICE']];
+
+       datas.push(
+           
+           [1,Number('<%=total[0]%>')],
+           [2,Number('<%=total[1]%>')],
+           [3,Number('<%=total[2]%>')],
+           [4,Number('<%=total[3]%>')],
+           [5,Number('<%=total[4]%>')],
+           [6,Number('<%=total[5]%>')],
+           [7,Number('<%=total[6]%>')],
+           [8,Number('<%=total[7]%>')],
+           [9,Number('<%=total[8]%>')],
+           [10,Number('<%=total[9]%>')],
+           [11,Number('<%=total[10]%>')],
+           [12,Number('<%=total[11]%>')],
+           [13,Number('<%=total[12]%>')],
+           [14,Number('<%=total[13]%>')],
+           [15,Number('<%=total[14]%>')],
+           [16,Number('<%=total[15]%>')],
+           [17,Number('<%=total[16]%>')],
+           [18,Number('<%=total[17]%>')],
+           [19,Number('<%=total[18]%>')],
+           [20,Number('<%=total[19]%>')],
+           [21,Number('<%=total[20]%>')],
+           [22,Number('<%=total[21]%>')],
+           [23,Number('<%=total[22]%>')],
+           [24,Number('<%=total[23]%>')],
+           [25,Number('<%=total[24]%>')],
+           [26,Number('<%=total[25]%>')],
+           [27,Number('<%=total[26]%>')],
+           [28,Number('<%=total[27]%>')],
+           [29,Number('<%=total[28]%>')],
+           [30,Number('<%=total[29]%>')],
+           [31,Number('<%=total[30]%>')]
+       
+       );
+
+        
+        var data = google.visualization.arrayToDataTable(datas);
+        var options = {
+                title : '일일 매출 통계',
+                vAxis: {title: '수익'},
+                hAxis: {title: '날짜'}, 
+                seriesType: 'bars',
+                series: {5: {type: 'line'}}
+            };
+        
+        var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+        }
 
 
-<%
-                }
+    </script>
 
-%>
-
-        </table>
-    </body>
+</body>
 </html>
