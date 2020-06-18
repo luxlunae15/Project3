@@ -12,10 +12,6 @@ var flash = require('connect-flash');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var join = require('./routes/joinForm');
-var login = require('./routes/login');
-
-var seller = require('./routes/seller');
 
 var app = express();
 
@@ -31,10 +27,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/join', join);
-app.use('/login', login);
-app.use('/seller', seller);
-
 
 app.use(cookieSession({
 	keys: ['testcode'],
