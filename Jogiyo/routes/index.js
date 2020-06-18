@@ -361,13 +361,20 @@ router.post('/buyer/print-store', function (req, res, next) {
 
 router.get('/buyer/print-menu/:id', isAuthenticated, function(req,res,next){
 	var store_id = req.params.id;
+
+	var hint = req.user.ID;
+
     var sql = "SELECT * FROM menu WHERE store_ID=?; select user.ID as userID, user.name as user_name, menu.name as menu_name, menu.id as menuID, menu.price as menu_price, user_menu.cnt as menu_cnt from user_menu inner join menu on menu_ID = menu.ID inner join user on user_ID = user.id where user.ID=?";
 	
 	multiconnection.query(sql, [store_id, req.user.ID],function(err,rows){
         if(err) console.error("에러:"+err);
         else{
+			
+			console.log("hint: ",hint);
     		console.log("메뉴 조회 결과 : ", rows);
-            res.render('print-menu', {title: "메뉴 조회", rows:rows, store_id:store_id});
+
+            res.render('print-menu', {title: "메뉴 조회", rows:rows, store_id:store_id, hint: hint});
+
         }
     });
     	
@@ -467,16 +474,51 @@ router.get('/buyer/history', isAuthenticated, function(req, res, next){
 	});
 });
 
+router.post('/review/:store_id',isAuthenticated, function(req, res, next){
+	var store_id = req.params.store_id;
+	var menu_id = req.body.menu;
+	var rate = req.body.rate;
+	var content = req.body.review;
+	var user_id = req.user.ID;
+	
+	console.log("rate: ",rate," content: ",content," user_ID: ",user_id," menu_ID: ",menu_id," store_ID: ",store_id);
+	pool.getConnection(function(err, connection){
+		var sql = "INSERT INTO review (rate, content, user_ID, menu_ID, store_ID) values=(?,?,?,?,?)";
+		connection.query(sql, [rate, content, req.user.ID, menu_id, store_id], function(err, rows){
+			if(err) console.error("err: "+err);
+			else
+			{
+				console.log(rows);
+				res.redirect('/buyer/print-menu/'+store_id);
+			}
+			connection.release();
+		})
+	})
+})
+
 // 구매 페이지
 router.get('/purchase',isAuthenticated, function(req, res, next){
 	res.render('purchase');
 });
 
+// 구매 페이지
+router.post('/purchase',isAuthenticated, function(req, res, next){
+
+	var userID = req.body.data_id;
+	var menu = req.body.data_menu;
+
+    console.log("usr ID : ",userID, "menu : ", menu);
+    var sql = "insert into sold_history (user_ID, menu_ID, cnt) select user_ID, menu_ID, cnt from user_menu where user_ID = ? ; delete from user_menu where user_ID = ?";
+    multiconnection.query(sql, [userID, userID], function(err,row){
+        if(err) console.error("err: "+err);
+        console.log("구매 출력 결과: ",row);
+        res.redirect('/purchase');
+    });
+});
+
 // 쿠폰 돌림판
 router.get('/coupon', function(req, res, next){
 	res.render('coupon');
-
-	
 });
 
 router.post('/review/:store_id',isAuthenticated, function(req, res, next){
@@ -498,9 +540,6 @@ router.post('/review/:store_id',isAuthenticated, function(req, res, next){
 		})
 	})
 })
-
-
-
 
 //////////////////////////////// 구매자 끝 /////////////////////////////////////////////////////
 
