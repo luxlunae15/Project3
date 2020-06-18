@@ -230,27 +230,19 @@
 									<div class="col-lg-8 col-md-12">
 											<div class="product-ratings float-lg-left pb-3">
 												<ul class="list-inline" >
-													<%
-                        for(var j=0; j<=rows[3][0].RATE - 1; j++){%>
-                            <li class="list-inline-item"><i style="color: #f89b00" class="fa fa-star" ></i></li>
-                            <%}%>
-                            <%
-                        for(var j=0; j<6-rows[3][0].RATE - 1; j++){%>
-                            <li class="list-inline-item"><i style="color: #f89b00" class="fa fa-star-o" ></i></li>
-							<%}%>
-							<li class="list-inline-item"><span style="font-size: 1.2em; font-weight: bold; color: #f89b00"><%=rows[3][0].RATE%></span></li>
+													<% for(var i = 0; i < rows[3][0].RATE; i++){ %>
+														<li class="list-inline-item"><i style="color: #f89b00" class="fa fa-star" ></i></li>
+														<% } %>
+														<li class="list-inline-item"><span style="font-size: 1.2em; font-weight: bold; color: #f89b00"><%=rows[3][0].RATE%></span></li>
 												</ul>
 											</div>
 										<div class="ad-listing-content">
 											<ul class="list-inline mt-4 mb-4">
 												<li class="list-inline-item" style="font-size: 1.1em">최소 주문 금액
-													<span style="font-weight: bold;"><%=rows[3][0].PRICE_LIMIT%></span>
+													<span style="font-weight: bold;"><%=rows[3][0].PRICE_LIMIT%>원</span>
 												</li>
 												<li class="list-inline-item" style="font-size: 1.1em">예상 소요 시간
-													<span style="font-weight: bold;"><%=rows[3][0].DELIVERY_TIME%></span>
-												</li>													
-												<li class="list-inline-item" style="font-size: 1.1em">
-													<span style= "padding: 2px; border:solid; border-width:1px; color: #ff4500; ">배달할인 14000원</span>
+													<span style="font-weight: bold;"><%=rows[3][0].DELIVERY_TIME%>분</span>
 												</li>
 											</ul>
 										</div>
