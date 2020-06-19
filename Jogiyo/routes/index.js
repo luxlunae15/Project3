@@ -217,7 +217,7 @@ router.get('/account/userlist/:page', isAuthenticated, function(req, res, next) 
 	pool.getConnection(function(err, connection){
 		connection.query("SELECT * FROM user", function(err, rows){
 			if(err) console.error("err : "+err);
-			res.render('account', {title:'회원 관리', rows:rows, page:page, page_num:10});
+			res.render('account', {title:'회원 관리', rows:rows, page:page, page_num:10, login:req.user.ID});
 			connection.release();
 		});
 	});
@@ -286,11 +286,20 @@ router.post('/account/update', upload.single('filename'), isAuthenticated, funct
 	var passwd = req.body.passwd;
 	var name = req.body.name;
 	var tel = req.body.tel;
-	var filename = req.file.filename;
-	var datas = [passwd, name, tel, filename, id];
+
+  if(req.file)
+  {
+  	var filename = req.file.filename;
+  	var datas = [passwd, name, tel, filename, id];
+    var sql = "UPDATE user SET PASSWD=?, NAME=?, PHONE=?, USER_IMG = ? WHERE ID=? ";
+  }
+  else
+  {
+    var datas = [passwd, name, tel, id];
+    var sql = "UPDATE user SET PASSWD=?, NAME=?, PHONE=? WHERE ID=? ";
+  }
 
 	pool.getConnection(function(err, connection){
-		var sql = "UPDATE user SET PASSWD=?, NAME=?, PHONE=?, USER_IMG = ? WHERE ID=? ";
 		connection.query(sql, datas, function(err, result){
 			if(err) {
 				console.error("회원 정보 수정 중 에러 발생 err : ",err);
@@ -334,37 +343,21 @@ router.get('/account/delete', isAuthenticated, function(req, res, next){
 
 /////////////////////////////// 구매자 시작 ////////////////////////////////////////////////////
 
-router.post('/buyer/like', function (req, res, next) {
-    pool.getConnection(function (err, connection) {
-            var rid = req.body.rid;
-            console.log(rid);
-            var sql = "update review set like_cnt = like_cnt + 1 where ID=?";
-            console.log(sql);
-            connection.query(sql, rid, function (err, rows) {
-                if (err) 
-                    console.error("err: " + err);
-				console.log("구매 출력 결과: ", rows);
-            });
-        });    
-	});
-
 router.get('/buyer', isAuthenticated, function(req,res,next){
-	
-	var id = req.user.ID;
-	console.log("id is : ",id);
-pool.getConnection(function(err, connection){
-	var sql = "SELECT * FROM user WHERE ID=?";
-	connection.query(sql, [id], function(err,rows){
-		if(err) console.error("err: "+err);
-		else
-		{
-			console.log("결과: ",rows);
-			res.render('buyer', {title: rows[0].NAME ,rows:rows});
-		}
-		connection.release();
-	});
-});
-
+  var id = req.user.ID;
+  console.log("id is : ",id);
+  pool.getConnection(function(err, connection){
+    var sql = "SELECT * FROM user WHERE ID=?";
+    connection.query(sql, [id], function(err,rows){
+      if(err) console.error("err: "+err);
+      else
+      {
+        console.log("결과: ",rows);
+        res.render('buyer', {title: rows[0].NAME ,rows:rows});
+      }
+      connection.release();
+    });
+  });
 });
 
 router.get('/buyer/print-store', isAuthenticated, function(req, res, next){
@@ -479,32 +472,32 @@ router.post('/buyer/print-store', isAuthenticated, function (req, res, next) {
 
 
 router.get('/buyer/print-menu/:id', isAuthenticated, function(req,res,next){
-	var store_id = req.params.id;
-	var hint = req.user.ID;
+  var store_id = req.params.id;
+  var hint = req.user.ID;
     var sql1 = "SELECT * FROM menu WHERE store_ID=?;";
     var sql2 = "select user.ID as userID, user.name as user_name, menu.name as menu_name, menu.id as menuID, menu.price as menu_price, user_menu.cnt as menu_cnt from user_menu inner join menu on menu_ID = menu.ID inner join user on user_ID = user.id where user.ID=?;";
     var sql3 = "SELECT review.id as rid, rate, content, user_ID, menu_ID, store_ID, date, like_cnt, PASSWD, NAME, AUTH, PHONE, USER_IMG FROM review inner join user on user_id = user.id WHERE store_ID=?;";
     var sql4 = "SELECT store.NAME as store_name, category.NAME as category_name, PRICE_LIMIT, DELIVERY_TIME, UPTIME, CLOSETIME, RATE, PHONE, STORE_IMG FROM store inner join category_store on store.ID = store_ID inner join category on category_ID = category.ID WHERE store.ID=?;";
-	
-	if (req.user == undefined)
+  
+  if (req.user == undefined)
         var login = 'unlogin';
     else {
         var login = req.user.ID;
         var auth = req.user.AUTH;
     }
 
-	multiconnection.query(sql1+sql2+sql3+sql4, [store_id, req.user.ID, store_id, store_id],function(err,rows){
+  multiconnection.query(sql1+sql2+sql3+sql4, [store_id, req.user.ID, store_id, store_id],function(err,rows){
         if(err) console.error("에러:"+err);
         else{
-			
-			console.log("hint: ",hint);
-    		console.log("메뉴 조회 결과 : ", rows);
+      
+      console.log("hint: ",hint);
+        console.log("메뉴 조회 결과 : ", rows);
 
             res.render('print-menu', {title: "메뉴 조회", rows:rows, store_id:store_id, hint: hint , login:login, auth:auth});
 
         }
     });
-    	
+      
 });
 
 router.get('/buyer/cart/:store_id/:menuID', isAuthenticated, function(req,res,next){
@@ -587,17 +580,14 @@ router.get('/buyer/buy/:userID', isAuthenticated, function(req, res, next){
 
 router.get('/buyer/history', isAuthenticated, function(req, res, next){
 	var userID = req.user.ID;
-	pool.getConnection(function(err, connection){
-		var sql = "SELECT menu.NAME as menu_name, menu.PRICE as menu_price, cnt, history FROM sold_history inner join menu ON menu_ID = menu.ID inner join user ON user_ID = user.ID WHERE user.ID=? ORDER BY history";
-		connection.query(sql, [userID], function(err,rows){
+  var sql = "SELECT menu.NAME as menu_name, menu.PRICE as menu_price, cnt, history, menu_img, store_id, menu_id, content FROM sold_history inner join menu ON menu_ID = menu.ID inner join user ON user_ID = user.ID WHERE user.ID=? ORDER BY history;  SELECT * FROM user WHERE ID=?";
+	multiconnection.query(sql, [userID, userID], function(err,rows){
 			if(err) console.error("err: "+err);
 			else
 			{
-        		console.log("결과: ",rows);
-            	res.render('buy_history', {title: "구매내역 조회", rows:rows});
-        	}
-			connection.release();
-		});
+    		console.log("결과: ",rows);
+        res.render('buy_history', {title: "구매내역 조회", rows:rows, login:userID});
+      }
 	});
 });
 
@@ -697,12 +687,19 @@ router.post('/store_add', upload.single('filename'), isAuthenticated, function(r
 	var close = req.body.close;
 	var lat = req.body.lat;
 	var lng = req.body.lng;
-	var filename = req.file.filename;
-	var data = [name, tel, dtime, open, close, price, lat, lng, filename];
-	
 
+  if(req.file)
+  {
+    var filename = req.file.filename;
+    var data = [name, tel, dtime, open, close, price, lat, lng, filename];
+    var sql = "INSERT INTO store(NAME, PHONE, DELIVERY_TIME, UPTIME, CLOSETIME, PRICE_LIMIT, LAT, LNG, STORE_IMG) values(?, ?, ?, ?, ?, ?, ?, ?,?)";
+  }
+  else
+  {
+    var data = [name, tel, dtime, open, close, price, lat, lng];
+    var sql = "INSERT INTO store(NAME, PHONE, DELIVERY_TIME, UPTIME, CLOSETIME, PRICE_LIMIT, LAT, LNG) values(?, ?, ?, ?, ?, ?, ?, ?)";
+  }
 	pool.getConnection(function(err, connection){
-		var sql = "INSERT INTO store(NAME, PHONE, DELIVERY_TIME, UPTIME, CLOSETIME, PRICE_LIMIT, LAT, LNG, STORE_IMG) values(?, ?, ?, ?, ?, ?, ?, ?,?)";
 
 		connection.query(sql, data, function(err,rows){
 			if(err) console.error("err: "+err);
@@ -766,7 +763,7 @@ router.get('/store/:id', isAuthenticated, function(req, res, next){
 			else
 			{
         		console.log("결과: ",rows);
-            	res.render('store', {title: rows[0].NAME, rows:rows});
+            	res.render('store', {title: rows[0].NAME, rows:rows, login:req.user.ID});
         	}
 			connection.release();
 		});
@@ -787,36 +784,36 @@ router.get('/store_mod/:id', isAuthenticated, function(req, res, next){
 });
 
 router.post('/store_mod/:id', upload.single('filename'), isAuthenticated, function(req, res, next){
-	var id = req.params.id;
-	var name = req.body.name;
-	var tel = req.body.tel;
-	var dtime = req.body.dtime;
-	var price = req.body.price;
-	var open = req.body.open;
-	var close = req.body.close;
-	var filename = req.file.filename;
-	var data = [name, tel, dtime, open, close, price, filename, id];
+  var id = req.params.id;
+  var name = req.body.name;
+  var tel = req.body.tel;
+  var dtime = req.body.dtime;
+  var price = req.body.price;
+  var open = req.body.open;
+  var close = req.body.close;
+  var filename = req.file.filename;
+  var data = [name, tel, dtime, open, close, price, filename, id];
 
-	pool.getConnection(function(err, connection){
-		var sql = "UPDATE store SET NAME=?, PHONE=?, DELIVERY_TIME=?, UPTIME=?, CLOSETIME=?, PRICE_LIMIT=?, STORE_IMG=? WHERE ID=?";
-		connection.query(sql, data, function(err, result){
-			if(err) {
-				console.error("가게 정보 수정 중 에러 발생 err : ",err);
-			}
-			else
-			{
-				if(result.affectedRows == 0)
-				{
-					res.send("<script>alert('가게 정보 수정에 실패하였습니다.');history.back();</script>");
-				}
-				else
-				{
-					res.redirect('/store/'+id);
-				}
-			}
-			connection.release();
-		});
-	});
+  pool.getConnection(function(err, connection){
+    var sql = "UPDATE store SET NAME=?, PHONE=?, DELIVERY_TIME=?, UPTIME=?, CLOSETIME=?, PRICE_LIMIT=?, STORE_IMG=? WHERE ID=?";
+    connection.query(sql, data, function(err, result){
+      if(err) {
+        console.error("가게 정보 수정 중 에러 발생 err : ",err);
+      }
+      else
+      {
+        if(result.affectedRows == 0)
+        {
+          res.send("<script>alert('가게 정보 수정에 실패하였습니다.');history.back();</script>");
+        }
+        else
+        {
+          res.redirect('/store/'+id);
+        }
+      }
+      connection.release();
+    });
+  });
 });
 
 router.get('/store_del/:id', isAuthenticated, function(req, res, next){
@@ -843,7 +840,7 @@ router.get('/product/:store_id/:menu_id', isAuthenticated, function(req, res, ne
 			if(err) console.log("err :" + err);
 			else
 			{
-				res.render('product', {title: "상품 상세 정보", rows:rows, store_id:store_id});
+				res.render('product', {title: "상품 상세 정보", rows:rows, store_id:store_id, login:req.user.ID});
 			}
 			connection.release();
 		});
@@ -859,7 +856,7 @@ router.get('/product_list/:id', isAuthenticated, function(req, res, next){
 			else
 			{
 				console.log("상품: ", rows);
-				res.render('product_list', {title: "상품 정보", rows:rows, store_id:store_id});
+				res.render('product_list', {title: "상품 정보", rows:rows, store_id:store_id, login:req.user.ID});
 			}
 			connection.release();
 		});
@@ -870,7 +867,7 @@ router.get('/product_list/:id', isAuthenticated, function(req, res, next){
 router.get('/product_add/:id', isAuthenticated, function(req,res,next){
 	var id = req.params.id;
 	console.log("id:"+id)
-    res.render('product_add', {title: "상품 추가", store_id:id});
+    res.render('product_add', {title: "상품 추가", store_id:id, login:req.user.ID});
 });
 
 router.post('/product_add/:id', upload.single('filename'), isAuthenticated, function(req,res,next){
@@ -878,12 +875,20 @@ router.post('/product_add/:id', upload.single('filename'), isAuthenticated, func
     var NAME = req.body.NAME;
     var content = req.body.content;
     var PRICE = req.body.PRICE;
-    var filename = req.file.filename;
-    var datas = [store_id, NAME,PRICE,content, filename];
+    if(req.file) 
+    {
+      var filename = req.file.filename;
+      var datas = [store_id, NAME,PRICE,content, filename];
+      var sqlForInsertmenu = "INSERT INTO menu(store_ID, NAME, PRICE, content, MENU_IMG) values(?,?,?,?,?)";
+    }
+    else
+    {
+      var datas = [store_id, NAME, PRICE, content];
+      var sqlForInsertmenu = "INSERT INTO menu(store_ID, NAME, PRICE, content) values(?,?,?,?)";
+    }
 	console.log("s",store_id);
 
     pool.getConnection(function(err, connection){
-        var sqlForInsertmenu = "INSERT INTO menu(store_ID, NAME, PRICE, content, MENU_IMG) values(?,?,?,?,?)";
         connection.query(sqlForInsertmenu,datas, function(err,rows){
             if (err) console.error("err : " + err);
             console.log("상품 추가 data : " + JSON.stringify(rows));
@@ -926,7 +931,7 @@ router.get('/product_mod/:store_id/:menu_id', isAuthenticated, function(req, res
             if(err) console.error(err);
             else
             {
-            	res.render('product_mod', {title:"상품 수정", rows:rows[0], store_id:store_id});
+            	res.render('product_mod', {title:"상품 수정", rows:rows[0], store_id:store_id, login:req.user.ID});
             }
             connection.release();
         });
@@ -934,16 +939,25 @@ router.get('/product_mod/:store_id/:menu_id', isAuthenticated, function(req, res
 });;
 
 router.post('/product_mod/:store_id/:menu_id', upload.single('filename'), isAuthenticated, function(req, res, next){
-	var store_id = req.params.store_id;
-	var menu_id = req.params.menu_id;
+  var store_id = req.params.store_id;
+  var menu_id = req.params.menu_id;
     var NAME = req.body.NAME;
-	var PRICE = req.body.PRICE;
-	var filename = req.file.filename
-    var content = req.body.content;
+  var PRICE = req.body.PRICE;
+  var content = req.body.content;
+  if(req.file)
+  {
+    var filename = req.file.filename;
+    var sql = "UPDATE menu SET NAME=?, content=?, PRICE=?, MENU_IMG=? WHERE ID=?";
+    var datas=[NAME,content,PRICE,filename,menu_id]
+  }
+  else
+  {
+    var sql = "UPDATE menu SET NAME=?, content=?, PRICE=? WHERE ID=?";
+    var datas=[NAME,content,PRICE,menu_id]    
+  }
 
     pool.getConnection(function(err,connection){
-        var sql = "UPDATE menu SET NAME=?, content=?, PRICE=?, MENU_IMG=? WHERE ID=?";
-        connection.query(sql, [NAME,content,PRICE,filename,menu_id], function(err,result){
+        connection.query(sql, datas, function(err,result){
             console.log("상품 수정 결과 : ",result);
             if(err) console.error("상품 수정 중 에러 발생 err : ",err);
 
@@ -968,7 +982,7 @@ router.get('/store_order/:id', isAuthenticated, function(req,res,next){
 			if (err) console.error("err : "+err);
             console.log(rows);
 
-            res.render('store_sold', {title: '주문 현황', rows: rows, store_id:store_id});
+            res.render('store_sold', {title: '주문 현황', rows: rows, store_id:store_id, login:req.user.ID});
             connection.release();
 
             // Don`t use the connection here, it has been returned th the pool.
@@ -986,7 +1000,7 @@ router.get('/store_sold/:id', isAuthenticated, function(req,res,next){
             if (err) console.error("err : "+err);
             console.log("rows : " + JSON.stringify(rows));
 
-            res.render('store_sold', {title: '판매 현황', rows: rows, store_id:store_id});
+            res.render('store_sold', {title: '판매 현황', rows: rows, store_id:store_id, login:req.user.ID});
             connection.release();
 
             // Don`t use the connection here, it has been returned th the pool.
@@ -994,20 +1008,19 @@ router.get('/store_sold/:id', isAuthenticated, function(req,res,next){
     });
 });
 
-//////////// 남음 ////////////
 // 매출 통계
 router.get('/analytics/:store_id', isAuthenticated, function(req,res,next){
 	var id = req.params.store_id;
 	var his;
 	console.log("id: ",req.params);
     pool.getConnection(function(err,connection){
-        var sql = "SELECT date_format(history,'%d') as history, menu.NAME as menu_name, PRICE, cnt, user_ID FROM sold_history inner join menu ON menu.ID = menu_ID inner join store on store_ID = store.ID where store_ID = ? and history<DATE_SUB(NOW(), INTERVAL DELIVERY_TIME MINUTE)";
+        var sql = "SELECT date_format(history,'%d') as history, menu.NAME as menu_name, PRICE, cnt, user_ID FROM sold_history inner join menu ON menu.ID = menu_ID inner join store on store_ID = store.ID where store_ID = ? and history<DATE_SUB(NOW(), INTERVAL DELIVERY_TIME MINUTE) and history>DATE_SUB(NOW(), INTERVAL 1 MONTH)";
         connection.query(sql, [id], function(err,rows){
 			if (err) console.error("err : ",err);
 			
             console.log("rows : ",rows);
 
-            res.render('analytics', {title: '매출 통계', rows: rows, store_id:id});
+            res.render('analytics', {title: '매출 통계', rows: rows, store_id:id, login:req.user.ID});
             connection.release();
 
             // Don`t use the connection here, it has been returned th the pool.
@@ -1015,6 +1028,51 @@ router.get('/analytics/:store_id', isAuthenticated, function(req,res,next){
     });
 });
 
+//리뷰에 대한 코멘트
+router.get('/store_review/:store_id', isAuthenticated, function(req,res,next){
+  var store_id = req.params.store_id;
+  var sql = "SELECT content, date, rate, review.ID as review_id, PHONE, NAME, store_ID, USER_IMG FROM review inner join user on user_id = user.id WHERE store_ID=? ;  SELECT * FROM store WHERE ID=?; SELECT * FROM comment WHERE user_ID=?";
+  multiconnection.query(sql, [store_id, store_id, req.user.ID], function(err,rows){
+    if (err) console.error("err : " + err);
+    else
+    {
+      console.log("rows:",rows);
+      res.render('store_review', {title: req.user.NAME, rows:rows, store_id:store_id, login:req.user.ID});
+    }
+  });
+}); 
+
+router.get('/comment/:review_id', isAuthenticated, function(req, res, next){
+  var review_id = req.params.review_id;
+  res.render('comment', {login:req.user.ID, review_id:review_id});
+})
+
+router.post('/comment/:review_id', isAuthenticated, function(req, res, next){
+  var review_id = req.params.review_id;
+  var content = req.body.content;
+  var sql = "INSERT INTO comment (review_ID, user_ID, content) values(?, ?, ?) ; SELECT * FROM review WHERE ID=? ;";
+  multiconnection.query(sql, [review_id, req.user.ID, content, review_id], function(err,rows){
+    if(err) console.error("err:"+err);
+    else
+    {
+      console.log("rows: ", rows);
+      res.redirect("/store_review/"+rows[1][0].store_ID);
+    }
+  })
+})
+
+router.get('/comment_del/:review_id', isAuthenticated, function(req, res, next){
+  var review_id = req.params.review_id;
+  var sql = "DELETE FROM comment where review_ID=? and user_ID=? ; SELECT * FROM review WHERE ID=?"
+  multiconnection.query(sql, [review_id, req.user.ID, review_id], function(err,rows){
+    if(err) console.error("err:"+err);
+    else
+    {
+      console.log("rows: ", rows);
+      res.redirect("/store_review/"+rows[1][0].store_ID);
+    }
+  })
+})
 
 
 //////////////////////////////// 판매자 끝 /////////////////////////////////////////////////////

@@ -10,6 +10,10 @@
   <script src="/javascripts/jquery-3.5.1.min.js"></script>
   <script>
 	$(function(){
+    $("#btnlogout").click(
+        function(){
+            location.href="/logout";
+        });
 		$("#btnRtn").click(
 			function(){
 				history.back();
@@ -90,7 +94,7 @@
               
                   <ul class="navbar-nav ml-auto mt-10">
                     <li class="nav-item">
-          <li><input class="nav-link login-button" type="button" id="btnlogin" name="login" value="로그인" style="background-color: white; color: red; font-weight: 900;"></li>
+          <li><input class="nav-link login-button" type="button" id="btnlogout" name="logout" value="로그아웃" style="background-color: white; color: red; font-weight: 900;"></li>
                   </ul>
                 </div>
             </div>

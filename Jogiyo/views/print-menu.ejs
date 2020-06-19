@@ -32,7 +32,7 @@
 	            	});
 	            $("#btnbuy").click(
 	            	function(){
-	            		location.href="/buyer";
+	            		location.href="/buyer/history";
 	            	});
 	            $("#btnmy").click(
 	            	function(){
@@ -133,15 +133,10 @@
 				  <li><input class="nav-link login-button" type="button" id="btnlogin" name="login" value="로그인" style="background-color: white; color: red; font-weight: 900;"></li>
 				  <li><input class="nav-link login-button" type="button" id="btnjoin" name="join" value="회원가입" style="background-color: white; color: red; font-weight: 900;"></li>
 				<% } else { %>
-				  <li><input class="nav-link login-button" type="button" id="btnlogout" name="logout" value="로그아웃" style="background-color: white; color: red; font-weight: 900;"></li>
 				  <li><input class="nav-link login-button" type="button" id="btnmy" name="my" value="내정보" style="background-color: white; color: red; font-weight: 900;"></li>
-				<% if(auth == "구매자") { %>
-				  <li><input class="nav-link login-button" type="button" id="btnbuy" name="buyer" value="구매자" style="background-color: white; color: red; font-weight: 900;"></li>
-				<% } else if(auth == "판매자") { %>
-				  <li><input class="nav-link login-button" type="button" id="btnsel" name="seller" value="판매자" style="background-color: white; color: red; font-weight: 900;"></li>
-				<% } else { %>
-				  <li><input class="nav-link login-button" type="button" id="btnacc" name="account" value="회원정보관리" style="background-color: white; color: red; font-weight: 900;"></li>
-				<% }} %>
+				  <li><input class="nav-link login-button" type="button" id="btnbuy" name="buyer" value="구매내역" style="background-color: white; color: red; font-weight: 900;"></li>
+				  <li><input class="nav-link login-button" type="button" id="btnlogout" name="logout" value="로그아웃" style="background-color: white; color: red; font-weight: 900;"></li>
+				<% } %>
 									</ul>
 								</div>
 						</div>
@@ -158,7 +153,7 @@
 				<!-- Header Contetnt -->
 				<div class="content-block">
 					<h1>J O G I Y O</h1><br>
-					<p>송예찬 <br> "어디로 배달해 드릴까요?"</p>
+					<p>조기요 <br> "어디로 배달해 드릴까요?"</p>
 					<div class="short-popular-category-list text-center">
 						<br><br>
 						<form id="search" action="/buyer/print-store" method="post">
