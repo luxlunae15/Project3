@@ -174,12 +174,20 @@ router.post('/joinForm', upload.single('filename'), function(req, res, next){
 	var name = req.body.name;
 	var auth = req.body.auth;
 	var phone = req.body.tel;
-	var filename = req.file.filename;
-	var datas = [id, passwd, name, auth, phone, filename];
+
+  if(req.file)
+  {
+    var filename = req.file.filename;
+    var datas = [id, passwd, name, auth, phone, filename];
+    var sql = "INSERT INTO user(ID, PASSWD, NAME, AUTH, PHONE, USER_IMG) values(?,?,?,?,?,?)";
+  }
+  else
+  {
+    var datas = [id, passwd, name, auth, phone];
+    var sql = "INSERT INTO user(ID, PASSWD, NAME, AUTH, PHONE) values(?,?,?,?,?)";    
+  }
 
 	pool.getConnection(function(err, connection){
-		var sql = "INSERT INTO user(ID, PASSWD, NAME, AUTH, PHONE, USER_IMG) values(?,?,?,?,?,?)";
-
 		connection.query(sql, datas, function(err,rows){
 			if(err){
 				console.error("err: "+err);
@@ -791,11 +799,20 @@ router.post('/store_mod/:id', upload.single('filename'), isAuthenticated, functi
   var price = req.body.price;
   var open = req.body.open;
   var close = req.body.close;
-  var filename = req.file.filename;
-  var data = [name, tel, dtime, open, close, price, filename, id];
+
+  if(req.file)
+  {
+    var filename = req.file.filename;
+    var data = [name, tel, dtime, open, close, price, filename, id];
+    var sql = "UPDATE store SET NAME=?, PHONE=?, DELIVERY_TIME=?, UPTIME=?, CLOSETIME=?, PRICE_LIMIT=?, STORE_IMG=? WHERE ID=?";
+  }
+  else
+  {
+    var data = [name, tel, dtime, open, close, price, id];
+    var sql = "UPDATE store SET NAME=?, PHONE=?, DELIVERY_TIME=?, UPTIME=?, CLOSETIME=?, PRICE_LIMIT=? WHERE ID=?";    
+  }
 
   pool.getConnection(function(err, connection){
-    var sql = "UPDATE store SET NAME=?, PHONE=?, DELIVERY_TIME=?, UPTIME=?, CLOSETIME=?, PRICE_LIMIT=?, STORE_IMG=? WHERE ID=?";
     connection.query(sql, data, function(err, result){
       if(err) {
         console.error("가게 정보 수정 중 에러 발생 err : ",err);
