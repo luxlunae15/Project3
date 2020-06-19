@@ -358,7 +358,7 @@ router.post('/buyer/print-store', isAuthenticated, function (req, res, next) {
     var y = req.body.lng;
 
     var datas = [];
-    var sql1 = " SELECT count(distinct review.id) as reviewcnt, store.ID, store.NAME, PHONE, store.RATE, DELIVERY_TIME, UPTIME, CLOSETIME, LAT, LNG, PRICE_LIMIT  from store inner join menu on store.id = menu.store_id  left outer join review on review.store_id = store.id inner join category_store on category_store.store_ID = store.id inner join category on category_store.category_ID = category.ID ";
+    var sql1 = " SELECT count(distinct review.id) as reviewcnt, store.ID, store.NAME, PHONE, store.RATE, DELIVERY_TIME, UPTIME, CLOSETIME, LAT, LNG, PRICE_LIMIT, STORE_IMG  from store inner join menu on store.id = menu.store_id  left outer join review on review.store_id = store.id inner join category_store on category_store.store_ID = store.id inner join category on category_store.category_ID = category.ID ";
     var sql2 = " WHERE ((UPTIME>CLOSETIME and (now()>UPTIME or now()<CLOSETIME)) or (UPTIME<CLOSETIME and (UPTIME<now() and now()<CLOSETIME))) ";
     var sql3 = "";
 	var sql4 = " WHERE ((UPTIME>CLOSETIME and (now()<UPTIME and now()>CLOSETIME)) or (UPTIME<CLOSETIME and (UPTIME>now() or now()>CLOSETIME))) ";
@@ -811,8 +811,8 @@ router.get('/product/:store_id/:menu_id', isAuthenticated, function(req, res, ne
 router.get('/product_list/:id', isAuthenticated, function(req, res, next){
 	var store_id = req.params.id;
 	pool.getConnection(function(err, connection){
-		var sql = "SELECT menu.ID as menu_ID, menu.NAME as menu_name, menu.PRICE as menu_price, menu.content as menu_content FROM menu WHERE store_ID = ?";
-		connection.query(sql, [store_id], function(err, rows){
+		var sql = "SELECT menu.ID as menu_ID, menu.NAME as menu_name, menu.PRICE as menu_price, menu.content as menu_content, menu_img FROM menu WHERE store_ID = ?;  SELECT * from user where user.id = ?" ;
+		multiconnection.query(sql, [store_id, req.user.ID],function(err,rows){
 			if(err) console.log("err: "+err);
 			else
 			{
@@ -917,14 +917,15 @@ router.post('/product_mod/:store_id/:menu_id', isAuthenticated, function(req, re
 
 // 주문 현황
 router.get('/store_order/:id', isAuthenticated, function(req,res,next){
-	var id = req.params.id;
+	var store_id = req.params.id;
+	console.log(req.user);
     pool.getConnection(function(err,connection){
-        var sql = "SELECT history, menu.NAME as menu_name, PRICE, cnt, user_ID FROM sold_history inner join menu ON menu.ID = menu_ID inner join store on store_ID = store.ID where store_ID = ? and history>DATE_SUB(NOW(), INTERVAL DELIVERY_TIME MINUTE)";
-        connection.query(sql, [id], function(err,rows){
-            if (err) console.error("err : "+err);
-            console.log("rows : " + JSON.stringify(rows));
+        var sql = "SELECT history, menu.NAME as menu_name, PRICE, cnt, user_ID, MENU_IMG FROM sold_history inner join menu ON menu.ID = menu_ID inner join store on store_ID = store.ID where store_ID = ? and history>DATE_SUB(NOW(), INTERVAL DELIVERY_TIME MINUTE); select * from user where id = ?";
+		multiconnection.query(sql, [store_id, req.user.ID],function(err,rows){
+			if (err) console.error("err : "+err);
+            console.log(rows);
 
-            res.render('store_sold', {title: '주문 현황', rows: rows, store_id:id});
+            res.render('store_sold', {title: '주문 현황', rows: rows, store_id:store_id});
             connection.release();
 
             // Don`t use the connection here, it has been returned th the pool.
@@ -937,8 +938,8 @@ router.get('/store_order/:id', isAuthenticated, function(req,res,next){
 router.get('/store_sold/:id', isAuthenticated, function(req,res,next){
 	var store_id = req.params.id;
     pool.getConnection(function(err,connection){
-        var sql = "SELECT history, menu.NAME as menu_name, PRICE, cnt, user_ID FROM sold_history inner join menu ON menu.ID = menu_ID inner join store on store_ID = store.ID where store_ID = ? and history<DATE_SUB(NOW(), INTERVAL DELIVERY_TIME MINUTE)";
-        connection.query(sql, [store_id], function(err,rows){
+        var sql = "SELECT history, menu.NAME as menu_name, PRICE, cnt, user_ID, MENU_IMG FROM sold_history inner join menu ON menu.ID = menu_ID inner join store on store_ID = store.ID where store_ID = ? and history<DATE_SUB(NOW(), INTERVAL DELIVERY_TIME MINUTE) ; select * from user where id = ?";
+        multiconnection.query(sql, [store_id, req.user.ID],function(err,rows){
             if (err) console.error("err : "+err);
             console.log("rows : " + JSON.stringify(rows));
 
