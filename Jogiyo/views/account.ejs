@@ -17,18 +17,14 @@
             function(){
                 location.href="/";
             })
-        $("#btnsrc").click(
-            function(){
-                location.href="/account/findres/"+$("#ID").val();
-            })
             $("#btnlogout").click(
                 function(){
                     location.href="/logout";
                 });
             $("#btnmy").click(
-            	function(){
-            		location.href="/account/info/"+$("#ID").val();
-            	});    
+                function(){
+                    location.href="/account/info/<%=login%>";
+                });    
     });
 </script>
 
@@ -63,30 +59,30 @@
 <body class="body-wrapper">
 
   <section style="background-color: white;">
-		<div class="container" >
-			<div class="row">
-				<div class="col-md-12">
-					<nav class="navbar navbar-expand-lg navbar-light navigation">
-						
-							<a class="nav-link" href="/" style="font-size: 28pt; color: red; font-weight: 900;">JOGIYO</a>
-						
-						<div class="collapse navbar-collapse" id="navbarSupportedContent">
-							
-								
-								<div class="collapse navbar-collapse" id="navbarSupportedContent">
-							
-									<ul class="navbar-nav ml-auto mt-10">
-										<li class="nav-item">
-				  <li><input class="nav-link login-button" type="button" id="btnmy" name="my" value="내정보" style="background-color: white; color: red; font-weight: 900;"></li>
+        <div class="container" >
+            <div class="row">
+                <div class="col-md-12">
+                    <nav class="navbar navbar-expand-lg navbar-light navigation">
+                        
+                            <a class="nav-link" href="/" style="font-size: 28pt; color: red; font-weight: 900;">JOGIYO</a>
+                        
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            
+                                
+                                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            
+                                    <ul class="navbar-nav ml-auto mt-10">
+                                        <li class="nav-item">
+                  <li><input class="nav-link login-button" type="button" id="btnmy" name="my" value="내정보" style="background-color: white; color: red; font-weight: 900;"></li>
           <li><input class="nav-link login-button" type="button" id="btnlogout" name="logout" value="로그아웃" style="background-color: white; color: red; font-weight: 900;"></li>
-									</ul>
-								</div>
-						</div>
-					</nav>
-				</div>
-			</div>
-		</div>
-	</section>
+                                    </ul>
+                                </div>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
 <!--==================================
 =            User Profile            =
 ===================================-->
@@ -110,7 +106,7 @@
           <!-- Dashboard Links -->
 
           <!-- delete-account modal -->
-          						  <!-- delete account popup modal start-->
+                                  <!-- delete account popup modal start-->
                 <!-- Modal -->
                 <div class="modal fade" id="deleteaccount" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
                   aria-hidden="true">
@@ -196,26 +192,26 @@
         
         <!-- pagination -->
         <div class="pagination justify-content-center">
-					<nav aria-label="Page navigation example">
-						<ul class="pagination">
-							<li class="page-item">
-								<a class="page-link" href="#" aria-label="Previous">
-									<span aria-hidden="true">&laquo;</span>
-									<span class="sr-only">Previous</span>
-								</a>
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <a class="page-link" href="#" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
               </li>
               <% for(var j=0; j<(rows.length -1) / page_num; j++){ %>
                 <li class="page-item"><a class="page-link" href="/account/userlist/<%=j+1%>"><%=j+1%></a></li>
                 <% } %>
-							<li class="page-item">
-								<a class="page-link" href="#" aria-label="Next">
-									<span aria-hidden="true">&raquo;</span>
-									<span class="sr-only">Next</span>
-								</a>
-							</li>
-						</ul>
-					</nav>
-				</div>
+                            <li class="page-item">
+                                <a class="page-link" href="#" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
         <!-- pagination -->
 
       </div>

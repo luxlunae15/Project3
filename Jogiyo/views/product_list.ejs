@@ -13,7 +13,7 @@
   <link rel='stylesheet' href='/stylesheets/style.css'/>
   <script>
       $(function(){
-          $("#btnRtn").click(
+          $("#btnstr").click(
               function(){
                   location.href="/store/<%=store_id%>";
               })
@@ -21,6 +21,14 @@
               function(){
                   location.href="/product_add/<%=store_id%>";
               })
+            $("#btnmy").click(
+              function(){
+                location.href="/account/info/<%=login%>";
+              });
+            $("#btnlogout").click(
+                function(){
+                    location.href="/logout";
+                });
       });
   </script>
 
@@ -99,6 +107,7 @@
             <h5 class="text-center"><%=rows[1][0].NAME%></h5>
             <p>판매자</p>
             <input type="button" id="btnadd" name="add" value="상품 추가" class="btn btn-main-sm">
+            <input type="button" id="btnstr" name="str" value="매장 관리" class="btn btn-main-sm">
           </div>
           <!-- Dashboard Links -->
 
