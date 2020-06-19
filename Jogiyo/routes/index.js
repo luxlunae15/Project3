@@ -335,7 +335,22 @@ router.get('/account/delete', isAuthenticated, function(req, res, next){
 /////////////////////////////// 구매자 시작 ////////////////////////////////////////////////////
 
 router.get('/buyer', isAuthenticated, function(req,res,next){
-    res.render('buyer', {title: "구매자"});
+	
+	var id = req.user.ID;
+	console.log("id is : ",id);
+pool.getConnection(function(err, connection){
+	var sql = "SELECT * FROM user WHERE ID=?";
+	connection.query(sql, [id], function(err,rows){
+		if(err) console.error("err: "+err);
+		else
+		{
+			console.log("결과: ",rows);
+			res.render('buyer', {title: rows[0].NAME ,rows:rows});
+		}
+		connection.release();
+	});
+});
+
 });
 
 router.get('/buyer/print-store', isAuthenticated, function(req, res, next){
