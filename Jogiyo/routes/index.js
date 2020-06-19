@@ -1,6 +1,16 @@
 var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
+var multer = require('multer');
+var storage = multer.diskStorage({
+	destination: function(req, file, cb){
+		cb(null, 'uploads/')
+	},
+	filename: function(req, file, cb){
+		cb(null, file.originalname)
+	}
+})
+var upload = multer({storage:storage})
 var pool = mysql.createPool({
 	connectionLimit: 5,
 	host: 'localhost',
@@ -158,22 +168,22 @@ router.get('/joinForm', function(req, res, next) {
 	res.render('joinForm', { title: 'Join Form!', login:login, auth:auth});
 });
 
-router.post('/joinForm', function(req, res, next){
+router.post('/joinForm', upload.single('filename'), function(req, res, next){
 	var id = req.body.id;
 	var passwd = req.body.passwd;
 	var name = req.body.name;
 	var auth = req.body.auth;
 	var phone = req.body.tel;
-	var datas = [id, passwd, name, auth, phone];
-  console.log(datas);
+	var filename = req.file.filename;
+	var datas = [id, passwd, name, auth, phone, filename];
 
 	pool.getConnection(function(err, connection){
-		var sql = "INSERT INTO user(ID, PASSWD, NAME, AUTH, PHONE) values(?,?,?,?,?)";
+		var sql = "INSERT INTO user(ID, PASSWD, NAME, AUTH, PHONE, USER_IMG) values(?,?,?,?,?,?)";
 
 		connection.query(sql, datas, function(err,rows){
 			if(err){
 				console.error("err: "+err);
-				res.send('<script type="text/javascript">alert("회원가입에 실패하였습니다.");location.href="/joinForm";</script>');
+				res.send('<script type="text/javascript">alert("회원가입에 실패하였습니다.");location.href="/join";</script>');
 			}
 			else
 			{
@@ -271,15 +281,16 @@ router.get('/account/update', isAuthenticated, function(req, res, next){
 	});
 });
 
-router.post('/account/update', isAuthenticated, function(req, res, next){
+router.post('/account/update', upload.single('filename'), isAuthenticated, function(req, res, next){
 	var id = req.body.id;
 	var passwd = req.body.passwd;
 	var name = req.body.name;
 	var tel = req.body.tel;
-	var datas = [passwd, name, tel, id];
+	var filename = req.file.filename;
+	var datas = [passwd, name, tel, filename, id];
 
 	pool.getConnection(function(err, connection){
-		var sql = "UPDATE user SET PASSWD=?, NAME=?, PHONE=? WHERE ID=?";
+		var sql = "UPDATE user SET PASSWD=?, NAME=?, PHONE=?, USER_IMG = ? WHERE ID=? ";
 		connection.query(sql, datas, function(err, result){
 			if(err) {
 				console.error("회원 정보 수정 중 에러 발생 err : ",err);
@@ -324,7 +335,22 @@ router.get('/account/delete', isAuthenticated, function(req, res, next){
 /////////////////////////////// 구매자 시작 ////////////////////////////////////////////////////
 
 router.get('/buyer', isAuthenticated, function(req,res,next){
-    res.render('buyer', {title: "구매자"});
+	
+	var id = req.user.ID;
+	console.log("id is : ",id);
+pool.getConnection(function(err, connection){
+	var sql = "SELECT * FROM user WHERE ID=?";
+	connection.query(sql, [id], function(err,rows){
+		if(err) console.error("err: "+err);
+		else
+		{
+			console.log("결과: ",rows);
+			res.render('buyer', {title: rows[0].NAME ,rows:rows});
+		}
+		connection.release();
+	});
+});
+
 });
 
 router.get('/buyer/print-store', isAuthenticated, function(req, res, next){
@@ -358,7 +384,7 @@ router.post('/buyer/print-store', isAuthenticated, function (req, res, next) {
     var y = req.body.lng;
 
     var datas = [];
-    var sql1 = " SELECT count(distinct review.id) as reviewcnt, store.ID, store.NAME, PHONE, store.RATE, DELIVERY_TIME, UPTIME, CLOSETIME, LAT, LNG, PRICE_LIMIT  from store inner join menu on store.id = menu.store_id  left outer join review on review.store_id = store.id inner join category_store on category_store.store_ID = store.id inner join category on category_store.category_ID = category.ID ";
+    var sql1 = " SELECT count(distinct review.id) as reviewcnt, store.ID, store.NAME, PHONE, store.RATE, DELIVERY_TIME, UPTIME, CLOSETIME, LAT, LNG, PRICE_LIMIT, STORE_IMG  from store inner join menu on store.id = menu.store_id  left outer join review on review.store_id = store.id inner join category_store on category_store.store_ID = store.id inner join category on category_store.category_ID = category.ID ";
     var sql2 = " WHERE ((UPTIME>CLOSETIME and (now()>UPTIME or now()<CLOSETIME)) or (UPTIME<CLOSETIME and (UPTIME<now() and now()<CLOSETIME))) ";
     var sql3 = "";
 	var sql4 = " WHERE ((UPTIME>CLOSETIME and (now()<UPTIME and now()>CLOSETIME)) or (UPTIME<CLOSETIME and (UPTIME>now() or now()>CLOSETIME))) ";
@@ -647,7 +673,7 @@ router.get('/store_add', isAuthenticated, function(req, res, next){
 	});
 });
 
-router.post('/store_add', isAuthenticated, function(req, res, next){
+router.post('/store_add', upload.single('filename'), isAuthenticated, function(req, res, next){
 	var name = req.body.name;
 	var tel = req.body.tel;
 	var category = req.body.category;
@@ -657,11 +683,12 @@ router.post('/store_add', isAuthenticated, function(req, res, next){
 	var close = req.body.close;
 	var lat = req.body.lat;
 	var lng = req.body.lng;
-	var data = [name, tel, dtime, open, close, price, lat, lng];
+	var filename = req.file.filename;
+	var data = [name, tel, dtime, open, close, price, lat, lng, filename];
 	
 
 	pool.getConnection(function(err, connection){
-		var sql = "INSERT INTO store(NAME, PHONE, DELIVERY_TIME, UPTIME, CLOSETIME, PRICE_LIMIT, LAT, LNG) values(?, ?, ?, ?, ?, ?, ?, ?)";
+		var sql = "INSERT INTO store(NAME, PHONE, DELIVERY_TIME, UPTIME, CLOSETIME, PRICE_LIMIT, LAT, LNG, STORE_IMG) values(?, ?, ?, ?, ?, ?, ?, ?,?)";
 
 		connection.query(sql, data, function(err,rows){
 			if(err) console.error("err: "+err);
@@ -745,7 +772,7 @@ router.get('/store_mod/:id', isAuthenticated, function(req, res, next){
 	});
 });
 
-router.post('/store_mod/:id', isAuthenticated, function(req, res, next){
+router.post('/store_mod/:id', upload.single('filename'), isAuthenticated, function(req, res, next){
 	var id = req.params.id;
 	var name = req.body.name;
 	var tel = req.body.tel;
@@ -753,10 +780,11 @@ router.post('/store_mod/:id', isAuthenticated, function(req, res, next){
 	var price = req.body.price;
 	var open = req.body.open;
 	var close = req.body.close;
-	var data = [name, tel, dtime, open, close, price, id];
+	var filename = req.file.filename;
+	var data = [name, tel, dtime, open, close, price, filename, id];
 
 	pool.getConnection(function(err, connection){
-		var sql = "UPDATE store SET NAME=?, PHONE=?, DELIVERY_TIME=?, UPTIME=?, CLOSETIME=?, PRICE_LIMIT=? WHERE ID=?";
+		var sql = "UPDATE store SET NAME=?, PHONE=?, DELIVERY_TIME=?, UPTIME=?, CLOSETIME=?, PRICE_LIMIT=?, STORE_IMG=? WHERE ID=?";
 		connection.query(sql, data, function(err, result){
 			if(err) {
 				console.error("가게 정보 수정 중 에러 발생 err : ",err);
@@ -811,8 +839,8 @@ router.get('/product/:store_id/:menu_id', isAuthenticated, function(req, res, ne
 router.get('/product_list/:id', isAuthenticated, function(req, res, next){
 	var store_id = req.params.id;
 	pool.getConnection(function(err, connection){
-		var sql = "SELECT menu.ID as menu_ID, menu.NAME as menu_name, menu.PRICE as menu_price, menu.content as menu_content FROM menu WHERE store_ID = ?";
-		connection.query(sql, [store_id], function(err, rows){
+		var sql = "SELECT menu.ID as menu_ID, menu.NAME as menu_name, menu.PRICE as menu_price, menu.content as menu_content, menu_img FROM menu WHERE store_ID = ?;  SELECT * from user where user.id = ?" ;
+		multiconnection.query(sql, [store_id, req.user.ID],function(err,rows){
 			if(err) console.log("err: "+err);
 			else
 			{
@@ -831,17 +859,17 @@ router.get('/product_add/:id', isAuthenticated, function(req,res,next){
     res.render('product_add', {title: "상품 추가", store_id:id});
 });
 
-router.post('/product_add/:id', isAuthenticated, function(req,res,next){
+router.post('/product_add/:id', upload.single('filename'), isAuthenticated, function(req,res,next){
 	var store_id = req.params.id;
     var NAME = req.body.NAME;
     var content = req.body.content;
     var PRICE = req.body.PRICE;
-    
-    var datas = [store_id, NAME,PRICE,content];
+    var filename = req.file.filename;
+    var datas = [store_id, NAME,PRICE,content, filename];
 	console.log("s",store_id);
 
     pool.getConnection(function(err, connection){
-        var sqlForInsertmenu = "INSERT INTO menu(store_ID, NAME, PRICE, content) values(?,?,?,?)";
+        var sqlForInsertmenu = "INSERT INTO menu(store_ID, NAME, PRICE, content, MENU_IMG) values(?,?,?,?,?)";
         connection.query(sqlForInsertmenu,datas, function(err,rows){
             if (err) console.error("err : " + err);
             console.log("상품 추가 data : " + JSON.stringify(rows));
@@ -891,16 +919,17 @@ router.get('/product_mod/:store_id/:menu_id', isAuthenticated, function(req, res
     });
 });;
 
-router.post('/product_mod/:store_id/:menu_id', isAuthenticated, function(req, res, next){
+router.post('/product_mod/:store_id/:menu_id', upload.single('filename'), isAuthenticated, function(req, res, next){
 	var store_id = req.params.store_id;
 	var menu_id = req.params.menu_id;
     var NAME = req.body.NAME;
-    var PRICE = req.body.PRICE;
+	var PRICE = req.body.PRICE;
+	var filename = req.file.filename
     var content = req.body.content;
 
     pool.getConnection(function(err,connection){
-        var sql = "UPDATE menu SET NAME=?, content=?, PRICE=? WHERE ID=?";
-        connection.query(sql, [NAME,content,PRICE,menu_id], function(err,result){
+        var sql = "UPDATE menu SET NAME=?, content=?, PRICE=?, MENU_IMG=? WHERE ID=?";
+        connection.query(sql, [NAME,content,PRICE,filename,menu_id], function(err,result){
             console.log("상품 수정 결과 : ",result);
             if(err) console.error("상품 수정 중 에러 발생 err : ",err);
 
@@ -917,14 +946,15 @@ router.post('/product_mod/:store_id/:menu_id', isAuthenticated, function(req, re
 
 // 주문 현황
 router.get('/store_order/:id', isAuthenticated, function(req,res,next){
-	var id = req.params.id;
+	var store_id = req.params.id;
+	console.log(req.user);
     pool.getConnection(function(err,connection){
-        var sql = "SELECT history, menu.NAME as menu_name, PRICE, cnt, user_ID FROM sold_history inner join menu ON menu.ID = menu_ID inner join store on store_ID = store.ID where store_ID = ? and history>DATE_SUB(NOW(), INTERVAL DELIVERY_TIME MINUTE)";
-        connection.query(sql, [id], function(err,rows){
-            if (err) console.error("err : "+err);
-            console.log("rows : " + JSON.stringify(rows));
+        var sql = "SELECT history, menu.NAME as menu_name, PRICE, cnt, user_ID, MENU_IMG FROM sold_history inner join menu ON menu.ID = menu_ID inner join store on store_ID = store.ID where store_ID = ? and history>DATE_SUB(NOW(), INTERVAL DELIVERY_TIME MINUTE); select * from user where id = ?";
+		multiconnection.query(sql, [store_id, req.user.ID],function(err,rows){
+			if (err) console.error("err : "+err);
+            console.log(rows);
 
-            res.render('store_sold', {title: '주문 현황', rows: rows, store_id:id});
+            res.render('store_sold', {title: '주문 현황', rows: rows, store_id:store_id});
             connection.release();
 
             // Don`t use the connection here, it has been returned th the pool.
@@ -937,8 +967,8 @@ router.get('/store_order/:id', isAuthenticated, function(req,res,next){
 router.get('/store_sold/:id', isAuthenticated, function(req,res,next){
 	var store_id = req.params.id;
     pool.getConnection(function(err,connection){
-        var sql = "SELECT history, menu.NAME as menu_name, PRICE, cnt, user_ID FROM sold_history inner join menu ON menu.ID = menu_ID inner join store on store_ID = store.ID where store_ID = ? and history<DATE_SUB(NOW(), INTERVAL DELIVERY_TIME MINUTE)";
-        connection.query(sql, [store_id], function(err,rows){
+        var sql = "SELECT history, menu.NAME as menu_name, PRICE, cnt, user_ID, MENU_IMG FROM sold_history inner join menu ON menu.ID = menu_ID inner join store on store_ID = store.ID where store_ID = ? and history<DATE_SUB(NOW(), INTERVAL DELIVERY_TIME MINUTE) ; select * from user where id = ?";
+        multiconnection.query(sql, [store_id, req.user.ID],function(err,rows){
             if (err) console.error("err : "+err);
             console.log("rows : " + JSON.stringify(rows));
 
