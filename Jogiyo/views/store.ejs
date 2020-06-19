@@ -18,6 +18,14 @@
             function(){
                 location.href="/store_add";
             });
+        $("#btnmy").click(
+          function(){
+            location.href="/account/info/<%=login%>";
+          });
+        $("#btnlogout").click(
+            function(){
+                location.href="/logout";
+            });
     });
 </script>
 
@@ -141,22 +149,22 @@
 							</div>
 						</div>
 					</div> <!-- /Category List -->
+          <!-- Category list -->
+          <div class="col-lg-3 offset-lg-0 col-md-5 offset-md-1 col-sm-6 col-6">
+            <div class="category-block">
+              
+              <div class="header">
+                <i class="fa fa-file icon-bg-8"></i> 
+                <h4><a href="/store_review/<%=rows[0].ID%>">리뷰 조회</a></h4>
+              </div>
+            </div>
+          </div> <!-- /Category List -->
 					<!-- Category list -->
 					<div class="col-lg-3 offset-lg-0 col-md-5 offset-md-1 col-sm-6 col-6">
 						<div class="category-block">
 							<div class="header">
 								<i class="fa fa-mail-reply icon-bg-7"></i> 
 								<h4><a href="/seller">돌아가기</a></h4>
-							</div>
-						</div>
-					</div> <!-- /Category List -->
-					<!-- Category list -->
-					<div class="col-lg-3 offset-lg-0 col-md-5 offset-md-1 col-sm-6 col-6">
-						<div class="category-block">
-							
-							<div class="header">
-								<i class="fa fa-home icon-bg-8"></i> 
-								<h4><a href="/">메인 페이지</a></h4>
 							</div>
 						</div>
 					</div> <!-- /Category List -->

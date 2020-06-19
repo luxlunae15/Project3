@@ -14,6 +14,10 @@
 			function(){
 				location.href="/account/userlist";
 			});
+    $("#btnlogout").click(
+        function(){
+            location.href="/logout";
+        });
 	});
 </script>
   <!-- FAVICON -->
@@ -61,7 +65,7 @@
               
                   <ul class="navbar-nav ml-auto mt-10">
                     <li class="nav-item">
-          <li><input class="nav-link login-button" type="button" id="btnlogin" name="login" value="로그인" style="background-color: white; color: red; font-weight: 900;"></li>
+          <li><input class="nav-link login-button" type="button" id="btnlogout" name="logout" value="로그아웃" style="background-color: white; color: red; font-weight: 900;"></li>
                   </ul>
                 </div>
             </div>
@@ -164,7 +168,7 @@
           </div>
           <div class="download-btn d-flex my-3">
             <a href="#"><img src="../../images/apps/google-play-store.png" class="img-fluid" alt=""></a>
-            <a href="#" class=" ml-3"><img src="../images/apps/apple-app-store.png" class="img-fluid" alt=""></a>
+            <a href="#" class=" ml-3"><img src="../../images/apps/apple-app-store.png" class="img-fluid" alt=""></a>
           </div>
         </div>
       </div>
