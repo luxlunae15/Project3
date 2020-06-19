@@ -121,12 +121,28 @@ router.get('/logout', function(req, res) {
 router.get('/', function(req, res, next) {
 	console.log(req.user);
     if (req.user == undefined)
+    {
         var login = 'unlogin';
+        var auth = "";
+    }
     else {
         var login = req.user.ID;
         var auth = req.user.AUTH;
     }
-	res.render('index', { title: 'JOGIYO', login:login, auth:auth });
+
+  if(auth=='판매자'){
+    console.log('seller auth : ',auth );
+    res.redirect('/seller');
+  }
+  else if(auth=='관리자'){
+    console.log('manager auth : ',auth );
+    res.redirect('/account/userlist/1');
+  }
+  else{
+    console.log("buyer here : ",auth);
+    res.render('index', { title: 'JOGIYO', login:login, auth:auth });
+  }
+
 });
 
 
@@ -149,6 +165,7 @@ router.post('/joinForm', function(req, res, next){
 	var auth = req.body.auth;
 	var phone = req.body.tel;
 	var datas = [id, passwd, name, auth, phone];
+  console.log(datas);
 
 	pool.getConnection(function(err, connection){
 		var sql = "INSERT INTO user(ID, PASSWD, NAME, AUTH, PHONE) values(?,?,?,?,?)";
@@ -156,7 +173,7 @@ router.post('/joinForm', function(req, res, next){
 		connection.query(sql, datas, function(err,rows){
 			if(err){
 				console.error("err: "+err);
-				res.send('<script type="text/javascript">alert("회원가입에 실패하였습니다.");location.href="/join";</script>');
+				res.send('<script type="text/javascript">alert("회원가입에 실패하였습니다.");location.href="/joinForm";</script>');
 			}
 			else
 			{
@@ -546,7 +563,13 @@ router.get('/buyer/history', isAuthenticated, function(req, res, next){
 
 // 구매 페이지
 router.get('/purchase',isAuthenticated, function(req, res, next){
-	res.render('purchase');
+  if (req.user == undefined)
+        var login = 'unlogin';
+    else {
+        var login = req.user.ID;
+        var auth = req.user.AUTH;
+    }
+	res.render('purchase', {login:login, auth:auth});
 });
 
 // 구매 페이지
@@ -617,7 +640,7 @@ router.get('/store_add', isAuthenticated, function(req, res, next){
 			if(err) console.error("err: "+err);
 			else
 			{
-				res.render('store_add', {title:'매장 추가', rows:rows});
+				res.render('store_add', {title:'매장 추가', rows:rows, login:req.user.ID});
 			}
 			connection.release();
 		});
@@ -716,7 +739,7 @@ router.get('/store_mod/:id', isAuthenticated, function(req, res, next){
 		var sql = "SELECT * FROM store WHERE ID=?";
 		connection.query(sql, [id], function(err, rows){
 			if(err) console.error(err);
-			res.render('store_mod', {title:"가게 정보 수정", row:rows[0]});
+			res.render('store_mod', {title:"가게 정보 수정", row:rows[0], login:req.user.ID});
 			connection.release();
 		});
 	});
