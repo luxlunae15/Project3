@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Classimax</title>
+  <title>JOGIYO</title>
   <script src="/javascripts/jquery-3.5.1.min.js"></script>
   <!-- FAVICON -->
   <link href="../img/favicon.png" rel="shortcut icon">
@@ -125,11 +125,11 @@
           <div class="widget user-dashboard-profile">
             <!-- User Image -->
             <div class="profile-thumb">
-              <img src="../images/user/user-thumb.jpg" alt="" class="rounded-circle">
+              <img src="/seller/<%=rows[1][0].USER_IMG%>" alt="" class="rounded-circle">
             </div>
             <!-- User Name -->
             <h5 class="text-center">판매 현황</h5>
-            <p>J O G I Y O</p>
+            <p><%=rows[1][0].NAME%></p>
             <input class="btn btn-main-sm" type="button" id="btnRtn" name="return" value="돌아가기">
           </div>
           <!-- Dashboard Links -->
@@ -178,14 +178,14 @@
               </tr>
             </thead>
             <tbody>
-                <%
-            for(var i=0; i<rows.length; i++){
-                var oneItem = rows[i];
-%>
-              <tr>
-
-                <td class="product-thumb">
-                  <img width="80px" height="auto" src="../images/products/products-1.jpg" alt="image description"></td>
+              <%
+              for(var i=0; i<rows[0].length; i++){
+                  var oneItem = rows[0][i];
+  %>
+                <tr>
+  
+                  <td class="product-thumb">
+                    <img width="80px" height="auto" src="/seller/<%=oneItem.MENU_IMG%>" alt="image description"></td>
                 <td class="product-details">
                   <h3 class="title"></h3>
                   <span class="add-id"><strong>주문 메뉴:</strong> <%=oneItem.menu_name%></span>
