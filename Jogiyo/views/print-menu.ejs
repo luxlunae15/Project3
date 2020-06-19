@@ -409,7 +409,25 @@
 											<div><i class="fa fa-thumbs-o-up fa-lg" id ="<%=item2.rid%>" name="<%=item2.rid%>" value = "<%=item2.like_cnt%>"><%=item2.like_cnt%></i></div>
 										</div>
 									</div>
-									<% } %>
+
+					                <% for(var k = 0; k<rows[4].length; k++){
+					                  if(item2.rid == rows[4][k].review_ID)
+					                  { %>
+					                  	<div class="media">
+										<div class="media-body">
+					                  <td class="product-thumb"><h3>사장님 comment</h3></td>
+					                  <div class="date">
+												<p><%=rows[4][k].com_date%></p>
+											</div>
+					                    <td colspan="2"><%=rows[4][k].com_content%></td>
+					                    <td class="action" data-title="Action">
+					                  <div class="">
+					                  </div>
+					                </td>
+					            </div>
+					            </div>
+					                <% } } %>
+					                <% } %>
 									
 									<div class="review-submission">
 										<form action="/review/<%=store_id%>" method="post">
