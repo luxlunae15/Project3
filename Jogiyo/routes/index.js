@@ -757,7 +757,7 @@ router.get('/store_mod/:id', isAuthenticated, function(req, res, next){
 	});
 });
 
-router.post('/store_mod/:id', isAuthenticated, function(req, res, next){
+router.post('/store_mod/:id', upload.single('filename'), isAuthenticated, function(req, res, next){
 	var id = req.params.id;
 	var name = req.body.name;
 	var tel = req.body.tel;
@@ -765,10 +765,11 @@ router.post('/store_mod/:id', isAuthenticated, function(req, res, next){
 	var price = req.body.price;
 	var open = req.body.open;
 	var close = req.body.close;
-	var data = [name, tel, dtime, open, close, price, id];
+	var filename = req.file.filename;
+	var data = [name, tel, dtime, open, close, price, filename, id];
 
 	pool.getConnection(function(err, connection){
-		var sql = "UPDATE store SET NAME=?, PHONE=?, DELIVERY_TIME=?, UPTIME=?, CLOSETIME=?, PRICE_LIMIT=? WHERE ID=?";
+		var sql = "UPDATE store SET NAME=?, PHONE=?, DELIVERY_TIME=?, UPTIME=?, CLOSETIME=?, PRICE_LIMIT=?, STORE_IMG=? WHERE ID=?";
 		connection.query(sql, data, function(err, result){
 			if(err) {
 				console.error("가게 정보 수정 중 에러 발생 err : ",err);
@@ -903,16 +904,17 @@ router.get('/product_mod/:store_id/:menu_id', isAuthenticated, function(req, res
     });
 });;
 
-router.post('/product_mod/:store_id/:menu_id', isAuthenticated, function(req, res, next){
+router.post('/product_mod/:store_id/:menu_id', upload.single('filename'), isAuthenticated, function(req, res, next){
 	var store_id = req.params.store_id;
 	var menu_id = req.params.menu_id;
     var NAME = req.body.NAME;
-    var PRICE = req.body.PRICE;
+	var PRICE = req.body.PRICE;
+	var filename = req.file.filename
     var content = req.body.content;
 
     pool.getConnection(function(err,connection){
-        var sql = "UPDATE menu SET NAME=?, content=?, PRICE=? WHERE ID=?";
-        connection.query(sql, [NAME,content,PRICE,menu_id], function(err,result){
+        var sql = "UPDATE menu SET NAME=?, content=?, PRICE=?, MENU_IMG=? WHERE ID=?";
+        connection.query(sql, [NAME,content,PRICE,filename,menu_id], function(err,result){
             console.log("상품 수정 결과 : ",result);
             if(err) console.error("상품 수정 중 에러 발생 err : ",err);
 

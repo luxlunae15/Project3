@@ -124,7 +124,7 @@
                 <div class="col-lg-5 col-md-8 align-item-center">
                     <div class="border border">
                         <h3 class="bg-gray p-4">매장 정보 수정</h3>
-                        <form id="store_mod" action="/store_mod/<%=row.ID%>" method="post">
+                        <form id="store_mod" action="/store_mod/<%=row.ID%>" method="post" enctype="multipart/form-data">
                             <fieldset class="p-4">
                                 매장 이름<input type="text" class="border p-2 w-100 my-2" name="name" id="name" size="12" maxLength="12" value=<%=row.NAME%> required>
                                 배달 시간<input type="text" class="border p-2 w-100 my-2" name="dtime" id="dtime" size="3" maxLength="3" value=<%=row.DELIVERY_TIME%> required>분
@@ -146,6 +146,7 @@
                 <input type="text" class="border p-2 w-70 my-2" name="tel3" id="tel3" size="4" maxLength="4" <%if(row.PHONE){%>value="<%=row.PHONE[9]%><%=row.PHONE[10]%><%=row.PHONE[11]%><%=row.PHONE[12]%>"  <%}%> required>
                                 
                 <br>
+                이미지 업로드<br><input type="file" name="filename" value=<%=row.STORE_IMG%>><br>
                 <input type="button" style="float:right;" class="py-3 px-4 bg-primary text-white border-0 rounded font-weight-bold" id="btnRtn" name="return" value="돌아가기">
                 <input type="button" style="float:right; margin-right: 5px" class="py-3 px-4 bg-primary text-white border-0 rounded font-weight-bold" id="btnJoin" name="join" value="수정" >
                 
