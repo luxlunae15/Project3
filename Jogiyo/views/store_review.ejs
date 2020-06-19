@@ -84,7 +84,7 @@
       </div>
     </div>
   </section>
-<section class="hero-area bg-1 text-center">
+  <section class="dashboard section">
   <!-- Container Start -->
   <div class="container">
     <!-- Row Start -->
@@ -141,7 +141,7 @@
           <table class="table table-responsive product-dashboard-table">
             <thead>
               <tr>
-                <th>글쓴이 이미지</th>
+                <th>글쓴이<br>이미지</th>
                 <th>글쓴이 정보</th>
                 <th class="text-center">평점</th>
                 <th class="text-center">코멘트 달기</th>
@@ -158,8 +158,9 @@
 
               <tr>
                 <td class="product-thumb">
-                  <img width="80px" height="auto" src="/seller/<%=item.USER_IMG%>" alt="image description"><h3><%=item.NAME%></a></h3></td>
+                  <img width="80px" height="auto" src="/seller/<%=item.USER_IMG%>" alt="image description"><h3></a></h3></td>
                 <td class="product-details">
+                  <h3 class="title" style="margin-left: 5px;"><%=item.NAME%></h3>
                   <span class="status active"><strong>내용 : </strong><%=item.content%></span>
                   <span><strong>작성 시간: </strong><time><%=item.date%></time> </span>
                 </td>

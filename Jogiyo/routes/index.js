@@ -486,7 +486,8 @@ router.get('/buyer/print-menu/:id', isAuthenticated, function(req,res,next){
     var sql2 = "select user.ID as userID, user.name as user_name, menu.name as menu_name, menu.id as menuID, menu.price as menu_price, user_menu.cnt as menu_cnt from user_menu inner join menu on menu_ID = menu.ID inner join user on user_ID = user.id where user.ID=?;";
     var sql3 = "SELECT review.id as rid, rate, content, user_ID, menu_ID, store_ID, date, like_cnt, PASSWD, NAME, AUTH, PHONE, USER_IMG FROM review inner join user on user_id = user.id WHERE store_ID=?;";
     var sql4 = "SELECT store.NAME as store_name, category.NAME as category_name, PRICE_LIMIT, DELIVERY_TIME, UPTIME, CLOSETIME, RATE, PHONE, STORE_IMG FROM store inner join category_store on store.ID = store_ID inner join category on category_ID = category.ID WHERE store.ID=?;";
-  
+    var sql5 = "SELECT comment.content as com_content, comment.date as com_date, review_ID, comment.user_ID as com_user_ID, store_ID FROM comment inner join review on review_ID=review.ID WHERE store_ID=?; ";
+
   if (req.user == undefined)
         var login = 'unlogin';
     else {
@@ -494,7 +495,7 @@ router.get('/buyer/print-menu/:id', isAuthenticated, function(req,res,next){
         var auth = req.user.AUTH;
     }
 
-  multiconnection.query(sql1+sql2+sql3+sql4, [store_id, req.user.ID, store_id, store_id],function(err,rows){
+  multiconnection.query(sql1+sql2+sql3+sql4+sql5, [store_id, req.user.ID, store_id, store_id, store_id],function(err,rows){
         if(err) console.error("에러:"+err);
         else{
       
