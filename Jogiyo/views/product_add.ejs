@@ -120,12 +120,13 @@
             <div class="row justify-content-center">
                 <div class="col-lg-5 col-md-8 align-item-center">
                     <div class="border border">
-                        <h3 class="bg-gray p-4">Register Now</h3>
-                        <form action="/product_add/<%=store_id%>" method="post" onsubmit="return onWriteSubmit()">
+                        <h3 class="bg-gray p-4">상품 추가</h3>
+                        <form action="/product_add/<%=store_id%>" method="post" onsubmit="return onWriteSubmit()" enctype="multipart/form-data">
                             <fieldset class="p-4">
                                 메뉴 이름<input type="text" class="border p-2 w-100 my-2" name="NAME" id="NAME" required>
                                 가격<input type="text"  class="border p-2 w-100 my-2"name="PRICE" id="PRICE" required>
                                 정보<textarea name="content"  class="border p-2 w-100 my-2"id="content" required></textarea>
+                                이미지 업로드<br><input type="file" name="filename" ><br>
                                 <input type="button" style="float:right; " class="py-3 px-4 bg-primary text-white border-0 rounded font-weight-bold" id="btnRtn" name="return" value="돌아가기">
                                 <button type="submit" style="float:right; margin-right: 5px; " class="py-3 px-4 bg-primary text-white border-0 rounded font-weight-bold" >상품 추가</button>
                                  
