@@ -334,6 +334,20 @@ router.get('/account/delete', isAuthenticated, function(req, res, next){
 
 /////////////////////////////// 구매자 시작 ////////////////////////////////////////////////////
 
+router.post('/buyer/like', function (req, res, next) {
+    pool.getConnection(function (err, connection) {
+            var rid = req.body.rid;
+            console.log(rid);
+            var sql = "update review set like_cnt = like_cnt + 1 where ID=?";
+            console.log(sql);
+            connection.query(sql, rid, function (err, rows) {
+                if (err) 
+                    console.error("err: " + err);
+				console.log("구매 출력 결과: ", rows);
+            });
+        });    
+	});
+
 router.get('/buyer', isAuthenticated, function(req,res,next){
 	
 	var id = req.user.ID;
@@ -469,7 +483,7 @@ router.get('/buyer/print-menu/:id', isAuthenticated, function(req,res,next){
 	var hint = req.user.ID;
     var sql1 = "SELECT * FROM menu WHERE store_ID=?;";
     var sql2 = "select user.ID as userID, user.name as user_name, menu.name as menu_name, menu.id as menuID, menu.price as menu_price, user_menu.cnt as menu_cnt from user_menu inner join menu on menu_ID = menu.ID inner join user on user_ID = user.id where user.ID=?;";
-    var sql3 = "SELECT * FROM review inner join user on user_id = user.id WHERE store_ID=?;";
+    var sql3 = "SELECT review.id as rid, rate, content, user_ID, menu_ID, store_ID, date, like_cnt, PASSWD, NAME, AUTH, PHONE, USER_IMG FROM review inner join user on user_id = user.id WHERE store_ID=?;";
     var sql4 = "SELECT store.NAME as store_name, category.NAME as category_name, PRICE_LIMIT, DELIVERY_TIME, UPTIME, CLOSETIME, RATE, PHONE, STORE_IMG FROM store inner join category_store on store.ID = store_ID inner join category on category_ID = category.ID WHERE store.ID=?;";
 	
 	if (req.user == undefined)

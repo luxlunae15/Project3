@@ -64,6 +64,23 @@
                 }
             }
 		</script>
+		
+		<script>
+			function like(rid, cnt){				
+				$.ajax({
+					type: "POST",
+					url: "/buyer/like",
+					data: {
+						'rid' : rid,
+					}					
+				});
+				var resultlike = document.getElementById(rid);
+				if(!resultlike.value) resultlike.value=cnt;
+				console.log(resultlike.value);
+				resultlike.value = resultlike.value+1;
+				resultlike.innerHTML =resultlike.value;
+			}			
+		</script>
 
 		
   <!-- FAVICON -->
@@ -393,7 +410,8 @@
 													<%=item2.content%>
 												</p>
 											</div>
-											<div><i class="fa fa-thumbs-o-up fa-lg"> 0</i></div>
+											<a href='javascript: like(<%=item2.rid%>, <%=item2.like_cnt%>);'>좋아요</a>
+											<div><i class="fa fa-thumbs-o-up fa-lg" id ="<%=item2.rid%>" name="<%=item2.rid%>" value = "<%=item2.like_cnt%>"><%=item2.like_cnt%></i></div>
 										</div>
 									</div>
 									<% } %>
