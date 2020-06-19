@@ -47,7 +47,8 @@ router.get('/login', function(req, res, next) {
     else {
         var login = 'login';
 		res.send("<script>alert('로그인 되었습니다.');history.back();</script>");
-    }
+	}
+	
     res.render('login', { title: 'login'});
 });
 
@@ -120,17 +121,41 @@ router.get('/logout', function(req, res) {
 router.get('/', function(req, res, next) {
 	console.log(req.user);
     if (req.user == undefined)
+    {
+        var login = 'unlogin';
+        var auth = "";
+    }
+    else {
+        var login = req.user.ID;
+        var auth = req.user.AUTH;
+    }
+
+  if(auth=='판매자'){
+    console.log('seller auth : ',auth );
+    res.redirect('/seller');
+  }
+  else if(auth=='관리자'){
+    console.log('manager auth : ',auth );
+    res.redirect('/account/userlist/1');
+  }
+  else{
+    console.log("buyer here : ",auth);
+    res.render('index', { title: 'JOGIYO', login:login, auth:auth });
+  }
+
+});
+
+
+router.get('/joinForm', function(req, res, next) {
+	if (req.user == undefined)
         var login = 'unlogin';
     else {
         var login = req.user.ID;
         var auth = req.user.AUTH;
     }
-	res.render('index', { title: 'JOGIYO', login:login, auth:auth });
-});
 
 
-router.get('/joinForm', function(req, res, next) {
-	res.render('joinForm', { title: 'Join Form!'});
+	res.render('joinForm', { title: 'Join Form!', login:login, auth:auth});
 });
 
 router.post('/joinForm', function(req, res, next){
@@ -140,6 +165,7 @@ router.post('/joinForm', function(req, res, next){
 	var auth = req.body.auth;
 	var phone = req.body.tel;
 	var datas = [id, passwd, name, auth, phone];
+  console.log(datas);
 
 	pool.getConnection(function(err, connection){
 		var sql = "INSERT INTO user(ID, PASSWD, NAME, AUTH, PHONE) values(?,?,?,?,?)";
@@ -147,7 +173,7 @@ router.post('/joinForm', function(req, res, next){
 		connection.query(sql, datas, function(err,rows){
 			if(err){
 				console.error("err: "+err);
-				res.send('<script type="text/javascript">alert("회원가입에 실패하였습니다.");location.href="/join";</script>');
+				res.send('<script type="text/javascript">alert("회원가입에 실패하였습니다.");location.href="/joinForm";</script>');
 			}
 			else
 			{
@@ -304,12 +330,20 @@ router.get('/buyer', isAuthenticated, function(req,res,next){
 router.get('/buyer/print-store', isAuthenticated, function(req, res, next){
 	pool.getConnection(function(err, connection){
 		var sql = "select * from store";
+
+		if (req.user == undefined)
+        	var login = 'unlogin';
+    	else {
+        	var login = req.user.ID;
+        	var auth = req.user.AUTH;
+    	}
+
 		connection.query(sql, function(err, rows){
 			if(err) console.error("err : " + err);
 			else
 			{
 				console.log("매장 조회 결과 : ", rows);
-				res.render('print-store', {title:"매장 조회", rows:rows, category:"전체", price:0, storename:""});
+				res.render('print-store', {title:"매장 조회", rows:rows, category:"전체", price:0, storename:"" , login:login, auth:auth});
 			}
 			connection.release();
 		});
@@ -322,67 +356,85 @@ router.post('/buyer/print-store', isAuthenticated, function (req, res, next) {
     var storename = req.body.storename;
     var x = req.body.lat;
     var y = req.body.lng;
-    var datas = new Array();
-    var sql1 = " SELECT count(distinct review.id) as reviewcnt, store.ID, store.NAME, PHONE, store.RATE, DELIVERY_TIME, UPTIME, CLOSETIME, LAT, LNG, PRICE_LIMIT, STORE_IMG  from store inner join menu on store.id = menu.store_id  left outer join review on review.store_id = store.id inner join category_store on category_store.store_ID = store.id inner join category on category_store.category_ID = category.ID ";
+
+    var datas = [];
+    var sql1 = " SELECT count(distinct review.id) as reviewcnt, store.ID, store.NAME, PHONE, store.RATE, DELIVERY_TIME, UPTIME, CLOSETIME, LAT, LNG, PRICE_LIMIT  from store inner join menu on store.id = menu.store_id  left outer join review on review.store_id = store.id inner join category_store on category_store.store_ID = store.id inner join category on category_store.category_ID = category.ID ";
     var sql2 = " WHERE ((UPTIME>CLOSETIME and (now()>UPTIME or now()<CLOSETIME)) or (UPTIME<CLOSETIME and (UPTIME<now() and now()<CLOSETIME))) ";
     var sql3 = "";
-    var sql4 = " WHERE ((UPTIME>CLOSETIME and (now()<UPTIME and now()>CLOSETIME)) or (UPTIME<CLOSETIME and (UPTIME>now() or now()>CLOSETIME))) ";
+	var sql4 = " WHERE ((UPTIME>CLOSETIME and (now()<UPTIME and now()>CLOSETIME)) or (UPTIME<CLOSETIME and (UPTIME>now() or now()>CLOSETIME))) ";
+	
+	if (req.user == undefined)
+        var login = 'unlogin';
+    else {
+        var login = req.user.ID;
+        var auth = req.user.AUTH;
+    }
+
     if (category != "전체" || price != ">0" || storename != "") {
         sql3 += " and ";
         if (category != "전체") {
-			datas.push(category);
+         datas.push(category);
             sql3 += "category.name = ?";
-		}
-		if (price != ">0"){
-			if(category != "전체") sql3 += " and ";
-			sql3 += "menu.price = any (select menu.price from menu where menu.price "  + price + " )";
-			
-		}
-		if (storename != ""){
-			if(category != "전체" || price != '>0') sql3 += " and ";
-			datas.push(storename);
-			sql3 += "store.name = ?";
-		}
-		sql3=sql3.replace(/['"]+/g, '');
-	}
-	sql3 += " group by store.id ";
-	if(req.body.sort==1)
-		sql3 += " ORDER BY RATE DESC; ";
-	else if(req.body.sort==2)
-		sql3 += " ORDER BY reviewcnt DESC; ";
-	else if(req.body.sort==3)
-	{
-		sql3 += " ORDER BY (((LAT-?)*(LAT-?))+((LNG-?)*(LNG-?))); ";
-		datas.push(x,x,y,y);
-	}
-	else if(req.body.sort==4)
-		sql3 += " ORDER BY PRICE_LIMIT; ";
-	else if(req.body.sort==5)
-		sql3 += " ORDER BY DELIVERY_TIME; ";
-	else
-		sql3 += " ; ";
+      }
+      if (price != ">0"){
+         if(category != "전체") sql3 += " and ";
+         sql3 += "menu.price = any (select menu.price from menu where menu.price "  + price + " )";
+        
+      }
+      if (storename != ""){
+         if(category != "전체" || price != '>0') sql3 += " and ";
+         datas.push(storename);
+         sql3 += "store.name = ?";
+      }
+      sql3=sql3.replace(/['"]+/g, '');
+   }
+   sql3 += " group by store.id ";
+   if(req.body.sort==1)
+      sql3 += " ORDER BY RATE DESC; ";
+   else if(req.body.sort==2)
+      sql3 += " ORDER BY reviewcnt DESC; ";
+   else if(req.body.sort==3)
+   {
+      sql3 += " ORDER BY (((LAT-?)*(LAT-?))+((LNG-?)*(LNG-?))); ";
+      datas.push(x,x,y,y);
+   }
+   else if(req.body.sort==4)
+      sql3 += " ORDER BY PRICE_LIMIT; ";
+   else if(req.body.sort==5)
+      sql3 += " ORDER BY DELIVERY_TIME; ";
+   else
+      sql3 += " ; ";
+   var data = []
+   for(var i=0; i<2; i++)
+   {
+      for(var j=0; j<datas.length; j++)
+      {
+         data.push(datas[j]);
+      }
+   }
+   if(datas.length == 0) {
+      multiconnection.query(sql1+sql2+sql3+sql1+sql4+sql3, function(err,rows){
+         if(err) console.error("err : " + err);
+         else
+         {
+            console.log("매장 조회 결과 : ", rows);
+            res.render('print-store', {title:"매장 조회", rows:rows, category:category, price:price, storename:storename , login:login, auth:auth});
+         }
+      });
+   }
+   else {
+      multiconnection.query(sql1+sql2+sql3+sql1+sql4+sql3, data, function(err,rows){
+         if(err) console.error("err : " + err);
+         else
+         {
+            console.log("매장 조회 결과 : ", rows);
+            res.render('print-store', {title:"매장 조회", rows:rows, category:category, price:price, storename:storename , login:login, auth:auth});
+         }
+      });
+   }
+}); 
 
-	if(datas.length == 0) {
-		multiconnection.query(sql1+sql2+sql3+sql1+sql4+sql3, function(err,rows){
-			if(err) console.error("err : " + err);
-			else
-			{
-				console.log("매장 조회 결과 : ", rows);
-				res.render('print-store', {title:"매장 조회", rows:rows, category:category, price:price, storename:storename});
-			}
-		});
-	}
-	else {
-		multiconnection.query(sql1+sql2+sql3+sql1+sql4+sql3, datas, datas, function(err,rows){
-			if(err) console.error("err : " + err);
-			else
-			{
-				console.log("매장 조회 결과 : ", rows);
-				res.render('print-store', {title:"매장 조회", rows:rows, category:category, price:price, storename:storename});
-			}
-		});
-	}
-});
+
 
 
 
@@ -394,6 +446,13 @@ router.get('/buyer/print-menu/:id', isAuthenticated, function(req,res,next){
     var sql3 = "SELECT * FROM review inner join user on user_id = user.id WHERE store_ID=?;";
     var sql4 = "SELECT store.NAME as store_name, category.NAME as category_name, PRICE_LIMIT, DELIVERY_TIME, UPTIME, CLOSETIME, RATE, PHONE, STORE_IMG FROM store inner join category_store on store.ID = store_ID inner join category on category_ID = category.ID WHERE store.ID=?;";
 	
+	if (req.user == undefined)
+        var login = 'unlogin';
+    else {
+        var login = req.user.ID;
+        var auth = req.user.AUTH;
+    }
+
 	multiconnection.query(sql1+sql2+sql3+sql4, [store_id, req.user.ID, store_id, store_id],function(err,rows){
         if(err) console.error("에러:"+err);
         else{
@@ -401,7 +460,7 @@ router.get('/buyer/print-menu/:id', isAuthenticated, function(req,res,next){
 			console.log("hint: ",hint);
     		console.log("메뉴 조회 결과 : ", rows);
 
-            res.render('print-menu', {title: "메뉴 조회", rows:rows, store_id:store_id, hint: hint});
+            res.render('print-menu', {title: "메뉴 조회", rows:rows, store_id:store_id, hint: hint , login:login, auth:auth});
 
         }
     });
@@ -504,7 +563,13 @@ router.get('/buyer/history', isAuthenticated, function(req, res, next){
 
 // 구매 페이지
 router.get('/purchase',isAuthenticated, function(req, res, next){
-	res.render('purchase');
+  if (req.user == undefined)
+        var login = 'unlogin';
+    else {
+        var login = req.user.ID;
+        var auth = req.user.AUTH;
+    }
+	res.render('purchase', {login:login, auth:auth});
 });
 
 // 구매 페이지
@@ -557,15 +622,16 @@ router.post('/review/:store_id',isAuthenticated, function(req, res, next){
 // 판매자 메인
 router.get('/seller', isAuthenticated, function(req,res,next){
 	var store_id = req.user.ID;
-    pool.getConnection(function(err, connection){
-        var sql = "SELECT * FROM store inner join store_user on store_ID = store.ID WHERE user_ID=?";
-        connection.query(sql,[req.user.ID], function(err,rows){
-            if (err) console.error("err : " + err);
-    		res.render('seller', {title: "판매자", rows:rows, store_id:store_id});
-            connection.release();
-        }); 
-    });
-});
+	 pool.getConnection(function(err, connection){
+	   var sql = "SELECT * FROM store inner join store_user on store_ID = store.ID WHERE user_ID=?; SELECT * from user where user.id = ?";
+	   multiconnection.query(sql, [req.user.ID, req.user.ID],function(err,rows){
+		  if (err) console.error("err : " + err);
+		  console.log("rows:",rows);
+		   res.render('seller', {title: "판매자", rows:rows, store_id:store_id});
+			 connection.release();
+		 });
+	 });
+ }); 
 
 router.get('/store_add', isAuthenticated, function(req, res, next){
 	pool.getConnection(function(err, connection){
@@ -574,7 +640,7 @@ router.get('/store_add', isAuthenticated, function(req, res, next){
 			if(err) console.error("err: "+err);
 			else
 			{
-				res.render('store_add', {title:'매장 추가', rows:rows});
+				res.render('store_add', {title:'매장 추가', rows:rows, login:req.user.ID});
 			}
 			connection.release();
 		});
@@ -673,7 +739,7 @@ router.get('/store_mod/:id', isAuthenticated, function(req, res, next){
 		var sql = "SELECT * FROM store WHERE ID=?";
 		connection.query(sql, [id], function(err, rows){
 			if(err) console.error(err);
-			res.render('store_mod', {title:"가게 정보 수정", row:rows[0]});
+			res.render('store_mod', {title:"가게 정보 수정", row:rows[0], login:req.user.ID});
 			connection.release();
 		});
 	});
