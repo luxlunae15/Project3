@@ -93,11 +93,11 @@
           <div class="widget user-dashboard-profile">
             <!-- User Image -->
             <div class="profile-thumb">
-              <img src="../images/user/user-thumb.jpg" alt="" class="rounded-circle">
+              <img src="/seller/<%=rows[1][0].USER_IMG%>" alt="" class="rounded-circle">
             </div>
             <!-- User Name -->
-            <h5 class="text-center">판매자</h5>
-            <p>J O G I Y O</p>
+            <h5 class="text-center"><%=rows[1][0].NAME%></h5>
+            <p>판매자</p>
             <input type="button" id="btnadd" name="add" value="상품 추가" class="btn btn-main-sm">
           </div>
           <!-- Dashboard Links -->
@@ -146,14 +146,14 @@
               </tr>
             </thead>
             <tbody>
-                <%
-                for(var i=0; i<rows.length; i++){
-                    var item = rows[i];
-            %>
-              <tr>
+              <%
+              for(var i=0; i<rows[0].length; i++){
+                  var item = rows[0][i];
+          %>
+            <tr>
 
-                <td class="product-thumb">
-                  <img width="80px" height="auto" src="../images/products/products-1.jpg" alt="image description"></td>
+              <td class="product-thumb">
+                <img width="80px" height="auto" src="/seller/<%=item.menu_img%>" alt="image description"></td>
                 <td class="product-details">
                   <h3 class="title" style="margin-left: 5px;">J O G I Y O</h3>
                   <span class="add-id" style="margin-left: 5px;"><strong>상품 이름:</strong><a href="/product/<%=store_id%>/<%=item.menu_ID%>"><%=item.menu_name%></a></span>
